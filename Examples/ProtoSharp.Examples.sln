@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoSharp.Examples.AddressBookSample.AddPerson", "AddressBookSample\AddPerson\ProtoSharp.Examples.AddressBookSample.AddPerson.csproj", "{270B3281-2841-4779-A4AB-21CDBA1D14F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoSharp.Examples.AddressBookSamples.ListPeople", "AddressBookSample\ListPeople\ProtoSharp.Examples.AddressBookSamples.ListPeople.csproj", "{992275BB-0DD1-4799-AAE6-A33FA51BC11B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoSharp.Examples.AddressBookSample.Core", "AddressBookSample\Core\ProtoSharp.Examples.AddressBookSample.Core.csproj", "{5BC3B355-4F7E-48A3-91AE-B9578D77FB3C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{270B3281-2841-4779-A4AB-21CDBA1D14F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{270B3281-2841-4779-A4AB-21CDBA1D14F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{270B3281-2841-4779-A4AB-21CDBA1D14F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{270B3281-2841-4779-A4AB-21CDBA1D14F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{992275BB-0DD1-4799-AAE6-A33FA51BC11B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{992275BB-0DD1-4799-AAE6-A33FA51BC11B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{992275BB-0DD1-4799-AAE6-A33FA51BC11B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{992275BB-0DD1-4799-AAE6-A33FA51BC11B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BC3B355-4F7E-48A3-91AE-B9578D77FB3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BC3B355-4F7E-48A3-91AE-B9578D77FB3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BC3B355-4F7E-48A3-91AE-B9578D77FB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BC3B355-4F7E-48A3-91AE-B9578D77FB3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
