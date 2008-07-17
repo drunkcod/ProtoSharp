@@ -14,6 +14,8 @@ namespace ProtoSharp.Core
         }
         protected override void DoWrite(object value, MessageWriter writer)
         {
+            if(value == null)
+                value = string.Empty;
             writer.WriteString(value.ToString());
         }
     }

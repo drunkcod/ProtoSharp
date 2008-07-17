@@ -72,7 +72,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\ProtoSharp.Core.csproj">
       <Project>{52C2BF05-9DA3-4214-BCF6-2E13822CD39E}</Project>
-      <Name>Autotelic.ProtoSharp.Core</Name>
+      <Name>ProtoSharp.Core</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

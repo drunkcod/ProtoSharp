@@ -210,6 +210,19 @@ namespace ProtoSharp.Tests
             Assert.AreEqual(10, output.Length);
         }
 
+        class MessageWithString
+        {
+            [Tag(1)]
+            public string Value { get; set; }
+        }
+        [Test]
+        public void WriteMessage_ShouldTreatNullStringAsEmpty()
+        {
+            var output = new MemoryStream();
+            new MessageWriter(output).WriteMessage(new MessageWithString());
+            Assert.AreEqual(MessageWriter.Write(new MessageWithString(){ Value = string.Empty }), output.ToArray());
+        }
+
         unsafe static byte[] AsBytes(float value)
         {
             return CopyBytes((byte*)&value, sizeof(float));
