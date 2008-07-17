@@ -33,8 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultAttribute.cs" />
     <Compile Include="FieldIO.cs" />
     <Compile Include="MessageFieldBool.cs" />
     <Compile Include="MessageFieldBytes.cs" />

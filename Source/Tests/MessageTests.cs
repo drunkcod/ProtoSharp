@@ -57,5 +57,18 @@ namespace ProtoSharp.Tests
         {
             Assert.AreEqual("Constructed", Message.CreateDefaultItem<StringConstructable>("Constructed").Value);
         }
+
+        class WithDefaultMember
+        {
+            [Default("Parsed")]
+            public Parsable Parsable { get; set; }
+        }
+        [Test]
+        public void CreateDefault_ShouldFillInDefaultMember()
+        {
+            var message = Message.CreateDefault<WithDefaultMember>();
+
+            Assert.AreEqual("Parsed", message.Parsable.Value);
+        }
     }
 }

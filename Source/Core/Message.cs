@@ -26,11 +26,28 @@ namespace ProtoSharp.Core
             return count;
         }
 
+        public static T CreateDefault<T>() where T : class, new()
+        {
+            return CreateDefault(new T()) as T;
+        }
+
         public static T CreateDefaultItem<T>(string s)
         {
             return (T)CreateDefaultItem(typeof(T), s);
         }
 
+        static object CreateDefault(object obj)
+        {
+            Array.ForEach(obj.GetType().GetProperties(), item =>
+            {
+                var attributes = item.GetCustomAttributes(typeof(DefaultAttribute), false);
+                if(attributes.Length == 0)
+                    return;
+                var defaultAttribute = attributes[0] as DefaultAttribute;
+                item.SetValue(obj, CreateDefaultItem(item.PropertyType, defaultAttribute.Value), null);
+            });
+            return obj;
+        }
         static object CreateDefaultItem(Type type, string s)
         {
             var stringMethodArg = new Type[] { typeof(string) };
