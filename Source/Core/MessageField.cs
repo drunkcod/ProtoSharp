@@ -39,7 +39,8 @@ namespace ProtoSharp.Core
 
         protected virtual object DoRead(MessageReader reader)
         {
-            return reader.ReadMessage(FieldType, reader.ReadVarint32());
+            return reader.CreateSubReader(reader.ReadVarint32()).
+                   ReadMessage(FieldType);
         }
 
         protected virtual void DoWrite(object value, MessageWriter writer)

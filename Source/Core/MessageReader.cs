@@ -13,17 +13,25 @@ namespace ProtoSharp.Core
             return new MessageReader(message).Read<T>(); 
         }
 
-        public MessageReader(byte[] message, int offset)
+        public MessageReader(byte[] message, int offset, int length)
         {
             _message = message;
             _offset = offset;
+            _end = offset + length;
         }
 
-        public MessageReader(byte[] message) : this(message, 0) { }
+        public MessageReader(byte[] message) : this(message, 0, message.Length) { }
 
         public int Position { get { return _offset; } }
 
         public event EventHandler FieldMissing;
+
+        public MessageReader CreateSubReader(int length)
+        {
+            var subReader = new MessageReader(_message, _offset, length);
+            _offset += length;
+            return subReader;
+        }
 
         public int ReadVarint32()
         {
@@ -122,9 +130,9 @@ namespace ProtoSharp.Core
             return ReadMessage(messageType, _message.Length - _offset);
         }
 
-        public object ReadMessage(Type messageType, int length)
+        object ReadMessage(Type messageType, int length)
         {
-            Dictionary<int, MessageField> fields = new Dictionary<int, MessageField>();
+            var fields = new Dictionary<int, MessageField>();
             Message.ForEachField(messageType,
                 field => fields.Add(field.Tag, field));
 
@@ -154,5 +162,6 @@ namespace ProtoSharp.Core
 
         byte[] _message;
         int _offset;
+        int _end;
     }
 }
