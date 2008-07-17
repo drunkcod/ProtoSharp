@@ -56,6 +56,7 @@
     <Compile Include="Messages\WithRepeatedTest1.cs" />
     <Compile Include="Messages\WithVarint32.cs" />
     <Compile Include="Messages\WithVarint64.cs" />
+    <Compile Include="MessageTests.cs" />
     <Compile Include="MessageWriterTests.cs" />
     <Compile Include="ProtocolBufferTests.cs" />
     <Compile Include="RepeatedFileIOTests.cs" />

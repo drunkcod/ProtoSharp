@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace ProtoSharp.Core
 {
@@ -24,6 +24,33 @@ namespace ProtoSharp.Core
             int count = 0;
             ForEachField(obj.GetType(), x => ++count);
             return count;
+        }
+
+        public static T CreateDefaultItem<T>(string s)
+        {
+            return (T)CreateDefaultItem(typeof(T), s);
+        }
+
+        static object CreateDefaultItem(Type type, string s)
+        {
+            var stringMethodArg = new Type[] { typeof(string) };
+
+            var parse = type.GetMethod("Parse", stringMethodArg);
+            if(parse != null)
+                return parse.Invoke(null, new object[] { s });
+
+            var tryParse = type.GetMethod("TryParse", new Type[]{ typeof(string), type.MakeByRefType() });
+            if(tryParse != null)
+            {
+                var args = new object[] { s, null };
+                if((bool)tryParse.Invoke(null, args))
+                    return args[1];
+            }
+
+            var constructor = type.GetConstructor(stringMethodArg);
+            if(constructor != null)
+                return constructor.Invoke(new object[] { s });
+            return null;
         }
     }
 }
