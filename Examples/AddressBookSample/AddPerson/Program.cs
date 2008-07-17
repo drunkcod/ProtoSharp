@@ -47,9 +47,8 @@ namespace ProtoSharp.Examples.AddressBookSample.AddPerson
                 if(string.IsNullOrEmpty(number))
                     break;
 
-                Person.PhoneNumber phoneNumber = new Person.PhoneNumber();
+                Person.PhoneNumber phoneNumber = Message.CreateDefault<Person.PhoneNumber>();
                 phoneNumber.Number = number;
-
                 output.Write("Is this a mobile, home, or work phone? ");
                 string type = input.ReadLine();
                 if(type == "mobile")

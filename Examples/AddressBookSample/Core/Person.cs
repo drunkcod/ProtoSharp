@@ -36,7 +36,7 @@ namespace ProtoSharp.Examples.AddressBookSample.Core
         {
             [Tag(1)]
             public string Number { get; set; }
-            [Tag(2)]
+            [Tag(2),Default("Home")]
             public PhoneType Type { get; set; }
         }
 
