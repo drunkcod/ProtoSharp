@@ -17,25 +17,12 @@ namespace ProtoSharp.Core
 
         protected MessageField(int tag, IFieldIO fieldIO, WireType wireType)
         {
-            _tag = tag;
-            _wireType = wireType;
-            _fieldWriter = (source, writer) =>
-            {
-                _fieldWriter = fieldIO.CreateWriter(this);
-                if(_fieldWriter == null)
-                    _fieldWriter = (s, w) =>
-                    fieldIO.Read(s, x =>
-                    {
-                        w.WriteHeader(Tag, WireType);
-                        DoWrite(x, w);
-                    });
-                _fieldWriter(source, writer);
-            };
+            _header = tag << 3 | (int)wireType;
             _fieldIO = fieldIO;
         }
 
-        public int Tag { get { return _tag; } }
-        public WireType WireType { get { return _wireType; } }
+        public int Tag { get { return _header >> 3; } }
+        public int Header { get { return _header; } }
 
         public virtual bool AppendWrite(ILGenerator il)
         {
@@ -46,9 +33,18 @@ namespace ProtoSharp.Core
         {
             _fieldIO.Write(target, DoRead(reader));
         }
-        public void Write(object source, MessageWriter writer)
+
+        public FieldWriter GetFieldWriter()
         {
-            _fieldWriter(source, writer);
+            var fieldWriter = _fieldIO.CreateWriter(this);
+            if(fieldWriter != null)
+                return fieldWriter;
+            return (s, w) =>
+                _fieldIO.Read(s, x =>
+                {
+                    w.WriteVarint(Header);
+                    DoWrite(x, w);
+                });
         }
 
         protected virtual object DoRead(MessageReader reader)
@@ -120,9 +116,7 @@ namespace ProtoSharp.Core
             return new MessageField(tag, fieldIO, WireType.String);
         }
 
-        int _tag;
-        WireType _wireType;
-        FieldWriter _fieldWriter;
+        int _header;
         IFieldIO _fieldIO;
     }
 }

@@ -71,14 +71,13 @@ namespace ProtoSharp.Core
 
         public void WriteMessage(object obj)
         {
-            List<MessageField> fields;
-            if(!_fieldCache.TryGetValue(obj.GetType(), out fields))
+            FieldWriter writeFields;
+            if(!_writerCache.TryGetValue(obj.GetType(), out writeFields))
             {
-                fields = new List<MessageField>();
-                Message.ForEachField(obj.GetType(), fields.Add);
-                _fieldCache.Add(obj.GetType(), fields);
+                Message.ForEachField(obj.GetType(), x => writeFields += x.GetFieldWriter());
+                _writerCache.Add(obj.GetType(), writeFields);
             }
-            fields.ForEach(item => item.Write(obj, this));
+            writeFields(obj, this);
         }
 
         public void WriteFixed32(int value) { _writer.Write(value); }
@@ -107,6 +106,6 @@ namespace ProtoSharp.Core
         }
 
         BinaryWriter _writer;
-        Dictionary<Type, List<MessageField>> _fieldCache = new Dictionary<Type, List<MessageField>>();
+        Dictionary<Type, FieldWriter> _writerCache = new Dictionary<Type, FieldWriter>();
     }
 }

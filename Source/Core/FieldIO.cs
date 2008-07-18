@@ -27,9 +27,8 @@ namespace ProtoSharp.Core
             var il = writer.GetILGenerator();
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Ldc_I4, field.Tag);
-            il.Emit(OpCodes.Ldc_I4, (int)field.WireType);
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteHeader"));
+            il.Emit(OpCodes.Ldc_I4, field.Header);
+            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[]{ typeof(int) }));
 
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Castclass, _property.DeclaringType);
