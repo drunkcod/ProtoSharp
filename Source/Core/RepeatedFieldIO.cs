@@ -19,11 +19,9 @@ namespace ProtoSharp.Core
             return true;
         }
 
-        private RepeatedFieldIO(PropertyInfo property, MethodInfo add, MethodInfo getEnumerator)
+        public FieldWriter CreateWriter(MessageField field)
         {
-            _property = property;
-            _add = add;
-            _getEnumerator = getEnumerator;
+            return null;
         }
 
         public void Read(object source, Action<object> action) 
@@ -39,6 +37,13 @@ namespace ProtoSharp.Core
         }
 
         public Type FieldType { get { return _add.GetParameters()[0].ParameterType; } }
+
+        RepeatedFieldIO(PropertyInfo property, MethodInfo add, MethodInfo getEnumerator)
+        {
+            _property = property;
+            _add = add;
+            _getEnumerator = getEnumerator;
+        }
 
         PropertyInfo _property;
         MethodInfo _add;

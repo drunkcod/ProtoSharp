@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections;
+using System.Reflection.Emit;
 
 namespace ProtoSharp.Core
 {
@@ -18,11 +19,28 @@ namespace ProtoSharp.Core
         {
             _tag = tag;
             _wireType = wireType;
+            _fieldWriter = (source, writer) =>
+            {
+                _fieldWriter = fieldIO.CreateWriter(this);
+                if(_fieldWriter == null)
+                    _fieldWriter = (s, w) =>
+                    fieldIO.Read(s, x =>
+                    {
+                        w.WriteHeader(Tag, WireType);
+                        DoWrite(x, w);
+                    });
+                _fieldWriter(source, writer);
+            };
             _fieldIO = fieldIO;
         }
 
         public int Tag { get { return _tag; } }
         public WireType WireType { get { return _wireType; } }
+
+        public virtual bool AppendWrite(ILGenerator il)
+        {
+            return false;
+        }
 
         public void Read(object target, MessageReader reader)
         {
@@ -30,11 +48,7 @@ namespace ProtoSharp.Core
         }
         public void Write(object source, MessageWriter writer)
         {
-            _fieldIO.Read(source, x => 
-            {
-                writer.WriteHeader(Tag, WireType);
-                DoWrite(x, writer);
-            });
+            _fieldWriter(source, writer);
         }
 
         protected virtual object DoRead(MessageReader reader)
@@ -108,6 +122,7 @@ namespace ProtoSharp.Core
 
         int _tag;
         WireType _wireType;
+        FieldWriter _fieldWriter;
         IFieldIO _fieldIO;
     }
 }

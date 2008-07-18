@@ -2,7 +2,7 @@
 
 namespace ProtoSharp.Tests.Messages
 {
-    class WithEnum
+    public class WithEnum
     {
         [Tag(1)]
         public WireType WireType { get; set; }

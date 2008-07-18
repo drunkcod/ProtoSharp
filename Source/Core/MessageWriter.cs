@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 
 
 namespace ProtoSharp.Core
@@ -70,7 +71,14 @@ namespace ProtoSharp.Core
 
         public void WriteMessage(object obj)
         {
-            Message.ForEachField(obj.GetType(), item => item.Write(obj, this));
+            List<MessageField> fields;
+            if(!_fieldCache.TryGetValue(obj.GetType(), out fields))
+            {
+                fields = new List<MessageField>();
+                Message.ForEachField(obj.GetType(), fields.Add);
+                _fieldCache.Add(obj.GetType(), fields);
+            }
+            fields.ForEach(item => item.Write(obj, this));
         }
 
         public void WriteFixed32(int value) { _writer.Write(value); }
@@ -99,5 +107,6 @@ namespace ProtoSharp.Core
         }
 
         BinaryWriter _writer;
+        Dictionary<Type, List<MessageField>> _fieldCache = new Dictionary<Type, List<MessageField>>();
     }
 }
