@@ -3,7 +3,7 @@ using System.IO;
 using ProtoSharp.Core;
 using ProtoSharp.Examples.AddressBookSample.Core;
 
-namespace ProtoSharp.Examples.AddressBookSample.AddPerson
+namespace ProtoSharp.Examples.AddressBookSample.ListPeople
 {
     class Program
     {
