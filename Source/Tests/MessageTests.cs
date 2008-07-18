@@ -57,6 +57,17 @@ namespace ProtoSharp.Tests
         {
             Assert.AreEqual("Constructed", Message.CreateDefaultItem<StringConstructable>("Constructed").Value);
         }
+        
+        enum Option
+        {
+            Foo, Bar, Baz, xyzzy
+        }
+        [Test]
+        public void CreateDefaultItem_ShouldHandleEnums()
+        {
+            Assert.AreEqual(Option.xyzzy, Message.CreateDefaultItem<Option>("xyzzy"));
+
+        }
 
         class WithDefaultMember
         {

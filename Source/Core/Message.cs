@@ -50,6 +50,9 @@ namespace ProtoSharp.Core
         }
         static object CreateDefaultItem(Type type, string s)
         {
+            if(type.IsEnum)
+                return Enum.Parse(type, s);
+
             var stringMethodArg = new Type[] { typeof(string) };
 
             var parse = type.GetMethod("Parse", stringMethodArg);
@@ -67,6 +70,7 @@ namespace ProtoSharp.Core
             var constructor = type.GetConstructor(stringMethodArg);
             if(constructor != null)
                 return constructor.Invoke(new object[] { s });
+
             return null;
         }
     }
