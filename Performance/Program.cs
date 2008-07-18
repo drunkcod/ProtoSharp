@@ -35,8 +35,7 @@ namespace ProtoSharp.Performance
     class MessageWithInt32SerializationTester
     {
         public MessageWithInt32SerializationTester(int count, int seed)
-        {
-            
+        {            
             var rand = new Random(seed);
             for(int i = 0; i != count; ++i)
                 _items.Add(new MessageWithInt32() { Value = rand.Next(0, 1 << 15) });

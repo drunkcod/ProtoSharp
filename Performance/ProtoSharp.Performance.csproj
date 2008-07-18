@@ -44,11 +44,11 @@
   <ItemGroup>
     <Reference Include="ProtoBuf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\protobuf-net\R6\ProtoBuf.dll</HintPath>
+      <HintPath>protobuf-net\R6\ProtoBuf.dll</HintPath>
     </Reference>
     <Reference Include="ProtoSharp.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Build\ProtoSharp.Core.dll</HintPath>
+      <HintPath>..\Build\ProtoSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization">
