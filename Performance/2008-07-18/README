@@ -1,0 +1,9 @@
+This measure performance for serialzing 1000000 messages containing a single int32 field to memory.
+
+The following libraries and versions are used:
+
+ProtoSharp 
+	- revision 12
+
+protobuf-net (http://code.google.com/p/protobuf-net/)
+	- revision 6
