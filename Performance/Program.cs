@@ -34,46 +34,65 @@ namespace ProtoSharp.Performance
 
     class MessageWithInt32SerializationTester
     {
-        public MessageWithInt32SerializationTester(int count, int seed)
+        public MessageWithInt32SerializationTester(int count, int seed, int iterations)
         {            
             var rand = new Random(seed);
             for(int i = 0; i != count; ++i)
-                _items.Add(new MessageWithInt32() { Value = rand.Next(0, 1 << 15) });
+                _items.Add(new MessageWithInt32() { Value = rand.Next(0, 1 << 20) });
+            _iterations = iterations;
         }
 
         public TestResult RunTest(string name, Action<MessageWithInt32> handleData)
         {
-            var stopwatch = Stopwatch.StartNew();
-            _items.ForEach(handleData);
-            stopwatch.Stop();
-            return new TestResult(name, stopwatch.Elapsed);
+            var min = TimeSpan.MaxValue;
+            for(int i = 0; i != _iterations; ++i)
+            {
+                var stopwatch = Stopwatch.StartNew();
+                _items.ForEach(handleData);
+                stopwatch.Stop();
+                if(stopwatch.Elapsed < min)
+                    min = stopwatch.Elapsed;
+            }
+            return new TestResult(name, min);
         }
 
         List<MessageWithInt32> _items = new List<MessageWithInt32>();
+        int _iterations;
     }
 
     public static class Program
     {
-        const int Count = 1000000;
+        const int Count = 2000;
+        const int Iterations = 2000;
+
+        static readonly byte[] block = new byte[2 * Count * Iterations * sizeof(int)];
+        static MemoryStream CreateMemoryStream()
+        {
+            return new MemoryStream(block);
+        }
+
         public static void Main(string[] args)
         {
-            var tester = new MessageWithInt32SerializationTester(Count, 20080718);
+            var tester = new MessageWithInt32SerializationTester(Count, 20080718, Iterations);
             var results = new List<TestResult>();
-            Console.WriteLine("Serializing {0} {1}", Count, typeof(MessageWithInt32).Name);
+            Console.WriteLine("Serializing {0} {1} {2} times.", 
+                Count, 
+                typeof(MessageWithInt32).Name, 
+                Iterations);
             {//System.IO.BinaryWriter
-                var binaryWriter = new BinaryWriter(new MemoryStream());
+                var binaryWriter = new BinaryWriter(CreateMemoryStream());
                 results.Add(tester.RunTest("System.IO.BinaryWriter", x => binaryWriter.Write(x.Value)));
             }
             {//ProtoSharp.Core.MessageWriter.WriteVarint
-                var writer = new MessageWriter(new MemoryStream());
+                var writer = new MessageWriter(CreateMemoryStream());
                 results.Add(tester.RunTest("ProtoSharp.MessageWriter.WriteVarint", x => writer.WriteVarint(x.Value)));
             }
             {//ProtoSharp.Core.MessageWriter.WriteMessage
-                var writer = new MessageWriter(new MemoryStream());
+                var writer = new MessageWriter(CreateMemoryStream());
                 results.Add(tester.RunTest("ProtoSharp.MessageWriter.WriteMessage", writer.WriteMessage));
             }
             {//protobuf-net
-                var output = new MemoryStream();
+                var output = CreateMemoryStream();
                 results.Add(tester.RunTest("protbuf-net", x => Serializer.Serialize(x, output)));
             }
 
