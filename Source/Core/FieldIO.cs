@@ -22,13 +22,13 @@ namespace ProtoSharp.Core
 
         public FieldWriter CreateWriter(MessageField field)
         {
-            var writer = new DynamicMethod("DynamicWriter", null, new Type[]{ typeof(object), typeof(MessageWriter) }, true);
+            var writer = new DynamicMethod(string.Format("DynamicWrite{0}", _property.Name), null, new Type[]{ typeof(object), typeof(MessageWriter) }, true);
 
             var il = writer.GetILGenerator();
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Dup);
             il.Emit(OpCodes.Ldc_I4, field.Header);
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[]{ typeof(int) }));
+            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[]{ typeof(uint) }));
 
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Castclass, _property.DeclaringType);
@@ -40,8 +40,9 @@ namespace ProtoSharp.Core
         }
 
         public void Read(object source, Action<object> action) 
-        { action(_property.GetValue(source, null)); }
-
+        { 
+            action(_property.GetValue(source, null));
+        }
 
         public void Write(object target, object value)
         {

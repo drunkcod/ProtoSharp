@@ -28,15 +28,24 @@ namespace ProtoSharp.Core
                 WriteVarint((uint)value);
         }
         public void WriteVarint(uint value)
-        {
-            do
+            {//Special case for performance, single byte is *very* common.
+            if(value < 0x80)
+                _writer.Write((byte)value);
+            else if(value < (1 << 15))
             {
-                byte bits = (byte)(value & 0x7f);
-                value >>= 7;
-                if(value > 0)
-                    bits |= 0x80;
-                _writer.Write(bits);
-            } while(value != 0);
+                uint low = value & 0x7f;
+                uint hi = value & 0x3F80;
+                _writer.Write((UInt16)(hi << 1 | low | 0x80));
+            }
+            else
+                do
+                {
+                    byte bits = (byte)(value & 0x7f);
+                    value >>= 7;
+                    if(value > 0)
+                        bits |= 0x80;
+                    _writer.Write(bits);
+                } while(value != 0);
         }
 
         public void WriteVarint(Int64 value) { WriteVarint((UInt64)value); }

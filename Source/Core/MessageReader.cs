@@ -127,16 +127,16 @@ namespace ProtoSharp.Core
 
         public object ReadMessage(Type messageType)
         {
-            return ReadMessage(messageType, _message.Length - _offset);
+            return ReadMessage(CreateDefault(messageType), _message.Length - _offset);
         }
 
-        object ReadMessage(Type messageType, int length)
+        object ReadMessage(object obj, int length)
         {
+            Type messageType = obj.GetType();
             var fields = new Dictionary<int, MessageField>();
             Message.ForEachField(messageType,
                 field => fields.Add(field.Tag, field));
 
-            var obj = CreateDefault(messageType);
             var stop = _offset + length;
             while(Position != stop)
             {
@@ -153,7 +153,16 @@ namespace ProtoSharp.Core
             return obj;
         }
 
-        public T Read<T>() where T : class, new(){ return ReadMessage(typeof(T)) as T; }
+        public T Read<T>() where T : class, new()
+        {
+            var obj = CreateDefault(typeof(T));
+            return Read<T>(obj as T);
+        }
+
+        public T Read<T>(T target) where T : class
+        {
+            return ReadMessage(target, _message.Length - _offset) as T;
+        }
 
         static object CreateDefault(Type type)
         {
