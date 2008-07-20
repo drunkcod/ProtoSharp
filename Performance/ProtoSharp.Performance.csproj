@@ -39,7 +39,16 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="BenchmarkAdapterBase.cs" />
+    <Compile Include="Benchmarks\MessageWithInt32SerializationBenchmark.cs" />
+    <Compile Include="BinaryWriterAdapter.cs" />
+    <Compile Include="Messages\MessageWithInt32.cs" />
+    <Compile Include="MessageWriterAdapter.cs" />
+    <Compile Include="MessageWriterRawAdapter.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="BenchmarkAdapter.cs" />
+    <Compile Include="BenchmarkResult.cs" />
+    <Compile Include="ProtoBufNetAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ProtoBuf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
@@ -51,8 +60,10 @@
       <HintPath>..\Build\ProtoSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>
