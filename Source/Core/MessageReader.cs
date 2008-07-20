@@ -13,24 +13,18 @@ namespace ProtoSharp.Core
             return new MessageReader(message).Read<T>(); 
         }
 
-        public MessageReader(byte[] message, int offset, int length)
+        public MessageReader(IByteReader bytes)
         {
-            _message = message;
-            _offset = offset;
-            _end = offset + length;
+            _bytes = bytes;
         }
 
-        public MessageReader(byte[] message) : this(message, 0, message.Length) { }
-
-        public int Position { get { return _offset; } }
+        public MessageReader(byte[] message) : this(new ByteArrayReader(message, 0, message.Length)) { }
 
         public event EventHandler FieldMissing;
 
         public MessageReader CreateSubReader(int length)
         {
-            var subReader = new MessageReader(_message, _offset, length);
-            _offset += length;
-            return subReader;
+            return new MessageReader(_bytes.GetByteReader(length));
         }
 
         public int ReadVarint32()
@@ -40,7 +34,7 @@ namespace ProtoSharp.Core
             int bits;   
             do
             {
-                bits = _message[_offset++];
+                bits = _bytes.GetByte();
                 if(shiftBits < 31)
                 {
                     value |= (bits & 0x7F) << shiftBits;
@@ -57,7 +51,7 @@ namespace ProtoSharp.Core
             Int64 bits;
             do
             {
-                bits = _message[_offset++];
+                bits = _bytes.GetByte();
                 value |= (bits & 0x7F) << shiftBits;
                 shiftBits += 7;
             } while(bits > 0x7F);
@@ -66,11 +60,10 @@ namespace ProtoSharp.Core
 
         public int ReadFixedInt32()
         {
-            _offset += 4;
-            return _message[_offset - 4]
-                | _message[_offset - 3] << 8
-                | _message[_offset - 2] << 16
-                | _message[_offset - 1] << 24;
+            return _bytes.GetByte()
+                | _bytes.GetByte() << 8
+                | _bytes.GetByte() << 16
+                | _bytes.GetByte() << 24;
         }
 
         public uint ReadFixedUInt32()
@@ -91,32 +84,30 @@ namespace ProtoSharp.Core
 
         public float ReadFloat()
         {
-            float value = new BinaryReader(new MemoryStream(_message, _offset, 4)).ReadSingle();
-            _offset += 4;
+            var bytes = _bytes.GetBytes(sizeof(float));
+            var value = new BinaryReader(new MemoryStream(bytes.Array, bytes.Offset, bytes.Count)).ReadSingle();
             return value;
         }
 
         public double ReadDouble()
         {
-            double value = new BinaryReader(new MemoryStream(_message, _offset, 8)).ReadDouble();
-            _offset += 8;
+            var bytes = _bytes.GetBytes(sizeof(double));
+            var value = new BinaryReader(new MemoryStream(bytes.Array, bytes.Offset, bytes.Count)).ReadDouble();
             return value;
         }
 
         public string ReadString()
         {
-            int length = ReadVarint32();
-            string value = Encoding.UTF8.GetString(_message, _offset, length);
-            _offset += length;
+            var bytes = _bytes.GetBytes(ReadVarint32());
+            var value = Encoding.UTF8.GetString(bytes.Array, bytes.Offset, bytes.Count);
             return value;
         }
 
         public byte[] ReadBytes()
         {
-            int length = ReadVarint32();
-            byte[] value = new byte[length];
-            Array.Copy(_message, _offset, value, 0, length);
-            _offset += length;
+            var bytes = _bytes.GetBytes(ReadVarint32());
+            var value = new byte[bytes.Count];
+            Array.Copy(bytes.Array, bytes.Offset, value, 0, bytes.Count);
             return value;
         }
 
@@ -127,18 +118,17 @@ namespace ProtoSharp.Core
 
         public object ReadMessage(Type messageType)
         {
-            return ReadMessage(CreateDefault(messageType), _message.Length - _offset);
+            return ReadMessage(CreateDefault(messageType));
         }
 
-        object ReadMessage(object obj, int length)
+        object ReadMessage(object obj)
         {
             Type messageType = obj.GetType();
             var fields = new Dictionary<int, MessageField>();
             Message.ForEachField(messageType,
                 field => fields.Add(field.Tag, field));
 
-            var stop = _offset + length;
-            while(Position != stop)
+            while(!_bytes.EndOfStream)
             {
                 var tag = ReadMessageTag();
                 MessageField field;
@@ -161,7 +151,7 @@ namespace ProtoSharp.Core
 
         public T Read<T>(T target) where T : class
         {
-            return ReadMessage(target, _message.Length - _offset) as T;
+            return ReadMessage(target) as T;
         }
 
         static object CreateDefault(Type type)
@@ -169,8 +159,6 @@ namespace ProtoSharp.Core
             return type.GetConstructor(Type.EmptyTypes).Invoke(null);
         }
 
-        byte[] _message;
-        int _offset;
-        int _end;
+        IByteReader _bytes;
     }
 }

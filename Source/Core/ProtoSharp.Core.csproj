@@ -38,6 +38,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteArrayReader.cs" />
+    <Compile Include="ByteReader.cs" />
     <Compile Include="DefaultAttribute.cs" />
     <Compile Include="FieldIO.cs" />
     <Compile Include="MessageFieldBool.cs" />

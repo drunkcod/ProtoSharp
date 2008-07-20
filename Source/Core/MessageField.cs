@@ -12,7 +12,7 @@ namespace ProtoSharp.Core
             IFieldIO fieldIO;
             if(!RepeatedFieldIO.TryCreate(property, out fieldIO))
                 fieldIO = new FieldIO(property);
-            return Create(attr, property.PropertyType, fieldIO);
+            return Create(attr, fieldIO);
         }
 
         protected MessageField(int tag, IFieldIO fieldIO, WireType wireType)
@@ -60,9 +60,10 @@ namespace ProtoSharp.Core
 
         Type FieldType { get { return _fieldIO.FieldType; } }
 
-        static MessageField Create(TagAttribute attr, Type type, IFieldIO fieldIO)
+        static MessageField Create(TagAttribute attr, IFieldIO fieldIO)
         {
             int tag = attr.Number;
+            Type type = fieldIO.FieldType;
             if(type == typeof(Int32))
             {
                 if(attr.UseZigZag)
