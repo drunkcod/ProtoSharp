@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoSharp.Examples.Address
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test1EncodingSample", "Test1EncodingSample\Test1EncodingSample.csproj", "{9AB21C16-32C9-40D3-9637-018161B5B02A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoSharp.Examples.SimpleStreamingSample", "SimpleStreamingSample\ProtoSharp.Examples.SimpleStreamingSample.csproj", "{9B90C3DF-8BA9-4E12-92C4-9AFBB1C23018}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{9AB21C16-32C9-40D3-9637-018161B5B02A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AB21C16-32C9-40D3-9637-018161B5B02A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AB21C16-32C9-40D3-9637-018161B5B02A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B90C3DF-8BA9-4E12-92C4-9AFBB1C23018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B90C3DF-8BA9-4E12-92C4-9AFBB1C23018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B90C3DF-8BA9-4E12-92C4-9AFBB1C23018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B90C3DF-8BA9-4E12-92C4-9AFBB1C23018}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
