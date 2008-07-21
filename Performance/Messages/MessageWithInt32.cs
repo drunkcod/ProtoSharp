@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.Serialization;
-using ProtoSharp.Core;
 using ProtoBuf;
+using ProtoSharp.Core;
 
 namespace ProtoSharp.Performance.Messages
 {
