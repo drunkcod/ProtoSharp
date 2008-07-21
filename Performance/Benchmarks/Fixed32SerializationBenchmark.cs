@@ -8,7 +8,7 @@ namespace ProtoSharp.Performance.Benchmarks
         public Fixed32SerializationBenchmark(int count, int seed, int iterations) : base(count, seed, iterations)
         { }
 
-        protected override string Name { get { return "Fixed Serialization"; } }
+        protected override string Name { get { return "Fixed32 Serialization"; } }
 
         protected override void Serialize(IBenchmarkAdapter target, MessageWithFixed32 value)
         {
@@ -17,7 +17,7 @@ namespace ProtoSharp.Performance.Benchmarks
 
         protected override MessageWithFixed32 Generate(Random rand)
         {
-            return new MessageWithFixed32() { Integer = rand.Next(0, 1 << 20), Float = (float)rand.NextDouble() };
+            return new MessageWithFixed32() { Signed = rand.Next(0, 1 << 20), Float = (float)rand.NextDouble() };
         }
     }
 }

@@ -34,7 +34,7 @@ namespace ProtoSharp.Performance
         const int Count = 2000;
         const int Iterations = 2000;
 
-        static readonly byte[] block = new byte[2 * Count * (sizeof(int) + sizeof(float))];
+        static readonly byte[] block = new byte[1 << 20];
 
         public static void Main(string[] args)
         {
@@ -43,7 +43,8 @@ namespace ProtoSharp.Performance
                 new Int32SerializationBenchmark(Count, 20080718, Iterations),
                 new UInt32SerializationBenchmark(Count, 20080721, Iterations),
                 new SInt32SerializationBenchmark(Count, 20080721, Iterations),
-                new Fixed32SerializationBenchmark(Count, 20080721, Iterations)
+                new Fixed32SerializationBenchmark(Count, 20080721, Iterations),
+                new Fixed64SerializationBenchmark(Count, 20080721, Iterations),
             };
 
             Array.ForEach(new BenchmarkTarget[]

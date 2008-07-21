@@ -10,5 +10,6 @@ namespace ProtoSharp.Performance
         void Serialize(MessageWithUInt32 item);
         void Serialize(MessageWithSInt32 item);
         void Serialize(MessageWithFixed32 item);
+        void Serialize(MessageWithFixed64 item);
     }
 }
