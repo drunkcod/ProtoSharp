@@ -68,8 +68,13 @@ namespace ProtoSharp.Core
 
         public void WriteString(string value)
         {
-            WriteVarint(value.Length);
-            _writer.Write(Encoding.UTF8.GetBytes(value));
+            if(string.IsNullOrEmpty(value))
+                WriteVarint(0);
+            else
+            {
+                WriteVarint(value.Length);
+                _writer.Write(Encoding.UTF8.GetBytes(value));
+            }
         }
 
         public void WriteBytes(byte[] value)
