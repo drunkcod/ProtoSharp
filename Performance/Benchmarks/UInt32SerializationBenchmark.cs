@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using ProtoSharp.Performance.Messages;
 
 namespace ProtoSharp.Performance.Benchmarks
