@@ -61,6 +61,7 @@
     <Compile Include="MessageFieldUInt32.cs" />
     <Compile Include="MessageFieldFixedUInt64.cs" />
     <Compile Include="MessageFieldUInt64.cs" />
+    <Compile Include="MessageFieldVarint.cs" />
     <Compile Include="MessageReader.cs" />
     <Compile Include="MessageTag.cs" />
     <Compile Include="MessageWriter.cs" />

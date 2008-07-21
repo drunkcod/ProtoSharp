@@ -3,15 +3,9 @@ using System.Reflection.Emit;
 
 namespace ProtoSharp.Core
 {
-    class MessageFieldInt32 : MessageField
+    class MessageFieldInt32 : MessageFieldVarint<int>
     {
-        public MessageFieldInt32(int tag, IFieldIO fieldIO) : base(tag, fieldIO, WireType.Varint) { }
-
-        public override bool AppendWrite(ILGenerator il)
-        {
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[] { typeof(int) }));
-            return true;
-        }
+        public MessageFieldInt32(int tag, IFieldIO fieldIO) : base(tag, fieldIO) { }
 
         protected override object DoRead(MessageReader reader)
         {
