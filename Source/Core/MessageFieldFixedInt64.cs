@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ProtoSharp.Core
 {
-    class MessageFieldFixedInt64 : MessageField
+    class MessageFieldFixedInt64 : MessageFieldFixed<Int64>
     {
         public MessageFieldFixedInt64(int tag, IFieldIO fieldIO) : base(tag, fieldIO, WireType.Fixed32) { }
 

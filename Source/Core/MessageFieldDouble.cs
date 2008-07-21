@@ -2,7 +2,7 @@
 
 namespace ProtoSharp.Core
 {
-    class MessageFieldDouble : MessageField
+    class MessageFieldDouble : MessageFieldFixed<double>
     {
         public MessageFieldDouble(int tag, IFieldIO fieldIO) : base(tag, fieldIO, WireType.Fixed32) { }
 

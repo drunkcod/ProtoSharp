@@ -2,7 +2,7 @@
 
 namespace ProtoSharp.Core
 {
-    class MessageFieldFixedUInt32 : MessageField
+    class MessageFieldFixedUInt32 : MessageFieldFixed<uint>
     {
         public MessageFieldFixedUInt32(int tag, IFieldIO fieldIO) : base(tag, fieldIO, WireType.Fixed32) { }
 
