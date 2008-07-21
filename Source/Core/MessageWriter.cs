@@ -61,6 +61,11 @@ namespace ProtoSharp.Core
             } while(value != 0);
         }
 
+        public void WriteZigZag(int value)
+        {
+            WriteVarint(value << 1 ^ value >> 31);
+        }
+
         public void WriteString(string value)
         {
             WriteVarint(value.Length);
