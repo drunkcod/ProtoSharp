@@ -2,7 +2,7 @@
 
 namespace ProtoSharp.Core
 {
-    class MessageFieldFixedInt32 : MessageField
+    class MessageFieldFixedInt32 : MessageFieldFixed<int>
     {
         public MessageFieldFixedInt32(int tag, IFieldIO fieldIO) : base(tag, fieldIO, WireType.Fixed32) { }
 
@@ -12,7 +12,7 @@ namespace ProtoSharp.Core
         }
         protected override void DoWrite(object value, MessageWriter writer)
         {
-            writer.WriteFixed32((int)value);
+            writer.WriteFixed((int)value);
         }
     }
 }

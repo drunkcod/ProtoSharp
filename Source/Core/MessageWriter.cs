@@ -94,17 +94,17 @@ namespace ProtoSharp.Core
             writeFields(obj, this);
         }
 
-        public void WriteFixed32(int value) { _writer.Write(value); }
+        public void WriteFixed(int value) { _writer.Write(value); }
 
-        public void WriteFixed32(uint value) { _writer.Write(value); }
+        public void WriteFixed(uint value) { _writer.Write(value); }
 
-        public void WriteFixed32(float value) { _writer.Write(value); }
+        public void WriteFixed(float value) { _writer.Write(value); }
 
-        public void WriteFixed64(long value) { _writer.Write(value); }
+        public void WriteFixed(long value) { _writer.Write(value); }
 
-        public void WriteFixed64(ulong value) { _writer.Write(value); }
+        public void WriteFixed(ulong value) { _writer.Write(value); }
 
-        public void WriteFixed64(double value) { _writer.Write(value); }
+        public void WriteFixed(double value) { _writer.Write(value); }
 
         public void WriteObject(object obj)
         {

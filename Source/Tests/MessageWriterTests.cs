@@ -161,14 +161,14 @@ namespace ProtoSharp.Tests
         public void WriteFixed32_ShouldPutLeastSignificantBitsFirst()
         {
             var output = new MemoryStream();
-            new MessageWriter(output).WriteFixed32(0x04030201);
+            new MessageWriter(output).WriteFixed(0x04030201);
             Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, output.ToArray());
         }
         [Test]
         public void WriteFixed32_ShouldHandleUnsigned()
         {
             var output = new MemoryStream();
-            new MessageWriter(output).WriteFixed32((uint)0x84030201);
+            new MessageWriter(output).WriteFixed((uint)0x84030201);
             Assert.AreEqual(new byte[] { 1, 2, 3, 0x84 }, output.ToArray());
         }
         [Test]
@@ -176,7 +176,7 @@ namespace ProtoSharp.Tests
         {
             var output = new MemoryStream();
             float value = (float)Math.PI;
-            new MessageWriter(output).WriteFixed32(value);
+            new MessageWriter(output).WriteFixed(value);
 
             Assert.AreEqual(AsBytes(value), output.ToArray());
         }
@@ -184,21 +184,21 @@ namespace ProtoSharp.Tests
         public void WriteFixed64_ShouldPutLeastSignificantBitsFirst()
         {
             var output = new MemoryStream();
-            new MessageWriter(output).WriteFixed64(0x0807060504030201);
+            new MessageWriter(output).WriteFixed(0x0807060504030201);
             Assert.AreEqual(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }, output.ToArray());
         }
         [Test]
         public void WriteFixed64_ShouldHandleUnsigned()
         {
             var output = new MemoryStream();
-            new MessageWriter(output).WriteFixed64((ulong)0x08807060504030201);
+            new MessageWriter(output).WriteFixed((ulong)0x08807060504030201);
             Assert.AreEqual(new byte[] { 1, 2, 3, 4, 5, 6, 7, 0x88 }, output.ToArray());
         }
         [Test]
         public void WriteFixed64_ShouldHandleDoubles()
         {
             MemoryStream output = new MemoryStream();
-            new MessageWriter(output).WriteFixed64(Math.PI);
+            new MessageWriter(output).WriteFixed(Math.PI);
 
             Assert.AreEqual(AsBytes(Math.PI), output.ToArray());
         }

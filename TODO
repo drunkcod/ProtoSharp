@@ -1,5 +1,7 @@
-Build file.
+Solving the streaming problem.
 Performance benchmarks.
+	excluding Varint32
+Build file.
 Required fields.
 Descriptor generation.
 .proto generation.

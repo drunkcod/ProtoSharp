@@ -45,6 +45,7 @@
     <Compile Include="MessageFieldBool.cs" />
     <Compile Include="MessageFieldBytes.cs" />
     <Compile Include="MessageFieldDouble.cs" />
+    <Compile Include="MessageFieldFixed.cs" />
     <Compile Include="MessageFieldFixedInt64.cs" />
     <Compile Include="MessageFieldFixedUInt32.cs" />
     <Compile Include="MessageFieldFloat.cs" />

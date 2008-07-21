@@ -12,7 +12,7 @@ namespace ProtoSharp.Core
         }
         protected override void DoWrite(object value, MessageWriter writer)
         {
-            writer.WriteFixed32((uint)value);
+            writer.WriteFixed((uint)value);
         }
     }
 }
