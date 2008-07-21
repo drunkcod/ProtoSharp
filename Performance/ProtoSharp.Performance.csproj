@@ -41,17 +41,21 @@
   <ItemGroup>
     <Compile Include="BenchmarkAdapterBase.cs" />
     <Compile Include="Benchmarks\Benchmark.cs" />
+    <Compile Include="Benchmarks\ByteArraySerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Fixed32SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Fixed64SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Int32SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\SerializationBenchmarkBase.cs" />
     <Compile Include="Benchmarks\SInt32SerializationBenchmark.cs" />
+    <Compile Include="Benchmarks\StringSerializationBenchmark.cs" />
     <Compile Include="Benchmarks\UInt32SerializationBenchmark.cs" />
     <Compile Include="BinaryWriterAdapter.cs" />
+    <Compile Include="Messages\MessageWithBytes.cs" />
     <Compile Include="Messages\MessageWithFixed32.cs" />
     <Compile Include="Messages\MessageWithFixed64.cs" />
     <Compile Include="Messages\MessageWithInt32.cs" />
     <Compile Include="Messages\MessageWithSInt32.cs" />
+    <Compile Include="Messages\MessageWithString.cs" />
     <Compile Include="Messages\MessageWithUInt32.cs" />
     <Compile Include="MessageWriterAdapter.cs" />
     <Compile Include="MessageWriterRawAdapter.cs" />

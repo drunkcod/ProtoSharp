@@ -21,7 +21,5 @@ namespace ProtoSharp.Performance.Benchmarks
         {
             return new MessageWithInt32() { Value = rand.Next(0, 1 << 20) };
         }
-
-        List<MessageWithInt32> _items = new List<MessageWithInt32>();
     }
 }

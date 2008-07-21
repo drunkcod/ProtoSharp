@@ -28,7 +28,6 @@ namespace ProtoSharp.Performance
         IBenchmarkAdapter _target;
     }
 
-
     public static class Program
     {
         const int Count = 2000;
@@ -45,6 +44,8 @@ namespace ProtoSharp.Performance
                 new SInt32SerializationBenchmark(Count, 20080721, Iterations),
                 new Fixed32SerializationBenchmark(Count, 20080721, Iterations),
                 new Fixed64SerializationBenchmark(Count, 20080721, Iterations),
+                new StringSerializationBenchmark(Count, 20080721, Iterations),
+                new ByteArraySerializationBenchmark(Count, 20080721, Iterations)
             };
 
             Array.ForEach(new BenchmarkTarget[]

@@ -16,6 +16,8 @@ namespace ProtoSharp.Performance
         public override void Serialize(MessageWithSInt32 item) { _writer.WriteMessage(item); }
         public override void Serialize(MessageWithFixed32 item) { _writer.WriteMessage(item); }
         public override void Serialize(MessageWithFixed64 item) { _writer.WriteMessage(item); }
+        public override void Serialize(MessageWithString item) { _writer.WriteMessage(item); }
+        public override void Serialize(MessageWithBytes item) { _writer.WriteMessage(item); }
 
         MessageWriter _writer;
     }
