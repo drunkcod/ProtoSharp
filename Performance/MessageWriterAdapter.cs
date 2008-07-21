@@ -11,10 +11,8 @@ namespace ProtoSharp.Performance
             _writer = new MessageWriter(Memory);
         }
 
-        public override void Serialize(MessageWithInt32 item)
-        {
-            _writer.WriteMessage(item);
-        }
+        public override void Serialize(MessageWithInt32 item){ _writer.WriteMessage(item); }
+        public override void Serialize(MessageWithUInt32 item) { _writer.WriteMessage(item); }
 
         MessageWriter _writer;
     }

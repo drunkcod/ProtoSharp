@@ -1,36 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using ProtoSharp.Performance.Messages;
 
 namespace ProtoSharp.Performance.Benchmarks
 {
-    class MessageWithInt32SerializationBenchmark
+    abstract class SerializationBenchmarkBase<T> : IBenchmark
     {
-        public MessageWithInt32SerializationBenchmark(int count, int seed, int iterations)
+        public SerializationBenchmarkBase(int count, int seed, int iterations)
         {
             var rand = new Random(seed);
             for(int i = 0; i != count; ++i)
-                _items.Add(new MessageWithInt32() { Value = rand.Next(0, 1 << 20) });
+                _items.Add(Generate(rand));
             _iterations = iterations;
         }
 
-        public BenchmarkResult RunTest(string name, IBenchmarkAdapter target)
+        public BenchmarkResult Run(IBenchmarkAdapter target)
         {
             var min = TimeSpan.MaxValue;
             for(int i = 0; i != _iterations; ++i)
             {
                 target.Reset();
                 var stopwatch = Stopwatch.StartNew();
-                _items.ForEach(target.Serialize);
+                _items.ForEach(x => Serialize(target, x));
                 stopwatch.Stop();
                 if(stopwatch.Elapsed < min)
                     min = stopwatch.Elapsed;
             }
-            return new BenchmarkResult(name, min);
+            return new BenchmarkResult(Name, min);
         }
 
-        List<MessageWithInt32> _items = new List<MessageWithInt32>();
+        protected abstract string Name { get; }
+        protected abstract void Serialize(IBenchmarkAdapter target, T value);
+        protected abstract T Generate(Random rand);
+
+        List<T> _items = new List<T>();
         int _iterations;
+
     }
 }

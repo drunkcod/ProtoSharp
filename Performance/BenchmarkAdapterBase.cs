@@ -16,6 +16,7 @@ namespace ProtoSharp.Performance
         }
 
         public abstract void Serialize(MessageWithInt32 item);
+        public abstract void Serialize(MessageWithUInt32 item);
 
         protected MemoryStream Memory { get { return _memory; } }
 

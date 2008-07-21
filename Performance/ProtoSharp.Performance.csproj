@@ -40,9 +40,13 @@
   -->
   <ItemGroup>
     <Compile Include="BenchmarkAdapterBase.cs" />
-    <Compile Include="Benchmarks\MessageWithInt32SerializationBenchmark.cs" />
+    <Compile Include="Benchmarks\Benchmark.cs" />
+    <Compile Include="Benchmarks\Int32SerializationBenchmark.cs" />
+    <Compile Include="Benchmarks\SerializationBenchmarkBase.cs" />
+    <Compile Include="Benchmarks\UInt32SerializationBenchmark.cs" />
     <Compile Include="BinaryWriterAdapter.cs" />
     <Compile Include="Messages\MessageWithInt32.cs" />
+    <Compile Include="Messages\MessageWithUInt32.cs" />
     <Compile Include="MessageWriterAdapter.cs" />
     <Compile Include="MessageWriterRawAdapter.cs" />
     <Compile Include="Program.cs" />
@@ -53,7 +57,7 @@
   <ItemGroup>
     <Reference Include="ProtoBuf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>protobuf-net\R6\ProtoBuf.dll</HintPath>
+      <HintPath>protobuf-net\ProtoBuf.dll</HintPath>
     </Reference>
     <Reference Include="ProtoSharp.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
