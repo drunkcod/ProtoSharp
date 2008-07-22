@@ -46,6 +46,7 @@ namespace ProtoSharp.Performance
                 new UInt32SerializationBenchmark(Count, 20080721, Iterations),
                 new UInt32DeserializationBenchmark(Iterations),
                 new SInt32SerializationBenchmark(Count, 20080721, Iterations),
+                new SInt32DeserializationBenchmark(Iterations),
                 new Fixed32SerializationBenchmark(Count, 20080721, Iterations),
                 new Fixed64SerializationBenchmark(Count, 20080721, Iterations),
                 new StringSerializationBenchmark(Count, 20080721, Iterations),

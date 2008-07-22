@@ -24,6 +24,7 @@ namespace ProtoSharp.Performance
 
         public override void Deserialize(out MessageWithInt32 item) { item = _reader.Read<MessageWithInt32>(); }
         public override void Deserialize(out MessageWithUInt32 item) { item = _reader.Read<MessageWithUInt32>(); }
+        public override void Deserialize(out MessageWithSInt32 item) { item = _reader.Read<MessageWithSInt32>(); }
 
         MessageWriter _writer;
         MessageReader _reader;

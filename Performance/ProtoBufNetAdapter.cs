@@ -19,5 +19,6 @@ namespace ProtoSharp.Performance
 
         public override void Deserialize(out MessageWithInt32 item) { item = Serializer.Deserialize<MessageWithInt32>(Memory); }
         public override void Deserialize(out MessageWithUInt32 item) { item = Serializer.Deserialize<MessageWithUInt32>(Memory); }
+        public override void Deserialize(out MessageWithSInt32 item) { item = Serializer.Deserialize<MessageWithSInt32>(Memory); }
     }
 }
