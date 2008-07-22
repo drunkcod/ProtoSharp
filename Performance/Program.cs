@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using ProtoSharp.Performance.Benchmarks;
 using ProtoSharp.Performance.Messages;
+using ProtoSharp.Core;
+using ProtoBuf;
 
 namespace ProtoSharp.Performance
 {
