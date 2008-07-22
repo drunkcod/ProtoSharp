@@ -44,6 +44,13 @@ namespace ProtoSharp.Core
             return value;
         }
 
+        public int ReadZigZag32()
+        {
+            var value = (uint)ReadVarint32();
+            var mask = 0 - (value & 1);
+            return (int)(value >> 1 ^ mask);
+        }
+
         public Int64 ReadVarint64()
         {
             Int64 value = 0;

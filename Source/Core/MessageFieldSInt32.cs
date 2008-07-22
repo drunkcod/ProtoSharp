@@ -16,9 +16,7 @@ namespace ProtoSharp.Core
 
         protected override object DoRead(MessageReader reader)
         {
-            uint value = (uint)reader.ReadVarint32();
-            uint mask = 0 - (value & 1);
-            return (int)(value >> 1 ^ mask);
+            return reader.ReadZigZag32();
         }
     }
 }
