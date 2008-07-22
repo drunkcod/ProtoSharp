@@ -43,6 +43,7 @@
     <Compile Include="Benchmarks\Benchmark.cs" />
     <Compile Include="Benchmarks\ByteArraySerializationBenchmark.cs" />
     <Compile Include="Benchmarks\DeserialiazationBenchmarkBase.cs" />
+    <Compile Include="Benchmarks\Fixed32DeserializationBenchmark.cs" />
     <Compile Include="Benchmarks\Fixed32SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Fixed64SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Int32DeserializationBenchmark.cs" />

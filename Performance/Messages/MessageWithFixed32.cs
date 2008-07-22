@@ -17,7 +17,7 @@ namespace ProtoSharp.Performance.Messages
         public uint Unsigned { get; set; }
 
         [Tag(3, UseFixed = true)]
-        [ProtoMember(2, Name = "float", IsRequired = true, DataFormat = DataFormat.FixedSize)]
+        [ProtoMember(3, Name = "float", IsRequired = true, DataFormat = DataFormat.FixedSize)]
         public float Float { get; set; }
     }
 }
