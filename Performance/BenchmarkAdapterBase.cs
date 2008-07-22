@@ -10,6 +10,8 @@ namespace ProtoSharp.Performance
             _memory = new MemoryStream(memory);
         }
 
+        public int BytesUsed { get { return (int)_memory.Position; } }
+
         public void Reset()
         {
             _memory.Position = 0;
@@ -22,6 +24,8 @@ namespace ProtoSharp.Performance
         public abstract void Serialize(MessageWithFixed64 item);
         public abstract void Serialize(MessageWithString item);
         public abstract void Serialize(MessageWithBytes item);
+        public abstract void Serialize(MessageWithRepeatedItem item);
+        public abstract void Serialize(Person item);
 
         protected MemoryStream Memory { get { return _memory; } }
 

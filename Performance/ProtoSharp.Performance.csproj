@@ -45,6 +45,8 @@
     <Compile Include="Benchmarks\Fixed32SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Fixed64SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Int32SerializationBenchmark.cs" />
+    <Compile Include="Benchmarks\PersonSerializationBenchmark.cs" />
+    <Compile Include="Benchmarks\RepeatedItemSerializationBenchmark.cs" />
     <Compile Include="Benchmarks\SerializationBenchmarkBase.cs" />
     <Compile Include="Benchmarks\SInt32SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\StringSerializationBenchmark.cs" />
@@ -54,9 +56,11 @@
     <Compile Include="Messages\MessageWithFixed32.cs" />
     <Compile Include="Messages\MessageWithFixed64.cs" />
     <Compile Include="Messages\MessageWithInt32.cs" />
+    <Compile Include="Messages\MessageWithRepatedItem.cs" />
     <Compile Include="Messages\MessageWithSInt32.cs" />
     <Compile Include="Messages\MessageWithString.cs" />
     <Compile Include="Messages\MessageWithUInt32.cs" />
+    <Compile Include="Messages\Person.cs" />
     <Compile Include="MessageWriterAdapter.cs" />
     <Compile Include="MessageWriterRawAdapter.cs" />
     <Compile Include="Program.cs" />
@@ -65,9 +69,9 @@
     <Compile Include="ProtoBufNetAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ProtoBuf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+    <Reference Include="protobuf-net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>protobuf-net\ProtoBuf.dll</HintPath>
+      <HintPath>protobuf-net\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="ProtoSharp.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

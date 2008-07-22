@@ -20,7 +20,7 @@ namespace ProtoSharp.Performance
             foreach(var benchmark in benchmarks)
             {
                 var result = benchmark.Run(_target);
-                Console.WriteLine("\t{0} took {1} ticks.", result.Name, result.Elapsed.Ticks);
+                Console.WriteLine("\t{0} took {1} ticks used {2} bytes", result.Name, result.Elapsed.Ticks, result.BytesUsed);
             }
         }
 
@@ -45,7 +45,9 @@ namespace ProtoSharp.Performance
                 new Fixed32SerializationBenchmark(Count, 20080721, Iterations),
                 new Fixed64SerializationBenchmark(Count, 20080721, Iterations),
                 new StringSerializationBenchmark(Count, 20080721, Iterations),
-                new ByteArraySerializationBenchmark(Count, 20080721, Iterations)
+                new ByteArraySerializationBenchmark(Count, 20080721, Iterations),
+                new RepeatedItemSerializationBenchmark(Count, 20080722, Iterations),
+                new PersonSerializationBenchmark(Iterations)
             };
 
             Array.ForEach(new BenchmarkTarget[]

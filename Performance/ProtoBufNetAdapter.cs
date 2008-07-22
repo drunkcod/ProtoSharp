@@ -14,5 +14,7 @@ namespace ProtoSharp.Performance
         public override void Serialize(MessageWithFixed64 item) { Serializer.Serialize(Memory, item); }
         public override void Serialize(MessageWithString item) { Serializer.Serialize(Memory, item); }
         public override void Serialize(MessageWithBytes item) { Serializer.Serialize(Memory, item); }
+        public override void Serialize(MessageWithRepeatedItem item) { Serializer.Serialize(Memory, item); }
+        public override void Serialize(Person item) { Serializer.Serialize(Memory, item); }
     }
 }

@@ -21,12 +21,19 @@ namespace ProtoSharp.Performance.Benchmarks
             {
                 target.Reset();
                 var stopwatch = Stopwatch.StartNew();
-                _items.ForEach(x => Serialize(target, x));
+                try
+                {
+                    _items.ForEach(x => Serialize(target, x));
+                }
+                catch(Exception)
+                {
+                    return new BenchmarkResult(Name, TimeSpan.Zero, 0);
+                }
                 stopwatch.Stop();
                 if(stopwatch.Elapsed < min)
                     min = stopwatch.Elapsed;
             }
-            return new BenchmarkResult(Name, min);
+            return new BenchmarkResult(Name, min, target.BytesUsed);
         }
 
         protected abstract string Name { get; }

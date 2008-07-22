@@ -1,5 +1,6 @@
 ﻿using ProtoSharp.Core;
 using ProtoSharp.Performance.Messages;
+using System;
 
 namespace ProtoSharp.Performance
 {
@@ -18,6 +19,8 @@ namespace ProtoSharp.Performance
         public override void Serialize(MessageWithFixed64 item) { _writer.WriteFixed(item.Signed); _writer.WriteFixed(item.Unsigned); _writer.WriteFixed(item.Double); }
         public override void Serialize(MessageWithString item) { _writer.WriteString(item.Value); }
         public override void Serialize(MessageWithBytes item) { _writer.WriteBytes(item.Value); }
+        public override void Serialize(MessageWithRepeatedItem item) { item.Value.ForEach(_writer.WriteVarint); }
+        public override void Serialize(Person item) { throw new NotSupportedException(); }
 
         MessageWriter _writer;
     }
