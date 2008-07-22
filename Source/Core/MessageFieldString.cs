@@ -9,10 +9,18 @@ namespace ProtoSharp.Core
         public MessageFieldString(int tag, IFieldIO fieldIO): base(tag, fieldIO, WireType.String)
         { }
 
-        public override bool AppendWrite(ILGenerator il)
+        protected override bool CanAppendWriteCore { get { return true; } }
+
+        public override void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
+        {
+            il.Emit(OpCodes.Ldloc_0);
+            il.Emit(OpCodes.Call, getMethod);
+            il.Emit(OpCodes.Brfalse, done);
+        }
+
+        public override void AppendWriteField(ILGenerator il)
         {
             il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteString", new Type[] { typeof(string) }));
-            return true;
         }
 
         protected override object DoRead(MessageReader reader)

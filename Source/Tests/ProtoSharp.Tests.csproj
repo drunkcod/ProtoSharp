@@ -46,6 +46,7 @@
     <Compile Include="ByteReaderTests.cs" />
     <Compile Include="EncodingTests.cs" />
     <Compile Include="MessageReaderTests.cs" />
+    <Compile Include="Messages\MessageWithListOfInt.cs" />
     <Compile Include="Messages\Test1.cs" />
     <Compile Include="Messages\Test1Ex64.cs" />
     <Compile Include="Messages\Test2.cs" />

@@ -23,22 +23,29 @@ namespace ProtoSharp.Core
 
         public int Tag { get { return _header >> 3; } }
         public int Header { get { return _header; } }
+        public bool CanAppendWrite { get { return _fieldIO.CanCreateWriter && CanAppendWriteCore; } }
 
-        public virtual bool AppendWrite(ILGenerator il)
-        {
-            return false;
-        }
+        public virtual void AppendWriteField(ILGenerator il)
+        { }
+
+        public virtual void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
+        { }
 
         public void Read(object target, MessageReader reader)
         {
             _fieldIO.Write(target, DoRead(reader));
         }
 
+        public void AppendWriteBody(ILGenerator il)
+        {
+            _fieldIO.AppendWrite(il, this);            
+        }
+
         public FieldWriter GetFieldWriter()
         {
-            var fieldWriter = _fieldIO.CreateWriter(this);
-            if(fieldWriter != null)
-                return fieldWriter;
+            FieldWriter writer;
+            if(CanAppendWrite && _fieldIO.CreateWriter(this, out writer))
+                return writer;
             return (s, w) =>
                 _fieldIO.Read(s, x =>
                 {
@@ -46,6 +53,8 @@ namespace ProtoSharp.Core
                     DoWrite(x, w);
                 });
         }
+
+        protected virtual bool CanAppendWriteCore { get { return false; } }
 
         protected virtual object DoRead(MessageReader reader)
         {

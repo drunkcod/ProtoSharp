@@ -68,13 +68,10 @@ namespace ProtoSharp.Core
 
         public void WriteString(string value)
         {
-            if(string.IsNullOrEmpty(value))
-                WriteVarint(0);
-            else
-            {
-                WriteVarint(value.Length);
-                _writer.Write(Encoding.UTF8.GetBytes(value));
-            }
+            if(value == null)
+                return;
+            WriteVarint(value.Length);
+            _writer.Write(Encoding.UTF8.GetBytes(value));
         }
 
         public void WriteBytes(byte[] value)
@@ -90,13 +87,22 @@ namespace ProtoSharp.Core
 
         public void WriteMessage(object obj)
         {
-            FieldWriter writeFields;
-            if(!_writerCache.TryGetValue(obj.GetType(), out writeFields))
+            var type = obj.GetType();
+            FieldWriter fieldWriter;
+            if(!_writerCache.TryGetValue(type, out fieldWriter))
             {
-                Message.ForEachField(obj.GetType(), x => writeFields += x.GetFieldWriter());
-                _writerCache.Add(obj.GetType(), writeFields);
+                var writer = Message.BeginWriteMethod(type);
+                Message.ForEachField(obj.GetType(), x =>
+                {
+                    if(x.CanAppendWrite)
+                        x.AppendWriteBody(writer.GetILGenerator());
+                    else
+                        fieldWriter += x.GetFieldWriter();
+                });
+                fieldWriter += Message.EndWriteMethod(writer);
+                _writerCache.Add(type, fieldWriter);
             }
-            writeFields(obj, this);
+            fieldWriter(obj, this);
         }
 
         public void WriteFixed(int value) { _writer.Write(value); }
@@ -124,7 +130,7 @@ namespace ProtoSharp.Core
             WriteVarint(tag << 3 | (int)wireType);
         }
 
-        BinaryWriter _writer;
         Dictionary<Type, FieldWriter> _writerCache = new Dictionary<Type, FieldWriter>();
+        BinaryWriter _writer;
     }
 }

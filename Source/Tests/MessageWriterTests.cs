@@ -158,6 +158,14 @@ namespace ProtoSharp.Tests
                 MessageWriter.Write(message).Length);
         }
         [Test]
+        public void WriteMessage_ShouldHandleListOfInt()
+        {
+            var message = new MessageWithListOfInt();
+            message.Data.AddRange(new int[] { 1, 2, 3 });
+
+            Assert.AreEqual(new byte[] { 8, 1, 8, 2, 8, 3}, MessageWriter.Write(message));
+        }
+        [Test]
         public void WriteFixed32_ShouldPutLeastSignificantBitsFirst()
         {
             var output = new MemoryStream();
@@ -220,7 +228,7 @@ namespace ProtoSharp.Tests
         {
             var output = new MemoryStream();
             new MessageWriter(output).WriteMessage(new MessageWithString());
-            Assert.AreEqual(MessageWriter.Write(new MessageWithString(){ Value = string.Empty }), output.ToArray());
+            Assert.AreEqual(new byte[0], output.ToArray());
         }
 
         unsafe static byte[] AsBytes(float value)

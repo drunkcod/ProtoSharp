@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace ProtoSharp.Core
 {
@@ -34,6 +35,25 @@ namespace ProtoSharp.Core
         public static T CreateDefaultItem<T>(string s)
         {
             return (T)CreateDefaultItem(typeof(T), s);
+        }
+
+        public static DynamicMethod BeginWriteMethod(Type type)
+        {
+            var writer = new DynamicMethod(string.Format("DynamicWrite{0}", type.Name), null, new Type[] { typeof(object), typeof(MessageWriter) }, true);
+            var il = writer.GetILGenerator();
+            il.DeclareLocal(type);
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Castclass, type);
+            il.Emit(OpCodes.Stloc_0);
+
+            return writer;
+        }
+
+        public static FieldWriter EndWriteMethod(DynamicMethod writer)
+        {
+            var il = writer.GetILGenerator();
+            il.Emit(OpCodes.Ret);
+            return writer.CreateDelegate(typeof(FieldWriter)) as FieldWriter;
         }
 
         static object CreateDefault(object obj)

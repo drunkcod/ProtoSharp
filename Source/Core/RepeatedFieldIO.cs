@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace ProtoSharp.Core
 {
@@ -19,9 +20,47 @@ namespace ProtoSharp.Core
             return true;
         }
 
-        public FieldWriter CreateWriter(MessageField field)
+        public bool CanCreateWriter { get { return true; } }
+
+        public bool CreateWriter(MessageField field, out FieldWriter writer)
         {
-            return null;
+            var builder = Message.BeginWriteMethod(_property.DeclaringType);
+            AppendWrite(builder.GetILGenerator(), field);
+            writer = Message.EndWriteMethod(builder);
+            return true;
+        }
+
+        public void AppendWrite(ILGenerator il, MessageField field)
+        {
+            var done = il.DefineLabel();
+            var top = il.DefineLabel();
+            var next = il.DefineLabel();
+            var enumerator = il.DeclareLocal(typeof(IEnumerator));
+
+            il.Emit(OpCodes.Ldloc_0);
+            il.Emit(OpCodes.Call, _property.GetGetMethod());
+            il.Emit(OpCodes.Call, _getEnumerator);
+            il.Emit(OpCodes.Box, _getEnumerator.ReturnType);
+            il.Emit(OpCodes.Stloc, enumerator.LocalIndex);
+            il.Emit(OpCodes.Br, next);
+            il.MarkLabel(top);
+
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldc_I4, field.Header);
+            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[] { typeof(uint) }));
+
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldloc, enumerator.LocalIndex);
+            il.Emit(OpCodes.Callvirt, typeof(IEnumerator).GetProperty("Current").GetGetMethod());
+            il.Emit(OpCodes.Unbox_Any, FieldType);
+            field.AppendWriteField(il);
+
+            il.MarkLabel(next);
+            il.Emit(OpCodes.Ldloc, enumerator.LocalIndex);
+            il.Emit(OpCodes.Callvirt, typeof(IEnumerator).GetMethod("MoveNext"));
+            il.Emit(OpCodes.Brtrue_S, top);
+
+            il.MarkLabel(done);
         }
 
         public void Read(object source, Action<object> action) 
