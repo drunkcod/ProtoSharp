@@ -55,14 +55,11 @@ namespace ProtoSharp.Core
             il.Emit(OpCodes.Brtrue_S, top);
         }
 
-        public override void Read(object source, Action<object> action) 
+        public override void AppendRead(ILGenerator il, MessageField field)
         {
-            IEnumerator iter = _getEnumerator.Invoke(_property.GetValue(source, null), null) as IEnumerator;
-            while(iter.MoveNext())
-                action(iter.Current);
+            throw new NotImplementedException();
         }
-
-        public override void Write(object target, object value)
+        public override void Read(object target, object value)
         {
             _add.Invoke(_property.GetValue(target, null), new object[]{ value});
         }

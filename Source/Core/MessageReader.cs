@@ -123,35 +123,46 @@ namespace ProtoSharp.Core
 
         object ReadMessage(object obj)
         {
-            Type messageType = obj.GetType();
-            var fields = new Dictionary<int, MessageField>();
-            Message.ForEachField(messageType,
-                field => fields.Add(field.Tag, field));
-
+            Dictionary<int, FieldReader> fields;
+            if(!s_readerCache.TryGetValue(obj.GetType(), out fields))
+            {
+                Type messageType = obj.GetType();
+                fields = new Dictionary<int, FieldReader>();
+                Message.ForEachField(messageType,
+                    field => fields.Add(field.Tag, field.GetFieldReader()));
+                s_readerCache.Add(obj.GetType(), fields);
+            }
             while(!_bytes.EndOfStream)
             {
                 var tag = ReadMessageTag();
-                MessageField field;
+                FieldReader field;
                 if(!fields.TryGetValue(tag.Tag, out field))
                 {
-                    if(FieldMissing != null)
-                        FieldMissing(this, EventArgs.Empty);
+                    OnMissingField(EventArgs.Empty);
                     continue;
                 }
-                field.Read(obj, this);
+                field(obj, this);
             }
             return obj;
         }
 
         public T Read<T>() where T : class, new()
         {
-            var obj = CreateDefault(typeof(T));
-            return Read<T>(obj as T);
+            return Read<T>(new T());
         }
 
         public T Read<T>(T target) where T : class
         {
-            return ReadMessage(target) as T;
+            new MessageReader<T>().Read(target, this);
+            return target;
+        }
+
+        public bool EndOfStream { get { return _bytes.EndOfStream; } }
+
+        public void OnMissingField(EventArgs e)
+        {
+            if(FieldMissing != null)
+                FieldMissing(this, EventArgs.Empty);
         }
 
         static object CreateDefault(Type type)
@@ -159,6 +170,36 @@ namespace ProtoSharp.Core
             return type.GetConstructor(Type.EmptyTypes).Invoke(null);
         }
 
+        static Dictionary<Type, Dictionary<int, FieldReader>> s_readerCache = new Dictionary<Type, Dictionary<int, FieldReader>>();
+
         IByteReader _bytes;
+    }
+
+    class MessageReader<T>
+    {
+        public void Read(T target, MessageReader reader)
+        {
+            while(!reader.EndOfStream)
+            {
+                var tag = reader.ReadMessageTag();
+                FieldReader field;
+                if(!s_fields.TryGetValue(tag.Tag, out field))
+                {
+                    reader.OnMissingField(EventArgs.Empty);
+                    continue;
+                }
+                field(target, reader);
+            }
+        }
+
+        static Dictionary<int, FieldReader> GetFields()
+        {
+            var fields = new Dictionary<int, FieldReader>();
+            Message.ForEachField(typeof(T),
+                field => fields.Add(field.Tag, field.GetFieldReader()));
+            return fields;
+        }
+
+        static Dictionary<int, FieldReader> s_fields = GetFields();
     }
 }

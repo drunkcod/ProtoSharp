@@ -18,9 +18,5 @@ namespace ProtoSharp.Core
         {
             return reader.ReadBytes();
         }
-        protected override void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteBytes((byte[])value);
-        }
     }
 }

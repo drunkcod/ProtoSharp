@@ -10,9 +10,5 @@ namespace ProtoSharp.Core
         {
             return reader.ReadDouble();
         }
-        protected override void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteFixed((double)value);
-        }
     }
 }

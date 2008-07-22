@@ -11,9 +11,5 @@ namespace ProtoSharp.Core
         {
             return (uint)reader.ReadVarint32();
         }
-        protected override void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteVarint((uint)value);
-        }
     }
 }

@@ -10,9 +10,5 @@ namespace ProtoSharp.Core
         {
             return reader.ReadFixedUInt32();
         }
-        protected override void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteFixed((uint)value);
-        }
     }
 }

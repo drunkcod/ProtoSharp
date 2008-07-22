@@ -3,17 +3,13 @@ using System;
 
 namespace ProtoSharp.Core
 {
-    class MessageFieldUInt64 : MessageField
+    class MessageFieldUInt64 : MessageFieldVarint<UInt64>
     {
-        public MessageFieldUInt64(int tag, IFieldIO fieldIO) : base(tag, fieldIO, WireType.Varint) { }
+        public MessageFieldUInt64(int tag, IFieldIO fieldIO) : base(tag, fieldIO) { }
 
         protected override object DoRead(MessageReader reader)
         {
             return (UInt64)reader.ReadVarint64();
-        }
-        protected override void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteVarint((UInt64)value);
         }
     }
 }

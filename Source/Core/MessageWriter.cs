@@ -61,9 +61,16 @@ namespace ProtoSharp.Core
             } while(value != 0);
         }
 
+        public void WriteVarint(bool value) { WriteVarint(Convert.ToInt32(value)); }
+
         public void WriteZigZag(int value)
         {
             WriteVarint(value << 1 ^ value >> 31);
+        }
+
+        public void WriteZigZag(Int64 value)
+        {
+            WriteVarint(value << 1 ^ value >> 63);
         }
 
         public void WriteString(string value)
@@ -89,7 +96,7 @@ namespace ProtoSharp.Core
         {
             var type = obj.GetType();
             FieldWriter fieldWriter;
-            if(!_writerCache.TryGetValue(type, out fieldWriter))
+            if(!s_writerCache.TryGetValue(type, out fieldWriter))
             {
                 var writer = Message.BeginWriteMethod(type);
                 Message.ForEachField(obj.GetType(), x =>
@@ -100,7 +107,7 @@ namespace ProtoSharp.Core
                         fieldWriter += x.GetFieldWriter();
                 });
                 fieldWriter += Message.EndWriteMethod(writer);
-                _writerCache.Add(type, fieldWriter);
+                s_writerCache.Add(type, fieldWriter);
             }
             fieldWriter(obj, this);
         }
@@ -130,7 +137,7 @@ namespace ProtoSharp.Core
             WriteVarint(tag << 3 | (int)wireType);
         }
 
-        Dictionary<Type, FieldWriter> _writerCache = new Dictionary<Type, FieldWriter>();
+        static Dictionary<Type, FieldWriter> s_writerCache = new Dictionary<Type, FieldWriter>();
         BinaryWriter _writer;
     }
 }

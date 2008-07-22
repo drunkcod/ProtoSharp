@@ -24,16 +24,24 @@ namespace ProtoSharp.Core
         public int Tag { get { return _header >> 3; } }
         public int Header { get { return _header; } }
         public bool CanAppendWrite { get { return _fieldIO.CanCreateWriter && CanAppendWriteCore; } }
+        public bool CanAppendRead { get { return _fieldIO.CanCreateWriter && CanAppendReadCore; } }
 
         public virtual void AppendWriteField(ILGenerator il)
-        { }
+        {
+            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteObject", new Type[] { typeof(object) }));
+        }
+
+        public virtual void AppendReadField(ILGenerator il)
+        {
+            throw new NotImplementedException();
+        }
 
         public virtual void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
         { }
 
         public void Read(object target, MessageReader reader)
         {
-            _fieldIO.Write(target, DoRead(reader));
+            _fieldIO.Read(target, DoRead(reader));
         }
 
         public void AppendWriteBody(ILGenerator il)
@@ -46,25 +54,24 @@ namespace ProtoSharp.Core
             FieldWriter writer;
             if(CanAppendWrite && _fieldIO.CreateWriter(this, out writer))
                 return writer;
-            return (s, w) =>
-                _fieldIO.Read(s, x =>
-                {
-                    w.WriteVarint(Header);
-                    DoWrite(x, w);
-                });
+            throw new NotSupportedException();
         }
 
-        protected virtual bool CanAppendWriteCore { get { return false; } }
+        public FieldReader GetFieldReader()
+        {
+            FieldReader reader;
+            if(CanAppendRead && _fieldIO.CreateReader(this, out reader))
+                return reader;
+            return Read;
+        }
+
+        protected virtual bool CanAppendWriteCore { get { return true; } }
+        protected virtual bool CanAppendReadCore { get { return false; } }
 
         protected virtual object DoRead(MessageReader reader)
         {
             return reader.CreateSubReader(reader.ReadVarint32()).
                    ReadMessage(FieldType);
-        }
-
-        protected virtual void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteObject(value);
         }
 
         Type FieldType { get { return _fieldIO.FieldType; } }

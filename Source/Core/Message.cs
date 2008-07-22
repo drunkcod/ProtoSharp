@@ -49,11 +49,30 @@ namespace ProtoSharp.Core
             return writer;
         }
 
+        public static DynamicMethod BeginReadMethod(Type type)
+        {
+            var reader = new DynamicMethod(string.Format("DynamicRead{0}", type.Name), null, new Type[] { typeof(object), typeof(MessageReader) }, true);
+            var il = reader.GetILGenerator();
+            il.DeclareLocal(type);
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Castclass, type);
+            il.Emit(OpCodes.Stloc_0);
+
+            return reader;
+        }
+
         public static FieldWriter EndWriteMethod(DynamicMethod writer)
         {
             var il = writer.GetILGenerator();
             il.Emit(OpCodes.Ret);
             return writer.CreateDelegate(typeof(FieldWriter)) as FieldWriter;
+        }
+
+        public static FieldReader EndReadMethod(DynamicMethod reader)
+        {
+            var il = reader.GetILGenerator();
+            il.Emit(OpCodes.Ret);
+            return reader.CreateDelegate(typeof(FieldReader)) as FieldReader;
         }
 
         static object CreateDefault(object obj)

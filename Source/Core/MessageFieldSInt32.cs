@@ -20,10 +20,5 @@ namespace ProtoSharp.Core
             uint mask = 0 - (value & 1);
             return (int)(value >> 1 ^ mask);
         }
-
-        protected override void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteZigZag((int)value);
-        }
     }
 }

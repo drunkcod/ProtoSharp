@@ -27,9 +27,5 @@ namespace ProtoSharp.Core
         {
             return reader.ReadString();
         }
-        protected override void DoWrite(object value, MessageWriter writer)
-        {
-            writer.WriteString(value as string);
-        }
     }
 }
