@@ -16,12 +16,9 @@ namespace ProtoSharp.Core
         void AppendWrite(ILGenerator il, MessageField field);
     }
 
-    class FieldIO : IFieldIO
+    public abstract class FieldIOBase : IFieldIO
     {
-        public FieldIO(PropertyInfo property)
-        {
-            _property = property;
-        }
+        public virtual Type FieldType { get { return _property.PropertyType; } }
 
         public bool CanCreateWriter { get { return true; } }
 
@@ -33,33 +30,50 @@ namespace ProtoSharp.Core
             return true;
         }
 
-        public void AppendWrite(ILGenerator il, MessageField field)
+        public abstract void Read(object source, Action<object> action);
+        public abstract void Write(object target, object value);
+        public abstract void AppendWrite(ILGenerator il, MessageField field);
+
+        protected FieldIOBase(PropertyInfo property)
+        {
+            _property = property;
+        }
+
+        static protected void AppendWriteHeader(ILGenerator il, MessageField field)
+        {
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldc_I4, field.Header);
+            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[] { typeof(uint) }));
+        }
+
+        protected PropertyInfo _property;
+    }
+
+    class FieldIO : FieldIOBase
+    {
+        public FieldIO(PropertyInfo property): base(property){}
+
+        public override void AppendWrite(ILGenerator il, MessageField field)
         {
             var done = il.DefineLabel();
             field.AppendGuard(il, _property.GetGetMethod(), done);
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Ldc_I4, field.Header);
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[] { typeof(uint) }));
+            AppendWriteHeader(il, field);
 
+            il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Call, _property.GetGetMethod());
             field.AppendWriteField(il);
             il.MarkLabel(done);
         }
 
-        public void Read(object source, Action<object> action) 
+        public override void Read(object source, Action<object> action) 
         { 
             action(_property.GetValue(source, null));
         }
 
-        public void Write(object target, object value)
+        public override void Write(object target, object value)
         {
             _property.SetValue(target, value, null);
         }
-
-        public Type FieldType { get { return _property.PropertyType; } }
-
-        PropertyInfo _property;
     }
 }
