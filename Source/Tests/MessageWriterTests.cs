@@ -40,11 +40,11 @@ namespace ProtoSharp.Tests
             Assert.AreEqual(new byte[] { 42 }, output.ToArray());
         }
         [Test]
-        public void WriteVarint_ShouldStore0x8000InThreeBytes()
+        public void WriteVarint_ShouldStore0x4000InThreeBytes()
         {
             var output = new MemoryStream();
-            new MessageWriter(output).WriteVarint(0x8000);
-            Assert.AreEqual(new byte[] { 0x80, 0x80, 2 }, output.ToArray());
+            new MessageWriter(output).WriteVarint(0x4000);
+            Assert.AreEqual(new byte[] { 0x80, 0x80, 1 }, output.ToArray());
         }
         [Test]
         public void WriteVarint_ShouldStoreNineBytesForMaxInt64()

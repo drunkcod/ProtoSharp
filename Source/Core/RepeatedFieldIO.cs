@@ -25,20 +25,19 @@ namespace ProtoSharp.Core
 
         public override void AppendWrite(ILGenerator il, MessageField field)
         {
-            var done = il.DefineLabel();
-            var top = il.DefineLabel();
-            var next = il.DefineLabel();
-
             var enumeratorType = GetEnumeratorType();
-
-            var enumerator = il.DeclareLocal(enumeratorType);
-
+            //store local enumerator
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Call, _property.GetGetMethod());
             il.Emit(OpCodes.Call, _getEnumerator);
             il.Emit(OpCodes.Box, _getEnumerator.ReturnType);
+            var enumerator = il.DeclareLocal(enumeratorType);
             il.Emit(OpCodes.Stloc, enumerator.LocalIndex);
+
+            //while(enumerator.MoveNext()) Write(enumerator.Current);
+            var next = il.DefineLabel();
             il.Emit(OpCodes.Br, next);
+            var top = il.DefineLabel();
             il.MarkLabel(top);
 
             AppendWriteHeader(il, field);
@@ -54,8 +53,6 @@ namespace ProtoSharp.Core
             il.Emit(OpCodes.Ldloc, enumerator.LocalIndex);
             il.Emit(OpCodes.Callvirt, typeof(IEnumerator).GetMethod("MoveNext"));
             il.Emit(OpCodes.Brtrue_S, top);
-
-            il.MarkLabel(done);
         }
 
         public override void Read(object source, Action<object> action) 

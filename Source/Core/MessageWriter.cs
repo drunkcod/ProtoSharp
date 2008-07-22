@@ -31,7 +31,7 @@ namespace ProtoSharp.Core
             {//Special case for performance, single byte is *very* common.
             if(value < 0x80)
                 _writer.Write((byte)value);
-            else if(value < (1 << 15))
+            else if(value < (1 << 14))
             {
                 uint low = value & 0x7f;
                 uint hi = value & 0x3F80;
