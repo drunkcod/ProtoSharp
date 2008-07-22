@@ -7,6 +7,7 @@ namespace ProtoSharp.Performance
     {
         int BytesUsed { get; }
         void Reset();
+        void Reset(int length);
         void Serialize(MessageWithInt32 item);
         void Serialize(MessageWithUInt32 item);
         void Serialize(MessageWithSInt32 item);
@@ -16,5 +17,8 @@ namespace ProtoSharp.Performance
         void Serialize(MessageWithBytes item);
         void Serialize(MessageWithRepeatedItem item);
         void Serialize(Person item);
+
+        void Deserialize(out MessageWithInt32 item);
+        void Deserialize(out MessageWithUInt32 item);
     }
 }

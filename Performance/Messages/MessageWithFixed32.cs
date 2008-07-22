@@ -13,7 +13,7 @@ namespace ProtoSharp.Performance.Messages
         public int Signed { get; set; }
 
         [Tag(2, UseFixed = true)]
-        [ProtoMember(1, Name = "unsigned", IsRequired = true, DataFormat = DataFormat.FixedSize)]
+        [ProtoMember(2, Name = "unsigned", IsRequired = true, DataFormat = DataFormat.FixedSize)]
         public uint Unsigned { get; set; }
 
         [Tag(3, UseFixed = true)]

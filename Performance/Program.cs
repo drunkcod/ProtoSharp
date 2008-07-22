@@ -42,7 +42,9 @@ namespace ProtoSharp.Performance
             var benchmarks = new IBenchmark[]
             {
                 new Int32SerializationBenchmark(Count, 20080718, Iterations),
+                new Int32DeserializationBenchmark(Iterations),
                 new UInt32SerializationBenchmark(Count, 20080721, Iterations),
+                new UInt32DeserializationBenchmark(Iterations),
                 new SInt32SerializationBenchmark(Count, 20080721, Iterations),
                 new Fixed32SerializationBenchmark(Count, 20080721, Iterations),
                 new Fixed64SerializationBenchmark(Count, 20080721, Iterations),

@@ -9,6 +9,7 @@ namespace ProtoSharp.Performance
             : base(memory)
         {
             _writer = new MessageWriter(Memory);
+            _reader = new MessageReader(new ByteReader(Memory));
         }
 
         public override void Serialize(MessageWithInt32 item){ _writer.WriteMessage(item); }
@@ -21,6 +22,10 @@ namespace ProtoSharp.Performance
         public override void Serialize(MessageWithRepeatedItem item) { _writer.WriteMessage(item); }
         public override void Serialize(Person item) { _writer.WriteMessage(item); }
 
+        public override void Deserialize(out MessageWithInt32 item) { item = _reader.Read<MessageWithInt32>(); }
+        public override void Deserialize(out MessageWithUInt32 item) { item = _reader.Read<MessageWithUInt32>(); }
+
         MessageWriter _writer;
+        MessageReader _reader;
     }
 }

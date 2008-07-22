@@ -36,9 +36,9 @@ namespace ProtoSharp.Performance.Messages
         [Tag(3)]
         [ProtoMember(3, Name = "email", IsRequired = true)]
         public string Email { get; set; }
-        //[Tag(4)]
-        //[ProtoMember(4, Name = "phones", IsRequired = true)]
-        //public List<PhoneNumber> Phones { get { return _phones; } }
+        [Tag(4)]
+        [ProtoMember(4, Name = "phones", IsRequired = true)]
+        public List<PhoneNumber> Phones { get { return _phones; } }
 
         List<PhoneNumber> _phones = new List<PhoneNumber>();
     }

@@ -10,6 +10,7 @@ namespace ProtoSharp.Performance
             : base(memory)
         {
             _writer = new BinaryWriter(Memory);
+            _reader = new BinaryReader(Memory);
         }
 
         public override void Serialize(MessageWithInt32 item){ _writer.Write(item.Value); }
@@ -22,6 +23,10 @@ namespace ProtoSharp.Performance
         public override void Serialize(MessageWithRepeatedItem item) { item.Value.ForEach(_writer.Write); }
         public override void Serialize(Person item) { throw new NotSupportedException(); }
 
+        public override void Deserialize(out MessageWithInt32 item) { item = new MessageWithInt32() { Value = _reader.ReadInt32() }; }
+        public override void Deserialize(out MessageWithUInt32 item) { item = new MessageWithUInt32() { Value = (uint)_reader.ReadInt32() }; }
+
         BinaryWriter _writer;
+        BinaryReader _reader;
     }
 }
