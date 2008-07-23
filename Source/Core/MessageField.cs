@@ -33,7 +33,13 @@ namespace ProtoSharp.Core
 
         public virtual void AppendReadField(ILGenerator il)
         {
-            throw new NotImplementedException();
+            il.Emit(OpCodes.Dup);
+            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("ReadVarint32"));
+            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("CreateSubReader"));
+            il.Emit(OpCodes.Ldtoken, FieldType);
+            il.Emit(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle"));
+            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("ReadMessage"));
+            il.Emit(OpCodes.Castclass, FieldType);
         }
 
         public virtual void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
@@ -66,7 +72,7 @@ namespace ProtoSharp.Core
         }
 
         protected virtual bool CanAppendWriteCore { get { return true; } }
-        protected virtual bool CanAppendReadCore { get { return false; } }
+        protected virtual bool CanAppendReadCore { get { return true; } }
 
         protected virtual object DoRead(MessageReader reader)
         {

@@ -27,6 +27,11 @@ namespace ProtoSharp.Core
             return new MessageReader(_bytes.GetByteReader(length));
         }
 
+        public bool ReadBool()
+        {
+            return ReadVarint32() != 0;
+        }
+
         public int ReadVarint32()
         {
             int value = 0;
@@ -44,13 +49,6 @@ namespace ProtoSharp.Core
             return value;
         }
 
-        public int ReadZigZag32()
-        {
-            var value = (uint)ReadVarint32();
-            var mask = 0 - (value & 1);
-            return (int)(value >> 1 ^ mask);
-        }
-
         public Int64 ReadVarint64()
         {
             Int64 value = 0;
@@ -64,6 +62,21 @@ namespace ProtoSharp.Core
             } while(bits > 0x7F);
             return value;
         }
+
+        public int ReadZigZag32()
+        {
+            var value = (uint)ReadVarint32();
+            var mask = 0 - (value & 1);
+            return (int)(value >> 1 ^ mask);
+        }
+
+        public Int64 ReadZigZag64()
+        {
+            UInt64 value = (UInt64)ReadVarint64();
+            UInt64 mask = 0L - (value & 1);
+            return (Int64)(value >> 1 ^ mask);
+        }
+
 
         public int ReadFixedInt32()
         {
