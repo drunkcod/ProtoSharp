@@ -77,7 +77,6 @@ namespace ProtoSharp.Core
             return (Int64)(value >> 1 ^ mask);
         }
 
-
         public int ReadFixedInt32()
         {
             return _bytes.GetByte()
