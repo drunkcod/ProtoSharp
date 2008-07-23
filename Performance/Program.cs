@@ -26,6 +26,14 @@ namespace ProtoSharp.Performance
             }
         }
 
+        public List<BenchmarkResult> CollectAll(IEnumerable<IBenchmark> benchmarks)
+        {
+            var results = new List<BenchmarkResult>();
+            foreach(var benchmark in benchmarks)
+                results.Add(benchmark.Run(_target));
+            return results;
+        }
+
         string _name;
         IBenchmarkAdapter _target;
     }
@@ -60,14 +68,27 @@ namespace ProtoSharp.Performance
                 new PersonSerializationBenchmark(Iterations),
                 new PersonDeserializationBenchmark(Iterations)
             };
-
-            Array.ForEach(new BenchmarkTarget[]
+            if(args.Length != 0 && args[0] == "compare")
             {
-                new BenchmarkTarget("System.IO.BinaryWriter", new BinaryWriterAdapter(block)),
-                new BenchmarkTarget("MessageWriter(Raw)", new MessageWriterRawAdapter(block)),
-                new BenchmarkTarget("MessageWriter", new MessageWriterAdapter(block)),
-                new BenchmarkTarget("protobuf-net", new ProtoBufNetAdapter(block))
-            }, x => x.RunAll(benchmarks));
+                var protoSharp = new BenchmarkTarget("MessageWriter", new MessageWriterAdapter(block)).CollectAll(benchmarks);
+                var protoBufNet = new BenchmarkTarget("protobuf-net", new ProtoBufNetAdapter(block)).CollectAll(benchmarks);
+                for(int i = 0; i != protoSharp.Count; ++i)
+                {
+                    var item = protoSharp[i];
+                    if(item.Elapsed > protoBufNet[i].Elapsed)
+                        Console.WriteLine("{0} took {1} ticks (target {2})", item.Name, item.Elapsed.Ticks, protoBufNet[i].Elapsed.Ticks);
+                }
+            }
+            else
+            {
+                Array.ForEach(new BenchmarkTarget[]
+                {
+                    new BenchmarkTarget("System.IO.BinaryWriter", new BinaryWriterAdapter(block)),
+                    new BenchmarkTarget("MessageWriter(Raw)", new MessageWriterRawAdapter(block)),
+                    new BenchmarkTarget("MessageWriter", new MessageWriterAdapter(block)),
+                    new BenchmarkTarget("protobuf-net", new ProtoBufNetAdapter(block))
+                }, x => x.RunAll(benchmarks));
+            }
         }
     }
 }
