@@ -31,9 +31,8 @@ namespace ProtoSharp.Performance.Benchmarks
                 }
                 return new BenchmarkResult(Name, min, target.BytesUsed);
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                Console.Error.WriteLine(e.StackTrace);
                 return new BenchmarkResult(Name, TimeSpan.Zero, 0);
             }
         }
