@@ -39,6 +39,9 @@ namespace ProtoSharp.Performance
         public abstract void Deserialize(out MessageWithFixed32 item);
         public abstract void Deserialize(out MessageWithFixed64 item);
         public abstract void Deserialize(out MessageWithString item);
+        public abstract void Deserialize(out MessageWithBytes item);
+        public abstract void Deserialize(out MessageWithRepeatedItem item);
+        public abstract void Deserialize(out Person item);
 
         protected MemoryStream Memory { get { return _memory; } }
 

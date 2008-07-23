@@ -28,6 +28,9 @@ namespace ProtoSharp.Performance
         public override void Deserialize(out MessageWithFixed32 item) { item = _reader.Read<MessageWithFixed32>(); }
         public override void Deserialize(out MessageWithFixed64 item) { item = _reader.Read<MessageWithFixed64>(); }
         public override void Deserialize(out MessageWithString item) { item = _reader.Read<MessageWithString>(); }
+        public override void Deserialize(out MessageWithBytes item) { item = _reader.Read<MessageWithBytes>(); }
+        public override void Deserialize(out MessageWithRepeatedItem item) { item = _reader.Read<MessageWithRepeatedItem>(); }
+        public override void Deserialize(out Person item) { item = _reader.Read<Person>(); }
 
         MessageWriter _writer;
         MessageReader _reader;

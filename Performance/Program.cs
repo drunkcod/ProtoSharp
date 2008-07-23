@@ -54,8 +54,11 @@ namespace ProtoSharp.Performance
                 new StringSerializationBenchmark(Count, 20080721, Iterations),
                 new StringDeserializationBenchmark(Iterations),
                 new ByteArraySerializationBenchmark(Count, 20080721, Iterations),
+                new ByteArrayDeserializationBenchmark(Iterations),
                 new RepeatedItemSerializationBenchmark(Count, 20080722, Iterations),
-                new PersonSerializationBenchmark(Iterations)
+                new RepeatedItemDeserializationBenchmark(Iterations),
+                new PersonSerializationBenchmark(Iterations),
+                new PersonDeserializationBenchmark(Iterations)
             };
 
             Array.ForEach(new BenchmarkTarget[]

@@ -29,6 +29,9 @@ namespace ProtoSharp.Performance
         public override void Deserialize(out MessageWithFixed32 item) { item = new MessageWithFixed32() { Signed = _reader.ReadFixedInt32(), Unsigned = _reader.ReadFixedUInt32(), Float = _reader.ReadFloat() }; }
         public override void Deserialize(out MessageWithFixed64 item) { item = new MessageWithFixed64() { Signed = _reader.ReadFixedInt32(), Unsigned = _reader.ReadFixedUInt32(), Double = _reader.ReadDouble() }; }
         public override void Deserialize(out MessageWithString item) { item = new MessageWithString() { Value = _reader.ReadString() }; }
+        public override void Deserialize(out MessageWithBytes item) { throw new NotSupportedException(); }
+        public override void Deserialize(out MessageWithRepeatedItem item) { throw new NotSupportedException(); }
+        public override void Deserialize(out Person item) { throw new NotSupportedException(); }
 
         MessageWriter _writer;
         MessageReader _reader;

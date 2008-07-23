@@ -24,5 +24,8 @@ namespace ProtoSharp.Performance
         void Deserialize(out MessageWithFixed32 item);
         void Deserialize(out MessageWithFixed64 item);
         void Deserialize(out MessageWithString item);
+        void Deserialize(out MessageWithBytes item);
+        void Deserialize(out MessageWithRepeatedItem item);
+        void Deserialize(out Person item);
     }
 }

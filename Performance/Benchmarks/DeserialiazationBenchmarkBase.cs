@@ -13,28 +13,28 @@ namespace ProtoSharp.Performance.Benchmarks
 
         public BenchmarkResult Run(IBenchmarkAdapter target)
         {
-            target.Reset();
-            SerializeExemplar(target);
-            int length = target.BytesUsed;
-            var min = TimeSpan.MaxValue;
-            for(int i = 0; i != _iterations; ++i)
+            try
             {
-                target.Reset(length);
-                T item;
-                var stopwatch = Stopwatch.StartNew();
-                try
+                target.Reset();
+                SerializeExemplar(target);
+                int length = target.BytesUsed;
+                var min = TimeSpan.MaxValue;
+                for(int i = 0; i != _iterations; ++i)
                 {
+                    target.Reset(length);
+                    T item;
+                    var stopwatch = Stopwatch.StartNew();
                     Deserialize(target, out item);
+                    stopwatch.Stop();
+                    if(stopwatch.Elapsed < min)
+                        min = stopwatch.Elapsed;
                 }
-                catch(Exception)
-                {
-                    return new BenchmarkResult(Name, TimeSpan.Zero, 0);
-                }
-                stopwatch.Stop();
-                if(stopwatch.Elapsed < min)
-                    min = stopwatch.Elapsed;
+                return new BenchmarkResult(Name, min, target.BytesUsed);
             }
-            return new BenchmarkResult(Name, min, target.BytesUsed);
+            catch(Exception)
+            {
+                return new BenchmarkResult(Name, TimeSpan.Zero, 0);
+            }
         }
 
         protected abstract string Name { get; }
