@@ -45,6 +45,7 @@
     <Compile Include="Benchmarks\DeserialiazationBenchmarkBase.cs" />
     <Compile Include="Benchmarks\Fixed32DeserializationBenchmark.cs" />
     <Compile Include="Benchmarks\Fixed32SerializationBenchmark.cs" />
+    <Compile Include="Benchmarks\Fixed64DeserializationBenchmark.cs" />
     <Compile Include="Benchmarks\Fixed64SerializationBenchmark.cs" />
     <Compile Include="Benchmarks\Int32DeserializationBenchmark.cs" />
     <Compile Include="Benchmarks\Int32SerializationBenchmark.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Benchmarks\SerializationBenchmarkBase.cs" />
     <Compile Include="Benchmarks\SInt32DeserializationBenchmark.cs" />
     <Compile Include="Benchmarks\SInt32SerializationBenchmark.cs" />
+    <Compile Include="Benchmarks\StringDeserializationBenchmark.cs" />
     <Compile Include="Benchmarks\StringSerializationBenchmark.cs" />
     <Compile Include="Benchmarks\UInt32DeserializationBenchmark.cs" />
     <Compile Include="Benchmarks\UInt32SerializationBenchmark.cs" />

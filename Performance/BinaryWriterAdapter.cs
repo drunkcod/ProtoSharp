@@ -27,6 +27,8 @@ namespace ProtoSharp.Performance
         public override void Deserialize(out MessageWithUInt32 item) { item = new MessageWithUInt32() { Value = (uint)_reader.ReadInt32() }; }
         public override void Deserialize(out MessageWithSInt32 item) { item = new MessageWithSInt32() { Value = _reader.ReadInt32() }; }
         public override void Deserialize(out MessageWithFixed32 item) { item = new MessageWithFixed32() { Signed = _reader.ReadInt32(), Unsigned = (uint)_reader.ReadInt32(), Float = _reader.ReadSingle() }; }
+        public override void Deserialize(out MessageWithFixed64 item) { item = new MessageWithFixed64() { Signed = _reader.ReadInt32(), Unsigned = (uint)_reader.ReadInt32(), Double = _reader.ReadDouble() }; }
+        public override void Deserialize(out MessageWithString item) { item = new MessageWithString() { Value = _reader.ReadString() }; }
 
         BinaryWriter _writer;
         BinaryReader _reader;

@@ -17,7 +17,7 @@ namespace ProtoSharp.Performance.Messages
         public long Unsigned { get; set; }
         
         [Tag(3, UseFixed = true)]
-        [ProtoMember(2, Name = "double", IsRequired = true, DataFormat = DataFormat.FixedSize)]
+        [ProtoMember(3, Name = "double", IsRequired = true, DataFormat = DataFormat.FixedSize)]
         public double Double { get; set; }
     }
 }
