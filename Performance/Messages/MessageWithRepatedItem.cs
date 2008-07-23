@@ -11,6 +11,8 @@ namespace ProtoSharp.Performance.Messages
     {
         [Tag(1)]
         [ProtoMember(1, Name = "Data", IsRequired = true)]
-        public List<int> Value { get; set; }
+        public List<int> Value { get { return _data; } set { _data = value; } }
+
+        List<int> _data = new List<int>();
     }
 }
