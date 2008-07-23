@@ -33,5 +33,28 @@ namespace ProtoSharp.Tests
             Assert.IsInstanceOfType(typeof(RepeatedFieldIO), io);
         }
 
+        class ClassWithList<T>
+        {
+            public ClassWithList(List<T> list)
+            {
+                _list = list;
+            }
+
+            public List<T> List { get { return _list; } }
+
+            List<T> _list;
+        }
+        [Test]
+        public void Read_ShouldCallAdd()
+        {
+            var target = new ClassWithList<int>(new List<int>());
+            IFieldIO io;
+            RepeatedFieldIO.TryCreate(target.GetType().GetProperty("List"), out io);
+
+            io.Read(target, 42);
+
+            Assert.AreEqual(42, target.List[0]);
+        }
+
     }
 }

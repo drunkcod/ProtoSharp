@@ -40,6 +40,18 @@ namespace ProtoSharp.Tests
             Assert.AreEqual(2,
                 MessageReader.Read<WithRepeatedTest1>(expected).Data.Count);
         }
+        [Test]
+        public void Read_ShouldSupportListOfInt()
+        {
+            var message = new MessageWithListOfInt();
+            message.Data.Add(42 );
+            message.Data.Add(0xbeef);
+
+            var expected = MessageWriter.Write(message);
+
+            Assert.AreEqual(2,
+                MessageReader.Read<MessageWithListOfInt>(expected).Data.Count);
+        }
 
         class Test1Extended : Test1//don't do this...
         {

@@ -24,7 +24,7 @@ namespace ProtoSharp.Core
         public int Tag { get { return _header >> 3; } }
         public int Header { get { return _header; } }
         public bool CanAppendWrite { get { return _fieldIO.CanCreateWriter && CanAppendWriteCore; } }
-        public bool CanAppendRead { get { return _fieldIO.CanCreateWriter && CanAppendReadCore; } }
+        public bool CanAppendRead { get { return _fieldIO.CanCreateReader && CanAppendReadCore; } }
 
         public virtual void AppendWriteField(ILGenerator il)
         {
