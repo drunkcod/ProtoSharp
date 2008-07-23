@@ -10,6 +10,12 @@ namespace ProtoSharp.Core
         { }
 
         protected override bool CanAppendWriteCore { get { return true; } }
+        protected override bool CanAppendReadCore { get { return true; } }
+
+        public override void AppendReadField(ILGenerator il)
+        {
+            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("ReadString", Type.EmptyTypes));
+        }
 
         public override void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
         {
