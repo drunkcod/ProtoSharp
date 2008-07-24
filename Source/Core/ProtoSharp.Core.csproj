@@ -68,6 +68,7 @@
     <Compile Include="MessageTag.cs" />
     <Compile Include="MessageWriter.cs" />
     <Compile Include="RepeatedFieldIO.cs" />
+    <Compile Include="Serializer.cs" />
     <Compile Include="TagAttribute.cs" />
     <Compile Include="WireType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

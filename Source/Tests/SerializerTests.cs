@@ -1,12 +1,23 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using NUnit.Framework;
+using ProtoSharp.Tests.Messages;
 using ProtoSharp.Core;
 
 namespace ProtoSharp.Tests
 {
     [TestFixture]
-    public class MessageTests
+    public class SerializerTests
     {
-        class Parsable
+        [Test]
+        public void CreateDefault_ShouldFindEnumValues()
+        {
+            var phoneNumber = Serializer.CreateDefault<Person.PhoneNumber>();
+            Assert.AreEqual(Person.PhoneType.Home, phoneNumber.Type);
+        }
+
+                class Parsable
         {
             public static Parsable Parse(string s)
             {
@@ -20,7 +31,7 @@ namespace ProtoSharp.Tests
         [Test]
         public void CreateDefaultItem_ShouldBeAbleToUseParseMethodIfAvailable()
         {
-            Assert.AreEqual("Parsed", Message.CreateDefaultItem<Parsable>("Parsed").Value);
+            Assert.AreEqual("Parsed", Serializer.CreateDefaultItem<Parsable>("Parsed").Value);
         }
 
         class TryParseable
@@ -38,7 +49,7 @@ namespace ProtoSharp.Tests
         [Test]
         public void CreateDefaultItem_ShouldBeAbleToUseTryParseMethodIfAvailable()
         {
-            Assert.AreEqual("TryParsed", Message.CreateDefaultItem<TryParseable>("TryParsed").Value);
+            Assert.AreEqual("TryParsed", Serializer.CreateDefaultItem<TryParseable>("TryParsed").Value);
         }
         
         class StringConstructable
@@ -55,7 +66,7 @@ namespace ProtoSharp.Tests
         [Test]
         public void CreateDefaultItem_ShouldBeAbleToUseConstructorTakingString()
         {
-            Assert.AreEqual("Constructed", Message.CreateDefaultItem<StringConstructable>("Constructed").Value);
+            Assert.AreEqual("Constructed", Serializer.CreateDefaultItem<StringConstructable>("Constructed").Value);
         }
         
         enum Option
@@ -65,11 +76,11 @@ namespace ProtoSharp.Tests
         [Test]
         public void CreateDefaultItem_ShouldHandleEnums()
         {
-            Assert.AreEqual(Option.xyzzy, Message.CreateDefaultItem<Option>("xyzzy"));
+            Assert.AreEqual(Option.xyzzy, Serializer.CreateDefaultItem<Option>("xyzzy"));
 
         }
 
-        class WithDefaultMember
+        class MessageWithDefaultMember
         {
             [Default("Parsed")]
             public Parsable Parsable { get; set; }
@@ -77,7 +88,7 @@ namespace ProtoSharp.Tests
         [Test]
         public void CreateDefault_ShouldFillInDefaultMember()
         {
-            var message = Message.CreateDefault<WithDefaultMember>();
+            var message = Serializer.CreateDefault<MessageWithDefaultMember>();
 
             Assert.AreEqual("Parsed", message.Parsable.Value);
         }

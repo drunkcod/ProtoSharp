@@ -6,6 +6,7 @@ namespace ProtoSharp.Tests
 {
     using System;
     using MessageWriter = ProtoSharp.Core.MessageWriter;
+    using System.IO;
 
     [TestFixture]
     public class MessageReaderTests
@@ -190,6 +191,12 @@ namespace ProtoSharp.Tests
             var message = new WithBytes() { Bytes = new byte[]{1, 2, 3} };
             Assert.AreEqual(message.Bytes,
                 MessageReader.Read<WithBytes>(MessageWriter.Write(message)).Bytes);
+        }
+        [Test]
+        public void Read_ShouldFillInDefaultsForEmptyStream()
+        {
+            Person.PhoneNumber phoneNumber = MessageReader.Read<Person.PhoneNumber>(Stream.Null);
+            Assert.AreEqual(Person.PhoneType.Home, phoneNumber.Type);
         }
     }
 }

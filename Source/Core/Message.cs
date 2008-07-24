@@ -27,16 +27,6 @@ namespace ProtoSharp.Core
             return count;
         }
 
-        public static T CreateDefault<T>() where T : class, new()
-        {
-            return CreateDefault(new T()) as T;
-        }
-
-        public static T CreateDefaultItem<T>(string s)
-        {
-            return (T)CreateDefaultItem(typeof(T), s);
-        }
-
         public static DynamicMethod BeginWriteMethod(Type type)
         {
             var writer = new DynamicMethod(string.Format("DynamicWrite{0}", type.Name), null, new Type[] { typeof(object), typeof(MessageWriter) }, true);
@@ -87,6 +77,7 @@ namespace ProtoSharp.Core
             });
             return obj;
         }
+
         static object CreateDefaultItem(Type type, string s)
         {
             if(type.IsEnum)

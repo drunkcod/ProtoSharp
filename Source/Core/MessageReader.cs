@@ -13,6 +13,11 @@ namespace ProtoSharp.Core
             return new MessageReader(message).Read<T>(); 
         }
 
+        public static T Read<T>(Stream stream) where T : class, new()
+        {
+            return new MessageReader(new ByteReader(stream)).Read<T>();
+        }
+
         public MessageReader(IByteReader bytes)
         {
             _bytes = bytes;
@@ -167,7 +172,8 @@ namespace ProtoSharp.Core
 
         public T Read<T>() where T : class, new()
         {
-            return Read<T>(new T());
+            var target = Serializer.CreateDefault<T>();
+            return Read<T>(target);
         }
 
         public T Read<T>(T target) where T : class
