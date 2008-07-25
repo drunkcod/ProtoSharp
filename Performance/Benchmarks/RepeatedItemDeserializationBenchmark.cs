@@ -7,16 +7,17 @@ namespace ProtoSharp.Performance.Benchmarks
 {
     class RepeatedItemDeserializationBenchmark : DeserializationBenchmarkBase<MessageWithRepeatedItem>
     {
+        public const int Items = 2000;
+
         public RepeatedItemDeserializationBenchmark(int iterations) : base(iterations) { }
 
         protected override string Name
         {
-            get { return "RepeatedItem Deserialization"; }
+            get { return "List<int> Deserialization"; }
         }
 
         protected override void SerializeExemplar(IBenchmarkAdapter target)
         {            
-            const int Items = 2000;
             var data = new List<int>();
             Random rand = new Random(20080723);
             for(int i = 0; i != Items; ++i)

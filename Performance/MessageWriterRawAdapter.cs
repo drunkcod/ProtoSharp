@@ -1,6 +1,7 @@
 ﻿using ProtoSharp.Core;
 using ProtoSharp.Performance.Messages;
 using System;
+using ProtoSharp.Performance.Benchmarks;
 
 namespace ProtoSharp.Performance
 {
@@ -30,7 +31,12 @@ namespace ProtoSharp.Performance
         public override void Deserialize(out MessageWithFixed64 item) { item = new MessageWithFixed64() { Signed = _reader.ReadFixedInt32(), Unsigned = _reader.ReadFixedUInt32(), Double = _reader.ReadDouble() }; }
         public override void Deserialize(out MessageWithString item) { item = new MessageWithString() { Value = _reader.ReadString() }; }
         public override void Deserialize(out MessageWithBytes item) { throw new NotSupportedException(); }
-        public override void Deserialize(out MessageWithRepeatedItem item) { throw new NotSupportedException(); }
+        public override void Deserialize(out MessageWithRepeatedItem item) 
+        {
+            item = new MessageWithRepeatedItem();
+            for(int i = 0; i != RepeatedItemDeserializationBenchmark.Items; ++i)
+                item.Value.Add(_reader.ReadVarint32());
+        }
         public override void Deserialize(out Person item) { throw new NotSupportedException(); }
 
         MessageWriter _writer;

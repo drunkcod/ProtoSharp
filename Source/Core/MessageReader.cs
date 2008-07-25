@@ -39,9 +39,12 @@ namespace ProtoSharp.Core
 
         public int ReadVarint32()
         {
-            int value = 0;
-            int shiftBits = 0;
-            int bits;   
+            int bits,value = _bytes.GetByte();
+            if(value < 0x80)
+                return value;
+
+            int shiftBits = 7;
+            value &= 0x7f;
             do
             {
                 bits = _bytes.GetByte();
@@ -108,16 +111,12 @@ namespace ProtoSharp.Core
 
         public float ReadFloat()
         {
-            var bytes = _bytes.GetBytes(sizeof(float));
-            var value = new BinaryReader(new MemoryStream(bytes.Array, bytes.Offset, bytes.Count)).ReadSingle();
-            return value;
+            return _bytes.GetFloat();
         }
 
         public double ReadDouble()
         {
-            var bytes = _bytes.GetBytes(sizeof(double));
-            var value = new BinaryReader(new MemoryStream(bytes.Array, bytes.Offset, bytes.Count)).ReadDouble();
-            return value;
+            return BitConverter.Int64BitsToDouble(ReadFixedInt64());
         }
 
         public string ReadString()
@@ -160,29 +159,37 @@ namespace ProtoSharp.Core
             {
                 var tag = ReadMessageTag();
                 FieldReader field;
-                if(!fields.TryGetValue(tag.Tag, out field))
-                {
+                if(fields.TryGetValue(tag.Number, out field))
+                    field(obj, this);
+                else
                     OnMissingField(EventArgs.Empty);
-                    continue;
-                }
-                field(obj, this);
             }
             return obj;
         }
 
         public T Read<T>() where T : class, new()
         {
-            var target = Serializer.CreateDefault<T>();
+            var target = new T();
             return Read<T>(target);
         }
 
         public T Read<T>(T target) where T : class
         {
-            new MessageReader<T>().Read(target, this);
+            FieldReader<T> field = null;
+            var lastTag = -1;
+            while(!_bytes.EndOfStream)
+            {
+                var tag = ReadVarint32();
+                if(tag == lastTag || MessageReader<T>.Fields.TryGetValue(MessageTag.GetNumber(tag), out field))
+                {
+                    lastTag = tag;
+                    field(target, this);
+                }
+                else
+                    OnMissingField(EventArgs.Empty);
+            }
             return target;
         }
-
-        public bool EndOfStream { get { return _bytes.EndOfStream; } }
 
         public void OnMissingField(EventArgs e)
         {
@@ -202,29 +209,15 @@ namespace ProtoSharp.Core
 
     class MessageReader<T>
     {
-        public void Read(T target, MessageReader reader)
-        {
-            while(!reader.EndOfStream)
-            {
-                var tag = reader.ReadMessageTag();
-                FieldReader field;
-                if(!s_fields.TryGetValue(tag.Tag, out field))
-                {
-                    reader.OnMissingField(EventArgs.Empty);
-                    continue;
-                }
-                field(target, reader);
-            }
-        }
+        public static readonly Dictionary<int, FieldReader<T>> Fields = GetFields();
 
-        static Dictionary<int, FieldReader> GetFields()
+        static Dictionary<int, FieldReader<T>> GetFields()
         {
-            var fields = new Dictionary<int, FieldReader>();
+            var fields = new Dictionary<int, FieldReader<T>>();
             Message.ForEachField(typeof(T),
-                field => fields.Add(field.Tag, field.GetFieldReader()));
+                field => fields.Add(field.Tag, field.GetFieldReader<T>()));
             return fields;
         }
 
-        static Dictionary<int, FieldReader> s_fields = GetFields();
     }
 }

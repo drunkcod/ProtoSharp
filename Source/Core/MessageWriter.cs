@@ -3,13 +3,14 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 
 namespace ProtoSharp.Core
 {
     public class MessageWriter
     {
-        public static byte[] Write(object message)
+        public static byte[] Write<T>(T message)
         {
             MemoryStream output = new MemoryStream();
             new MessageWriter(output).WriteMessage(message);
@@ -92,24 +93,9 @@ namespace ProtoSharp.Core
             _writer.Write(value, 0, length);
         }
 
-        public void WriteMessage(object obj)
+        public void WriteMessage<T>(T message)
         {
-            var type = obj.GetType();
-            FieldWriter fieldWriter;
-            if(!s_writerCache.TryGetValue(type, out fieldWriter))
-            {
-                var writer = Message.BeginWriteMethod(type);
-                Message.ForEachField(obj.GetType(), x =>
-                {
-                    if(x.CanAppendWrite)
-                        x.AppendWriteBody(writer.GetILGenerator());
-                    else
-                        fieldWriter += x.GetFieldWriter();
-                });
-                fieldWriter += Message.EndWriteMethod(writer);
-                s_writerCache.Add(type, fieldWriter);
-            }
-            fieldWriter(obj, this);
+            MessageWriter<T>.FieldWriter(message, this);
         }
 
         public void WriteFixed(int value) { _writer.Write(value); }
@@ -124,7 +110,7 @@ namespace ProtoSharp.Core
 
         public void WriteFixed(double value) { _writer.Write(value); }
 
-        public void WriteObject(object obj)
+        public void WriteObject<T>(T obj)
         {
             var embedded = new MemoryStream();
             var writer = new MessageWriter(embedded);
@@ -137,7 +123,26 @@ namespace ProtoSharp.Core
             WriteVarint(tag << 3 | (int)wireType);
         }
 
-        static Dictionary<Type, FieldWriter> s_writerCache = new Dictionary<Type, FieldWriter>();
         BinaryWriter _writer;
+    }
+
+    class MessageWriter<T>
+    {
+        public static FieldWriter<T> FieldWriter = GetWriter();
+
+        static FieldWriter<T> GetWriter()
+        {
+            FieldWriter<T> fieldWriter = null;
+            var writer = Message.BeginWriteMethod(typeof(T), typeof(T));
+            Message.ForEachField(typeof(T), x =>
+            {
+                if(x.CanAppendWrite)
+                    x.AppendWriteBody(writer.GetILGenerator());
+                else
+                    throw new NotSupportedException();
+            });
+            fieldWriter += Message.EndWriteMethod<FieldWriter<T>>(writer);
+            return fieldWriter;
+        }
     }
 }

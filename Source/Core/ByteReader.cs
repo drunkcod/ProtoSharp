@@ -9,6 +9,7 @@ namespace ProtoSharp.Core
     {
         bool EndOfStream { get; }
         byte GetByte();
+        float GetFloat();
         ArraySegment<byte> GetBytes(int count);
         IByteReader GetByteReader(int lenght);
     }
@@ -28,6 +29,13 @@ namespace ProtoSharp.Core
         public byte GetByte()
         {
             return (byte)_stream.ReadByte();
+        }
+
+        public float GetFloat()
+        {
+            var bytes = new byte[sizeof(float)];
+            _stream.Read(bytes, 0, sizeof(float));
+            return BitConverter.ToSingle(bytes, 0);
         }
 
         public ArraySegment<byte> GetBytes(int count)

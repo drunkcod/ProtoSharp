@@ -58,7 +58,7 @@ namespace ProtoSharp.Core
         public override void AppendRead(ILGenerator il, MessageField field)
         {
             il.Emit(OpCodes.Ldloc_0);
-            il.Emit(OpCodes.Callvirt, _property.GetGetMethod());
+            il.Emit(OpCodes.Call, _property.GetGetMethod());
 
             il.Emit(OpCodes.Ldarg_1);
             field.AppendReadField(il);

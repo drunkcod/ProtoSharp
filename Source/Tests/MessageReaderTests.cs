@@ -192,11 +192,5 @@ namespace ProtoSharp.Tests
             Assert.AreEqual(message.Bytes,
                 MessageReader.Read<WithBytes>(MessageWriter.Write(message)).Bytes);
         }
-        [Test]
-        public void Read_ShouldFillInDefaultsForEmptyStream()
-        {
-            Person.PhoneNumber phoneNumber = MessageReader.Read<Person.PhoneNumber>(Stream.Null);
-            Assert.AreEqual(Person.PhoneType.Home, phoneNumber.Type);
-        }
     }
 }

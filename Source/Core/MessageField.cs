@@ -28,7 +28,7 @@ namespace ProtoSharp.Core
 
         public virtual void AppendWriteField(ILGenerator il)
         {
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteObject", new Type[] { typeof(object) }));
+            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteObject").MakeGenericMethod(_fieldIO.FieldType));
         }
 
         public virtual void AppendReadField(ILGenerator il)
@@ -66,6 +66,14 @@ namespace ProtoSharp.Core
             if(CanAppendRead && _fieldIO.CreateReader(this, out reader))
                 return reader;
             return Read;
+        }
+
+        public FieldReader<T> GetFieldReader<T>()
+        {
+            FieldReader<T> reader;
+            if(CanAppendRead && _fieldIO.CreateReader<T>(this, out reader))
+                return reader;
+            throw new NotSupportedException();
         }
 
         protected virtual bool CanAppendWriteCore { get { return true; } }

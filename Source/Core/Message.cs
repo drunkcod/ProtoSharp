@@ -27,42 +27,44 @@ namespace ProtoSharp.Core
             return count;
         }
 
-        public static DynamicMethod BeginWriteMethod(Type type)
+        public static DynamicMethod BeginWriteMethod(Type type, Type arg0)
         {
-            var writer = new DynamicMethod(string.Format("DynamicWrite{0}", type.Name), null, new Type[] { typeof(object), typeof(MessageWriter) }, true);
+            var writer = new DynamicMethod(string.Format("DynamicWrite{0}", type.Name), null, new Type[] { arg0, typeof(MessageWriter) }, true);
             var il = writer.GetILGenerator();
             il.DeclareLocal(type);
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Castclass, type);
+            if(type != arg0)
+                il.Emit(OpCodes.Castclass, type);
             il.Emit(OpCodes.Stloc_0);
 
             return writer;
         }
 
-        public static DynamicMethod BeginReadMethod(Type type)
+        public static DynamicMethod BeginReadMethod(Type type, Type arg0)
         {
-            var reader = new DynamicMethod(string.Format("DynamicRead{0}", type.Name), null, new Type[] { typeof(object), typeof(MessageReader) }, true);
+            var reader = new DynamicMethod(string.Format("DynamicRead{0}", type.Name), null, new Type[] { arg0, typeof(MessageReader) }, true);
             var il = reader.GetILGenerator();
             il.DeclareLocal(type);
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Castclass, type);
+            if(type != arg0)
+                il.Emit(OpCodes.Castclass, type);
             il.Emit(OpCodes.Stloc_0);
 
             return reader;
         }
 
-        public static FieldWriter EndWriteMethod(DynamicMethod writer)
+        public static T EndWriteMethod<T>(DynamicMethod writer) where T : class
         {
             var il = writer.GetILGenerator();
             il.Emit(OpCodes.Ret);
-            return writer.CreateDelegate(typeof(FieldWriter)) as FieldWriter;
+            return writer.CreateDelegate(typeof(T)) as T;
         }
 
-        public static FieldReader EndReadMethod(DynamicMethod reader)
+        public static T EndReadMethod<T>(DynamicMethod reader) where T : class
         {
             var il = reader.GetILGenerator();
             il.Emit(OpCodes.Ret);
-            return reader.CreateDelegate(typeof(FieldReader)) as FieldReader;
+            return reader.CreateDelegate(typeof(T)) as T;
         }
 
         static object CreateDefault(object obj)

@@ -79,6 +79,10 @@ namespace ProtoSharp.Performance
                         Console.WriteLine("{0} took {1} ticks (target {2})", item.Name, item.Elapsed.Ticks, protoBufNet[i].Elapsed.Ticks);
                 }
             }
+            else if(args.Length != 0 && args[0] == "repeated")
+            {
+                Console.WriteLine("Took {0} ticks.", new RepeatedItemDeserializationBenchmark(Iterations).Run(new MessageWriterAdapter(block)).Elapsed.Ticks);
+            }
             else
             {
                 Array.ForEach(new BenchmarkTarget[]

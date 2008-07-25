@@ -18,6 +18,13 @@ namespace ProtoSharp.Core
             return _bytes[_offset++];
         }
 
+        public float GetFloat()
+        {
+            float value = BitConverter.ToSingle(_bytes, _offset);
+            _offset += sizeof(float);
+            return value;
+        }
+
         public ArraySegment<byte> GetBytes(int count)
         {
             var segment = new ArraySegment<byte>(_bytes, _offset, count);

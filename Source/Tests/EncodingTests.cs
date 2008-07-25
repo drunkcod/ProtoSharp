@@ -28,7 +28,7 @@ namespace ProtoSharp.Tests
         public void SimpleMessageTagIsOne()        
         {
             MessageReader reader = new MessageReader(SimpleMessage);
-            Assert.AreEqual(1, new MessageTag(reader.ReadVarint32()).Tag);
+            Assert.AreEqual(1, new MessageTag(reader.ReadVarint32()).Number);
         }
         [Test]
         public void SimpleMessageValueIs150()
@@ -54,7 +54,7 @@ namespace ProtoSharp.Tests
         public void Test2TestingTagIsTwo()
         {
             MessageReader reader= new MessageReader(Test2Testing);
-            Assert.AreEqual(2, reader.ReadMessageTag().Tag);
+            Assert.AreEqual(2, reader.ReadMessageTag().Number);
         }
         [Test]
         public void Test2TestingValueIs_testing()
@@ -77,7 +77,7 @@ namespace ProtoSharp.Tests
         public void Test3EmbeddedMessageHasTagThree()
         {
             MessageReader reader = new MessageReader(Test3EmbeddedMessage);
-            Assert.AreEqual(3, reader.ReadMessageTag().Tag);
+            Assert.AreEqual(3, reader.ReadMessageTag().Number);
         }
     }
 }
