@@ -47,10 +47,14 @@
     <Compile Include="EncodingTests.cs" />
     <Compile Include="Interop\ProtoBufNetTests.cs" />
     <Compile Include="MessageReaderTests.cs" />
+    <Compile Include="Messages\MessageWithDateTime.cs" />
+    <Compile Include="Messages\MessageWithDecimal.cs" />
+    <Compile Include="Messages\MessageWithInt16.cs" />
     <Compile Include="Messages\MessageWithListOfInt.cs" />
     <Compile Include="Messages\Person.cs" />
     <Compile Include="Messages\Test1.cs" />
     <Compile Include="Messages\Test1Ex64.cs" />
+    <Compile Include="Messages\Test1Nullable.cs" />
     <Compile Include="Messages\Test2.cs" />
     <Compile Include="Messages\Test3.cs" />
     <Compile Include="Messages\WithBool.cs" />
@@ -62,9 +66,11 @@
     <Compile Include="Messages\WithVarint32.cs" />
     <Compile Include="Messages\WithVarint64.cs" />
     <Compile Include="MessageWriterTests.cs" />
+    <Compile Include="NullableFieldIOTests.cs" />
     <Compile Include="ProtocolBufferTests.cs" />
     <Compile Include="RepeatedFileIOTests.cs" />
     <Compile Include="SerializerTests.cs" />
+    <Compile Include="UnixTimeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">

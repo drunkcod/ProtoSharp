@@ -18,6 +18,12 @@ namespace ProtoSharp.Tests
             Assert.AreEqual(150, message.A);
         }
         [Test]
+        public void Read_Test1Nullable()
+        {
+            var message = MessageReader.Read<Test1Nullable>(EncodingTests.SimpleMessage);
+            Assert.AreEqual(150, message.A);
+        }
+        [Test]
         public void Read_Test2Testing()
         {
             var message = MessageReader.Read<Test2>(EncodingTests.Test2Testing);
@@ -191,6 +197,31 @@ namespace ProtoSharp.Tests
             var message = new WithBytes() { Bytes = new byte[]{1, 2, 3} };
             Assert.AreEqual(message.Bytes,
                 MessageReader.Read<WithBytes>(MessageWriter.Write(message)).Bytes);
+        }
+        [Test]
+        public void Read_ShouldHandleDateTime()
+        {
+            var message = MessageReader.Read<MessageWithDateTime>(MessageWriter.Write(new Test1()));
+            Assert.AreEqual(UnixTime.Epoch, message.TimeStamp);
+        }
+        [Test]
+        public void Read_ShouldHandleDecimal()
+        {
+            Assert.AreEqual(3.1415, MessageReader.Read<MessageWithDecimal>(
+                MessageWriter.Write(new MessageWithDecimal() { Value = (decimal)3.1415 })).Value);
+        }
+        [Test]
+        public void Read_ShouldHandleInt16()
+        {
+            var message = MessageReader.Read<MessageWithInt16>(new byte[]
+            {
+                1 << 3 | (int)WireType.Varint, 1,
+                2 << 3 | (int)WireType.Varint, 1,
+                3 << 3 | (int)WireType.Varint, 42
+            });
+            Assert.AreEqual(message.Default, 1);
+            Assert.AreEqual(message.ZigZag, -1);
+            Assert.AreEqual(message.Unsigned, 42);
         }
     }
 }

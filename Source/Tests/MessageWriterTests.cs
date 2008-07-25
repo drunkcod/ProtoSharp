@@ -2,11 +2,11 @@
 using NUnit.Framework;
 using System.IO;
 using ProtoSharp.Core;
+using ProtoSharp.Tests.Messages;
 
 namespace ProtoSharp.Tests
 {
     using MessageWriter = ProtoSharp.Core.MessageWriter;
-    using ProtoSharp.Tests.Messages;
 
     [TestFixture]
     public class MessageWriterTests
@@ -74,6 +74,15 @@ namespace ProtoSharp.Tests
         {
             var output = new MemoryStream();
             Test1 data = new Test1();
+            data.A = 150;
+            new MessageWriter(output).WriteMessage(data);
+            Assert.AreEqual(EncodingTests.SimpleMessage, output.ToArray());
+        }
+        [Test]
+        public void WriteMessage_ShouldSupportNullableHavingValue()
+        {
+            var output = new MemoryStream();
+            var data = new Test1Nullable();
             data.A = 150;
             new MessageWriter(output).WriteMessage(data);
             Assert.AreEqual(EncodingTests.SimpleMessage, output.ToArray());
@@ -229,6 +238,34 @@ namespace ProtoSharp.Tests
             var output = new MemoryStream();
             new MessageWriter(output).WriteMessage(new MessageWithString());
             Assert.AreEqual(new byte[0], output.ToArray());
+        }
+        [Test]
+        public void WriteMessage_ShouldHandleDateTime()
+        {
+            var timeStamp = new DateTime(2008, 07, 25);
+            Assert.AreEqual(MessageWriter.Write(new Test1(){ A = UnixTime.From(timeStamp)}),
+            MessageWriter.Write(new MessageWithDateTime() { TimeStamp = timeStamp }));
+        }
+        [Test]
+        public void WriteMessage_ShouldHandleDecimal()
+        {
+            Assert.AreEqual(MessageWriter.Write(new Test1Ex64(){ A = (long)(Math.PI * MessageFieldDecimal.Factor) }),
+                MessageWriter.Write(new MessageWithDecimal(){ Value = (Decimal)Math.PI })); 
+        }
+        [Test]
+        public void WriteMessage_ShouldHandleInt16()
+        {
+            Assert.AreEqual(new byte[]
+            {
+                1 << 3 | (int)WireType.Varint, 1,
+                2 << 3 | (int)WireType.Varint, 1,
+                3 << 3 | (int)WireType.Varint, 42
+            }, MessageWriter.Write(new MessageWithInt16()
+            {
+                Default = 1, 
+                ZigZag = -1,
+                Unsigned = 42
+            }));
         }
 
         unsafe static byte[] AsBytes(float value)

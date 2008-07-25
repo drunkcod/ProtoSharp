@@ -95,7 +95,7 @@ namespace ProtoSharp.Core
 
         public void WriteMessage<T>(T message)
         {
-            MessageWriter<T>.FieldWriter(message, this);
+            Serializer<T>.FieldWriter(message, this);
         }
 
         public void WriteFixed(int value) { _writer.Write(value); }
@@ -109,6 +109,11 @@ namespace ProtoSharp.Core
         public void WriteFixed(ulong value) { _writer.Write(value); }
 
         public void WriteFixed(double value) { _writer.Write(value); }
+
+        public void WriteDateTime(DateTime date)
+        {
+            WriteVarint(UnixTime.From(date));
+        }
 
         public void WriteObject<T>(T obj)
         {
@@ -124,25 +129,5 @@ namespace ProtoSharp.Core
         }
 
         BinaryWriter _writer;
-    }
-
-    class MessageWriter<T>
-    {
-        public static FieldWriter<T> FieldWriter = GetWriter();
-
-        static FieldWriter<T> GetWriter()
-        {
-            FieldWriter<T> fieldWriter = null;
-            var writer = Message.BeginWriteMethod(typeof(T), typeof(T));
-            Message.ForEachField(typeof(T), x =>
-            {
-                if(x.CanAppendWrite)
-                    x.AppendWriteBody(writer.GetILGenerator());
-                else
-                    throw new NotSupportedException();
-            });
-            fieldWriter += Message.EndWriteMethod<FieldWriter<T>>(writer);
-            return fieldWriter;
-        }
     }
 }

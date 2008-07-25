@@ -46,6 +46,8 @@
     <Compile Include="FieldIOBase.cs" />
     <Compile Include="MessageFieldBool.cs" />
     <Compile Include="MessageFieldBytes.cs" />
+    <Compile Include="MessageFieldDateTime.cs" />
+    <Compile Include="MessageFieldDecimal.cs" />
     <Compile Include="MessageFieldDouble.cs" />
     <Compile Include="MessageFieldFixed.cs" />
     <Compile Include="MessageFieldFixedInt64.cs" />
@@ -54,7 +56,9 @@
     <Compile Include="MessageFieldFixedInt32.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MessageFieldInt16.cs" />
     <Compile Include="MessageFieldInt64.cs" />
+    <Compile Include="MessageFieldSInt16.cs" />
     <Compile Include="MessageFieldSInt32.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageField.cs" />
@@ -68,9 +72,11 @@
     <Compile Include="MessageReader.cs" />
     <Compile Include="MessageTag.cs" />
     <Compile Include="MessageWriter.cs" />
+    <Compile Include="NullableFieldIO.cs" />
     <Compile Include="RepeatedFieldIO.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="TagAttribute.cs" />
+    <Compile Include="UnixTime.cs" />
     <Compile Include="WireType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

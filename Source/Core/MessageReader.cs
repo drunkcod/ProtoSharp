@@ -134,6 +134,11 @@ namespace ProtoSharp.Core
             return value;
         }
 
+        public DateTime ReadDateTime()
+        {
+            return UnixTime.ToDateTime(ReadVarint32());
+        }
+
         public MessageTag ReadMessageTag()
         {
             return new MessageTag(ReadVarint32());
@@ -180,7 +185,7 @@ namespace ProtoSharp.Core
             while(!_bytes.EndOfStream)
             {
                 var tag = ReadVarint32();
-                if(tag == lastTag || MessageReader<T>.Fields.TryGetValue(MessageTag.GetNumber(tag), out field))
+                if(tag == lastTag || Serializer<T>.Fields.TryGetValue(MessageTag.GetNumber(tag), out field))
                 {
                     lastTag = tag;
                     field(target, this);
@@ -205,19 +210,5 @@ namespace ProtoSharp.Core
         static Dictionary<Type, Dictionary<int, FieldReader>> s_readerCache = new Dictionary<Type, Dictionary<int, FieldReader>>();
 
         IByteReader _bytes;
-    }
-
-    class MessageReader<T>
-    {
-        public static readonly Dictionary<int, FieldReader<T>> Fields = GetFields();
-
-        static Dictionary<int, FieldReader<T>> GetFields()
-        {
-            var fields = new Dictionary<int, FieldReader<T>>();
-            Message.ForEachField(typeof(T),
-                field => fields.Add(field.Tag, field.GetFieldReader<T>()));
-            return fields;
-        }
-
     }
 }

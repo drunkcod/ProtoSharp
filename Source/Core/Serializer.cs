@@ -61,4 +61,33 @@ namespace ProtoSharp.Core
             return null;
         }
     }
+
+    class Serializer<T>
+    {
+        public static readonly Dictionary<int, FieldReader<T>> Fields = GetFields();
+        public static readonly FieldWriter<T> FieldWriter = GetWriter();
+
+        static Dictionary<int, FieldReader<T>> GetFields()
+        {
+            var fields = new Dictionary<int, FieldReader<T>>();
+            Message.ForEachField(typeof(T),
+                field => fields.Add(field.Tag, field.GetFieldReader<T>()));
+            return fields;
+        }
+
+        static FieldWriter<T> GetWriter()
+        {
+            FieldWriter<T> fieldWriter = null;
+            var writer = Message.BeginWriteMethod(typeof(T), typeof(T));
+            Message.ForEachField(typeof(T), x =>
+            {
+                if(x.CanAppendWrite)
+                    x.AppendWriteBody(writer.GetILGenerator());
+                else
+                    throw new NotSupportedException();
+            });
+            fieldWriter += Message.EndWriteMethod<FieldWriter<T>>(writer);
+            return fieldWriter;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoSharp.Core;
-using System.Collections.Generic;
 
 namespace ProtoSharp.Tests
 {
