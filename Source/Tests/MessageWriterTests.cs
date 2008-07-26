@@ -267,6 +267,16 @@ namespace ProtoSharp.Tests
                 Unsigned = 42
             }));
         }
+        [Test]
+        public void WriteMessage_ShouldEncodeFixed64WithCorrectWireType()
+        {
+            Assert.AreEqual(new byte[]
+            {
+                1 << 3 | (int)WireType.Fixed64, 0, 0, 0 ,0 ,0 ,0 ,0 ,0,
+                2 << 3 | (int)WireType.Fixed64, 0, 0, 0 ,0 ,0 ,0 ,0 ,0,
+                3 << 3 | (int)WireType.Fixed64, 0, 0, 0 ,0 ,0 ,0 ,0 ,0
+            }, MessageWriter.Write(new WithFixed64() { Int64 = 0, UInt64 = 0, Double = 0 }));
+        }
 
         unsafe static byte[] AsBytes(float value)
         {

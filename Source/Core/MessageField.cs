@@ -47,10 +47,6 @@ namespace ProtoSharp.Core
         public virtual void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
         { }
 
-        public void Read(object target, MessageReader reader)
-        {
-            _fieldIO.Read(target, DoRead(reader));
-        }
 
         public void AppendWriteBody(ILGenerator il)
         {
@@ -70,7 +66,7 @@ namespace ProtoSharp.Core
             FieldReader reader;
             if(CanAppendRead && _fieldIO.CreateReader(this, out reader))
                 return reader;
-            return Read;
+            throw new NotSupportedException();
         }
 
         public FieldReader<T> GetFieldReader<T>()
@@ -83,12 +79,6 @@ namespace ProtoSharp.Core
 
         protected virtual bool CanAppendWriteCore { get { return true; } }
         protected virtual bool CanAppendReadCore { get { return true; } }
-
-        protected virtual object DoRead(MessageReader reader)
-        {
-            return reader.CreateSubReader(reader.ReadVarint32()).
-                   ReadMessage(FieldType);
-        }
 
         Type FieldType { get { return _fieldIO.FieldType; } }
 

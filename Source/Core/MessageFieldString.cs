@@ -9,9 +9,6 @@ namespace ProtoSharp.Core
         public MessageFieldString(int tag, IFieldIO fieldIO): base(tag, fieldIO, WireType.String)
         { }
 
-        protected override bool CanAppendWriteCore { get { return true; } }
-        protected override bool CanAppendReadCore { get { return true; } }
-
         public override void AppendReadField(ILGenerator il)
         {
             il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("ReadString", Type.EmptyTypes));
@@ -27,11 +24,6 @@ namespace ProtoSharp.Core
         public override void AppendWriteField(ILGenerator il)
         {
             il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteString", new Type[] { typeof(string) }));
-        }
-
-        protected override object DoRead(MessageReader reader)
-        {
-            return reader.ReadString();
         }
     }
 }
