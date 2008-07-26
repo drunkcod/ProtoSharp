@@ -53,22 +53,6 @@ namespace ProtoSharp.Core
             _fieldIO.AppendWrite(il, this);            
         }
 
-        public FieldWriter GetFieldWriter()
-        {
-            FieldWriter writer;
-            if(CanAppendWrite && _fieldIO.CreateWriter(this, out writer))
-                return writer;
-            throw new NotSupportedException();
-        }
-
-        public FieldReader GetFieldReader()
-        {
-            FieldReader reader;
-            if(CanAppendRead && _fieldIO.CreateReader(this, out reader))
-                return reader;
-            throw new NotSupportedException();
-        }
-
         public FieldReader<T> GetFieldReader<T>()
         {
             FieldReader<T> reader;

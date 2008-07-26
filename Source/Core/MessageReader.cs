@@ -144,34 +144,6 @@ namespace ProtoSharp.Core
             return new MessageTag(ReadVarint32());
         }
 
-        public object ReadMessage(Type messageType)
-        {
-            return ReadMessage(CreateDefault(messageType));
-        }
-
-        object ReadMessage(object obj)
-        {
-            Dictionary<int, FieldReader> fields;
-            if(!s_readerCache.TryGetValue(obj.GetType(), out fields))
-            {
-                Type messageType = obj.GetType();
-                fields = new Dictionary<int, FieldReader>();
-                Message.ForEachField(messageType,
-                    field => fields.Add(field.Tag, field.GetFieldReader()));
-                s_readerCache.Add(obj.GetType(), fields);
-            }
-            while(!_bytes.EndOfStream)
-            {
-                var tag = ReadMessageTag();
-                FieldReader field;
-                if(fields.TryGetValue(tag.Number, out field))
-                    field(obj, this);
-                else
-                    OnMissingField(EventArgs.Empty);
-            }
-            return obj;
-        }
-
         public T Read<T>() where T : class, new()
         {
             var target = new T();
