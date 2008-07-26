@@ -181,15 +181,12 @@ namespace ProtoSharp.Core
         public T Read<T>(T target) where T : class
         {
             FieldReader<T> field = null;
-            var lastTag = -1;
+            var helper = new SerializerHelper<T>();
             while(!_bytes.EndOfStream)
             {
                 var tag = ReadVarint32();
-                if(tag == lastTag || Serializer<T>.Fields.TryGetValue(MessageTag.GetNumber(tag), out field))
-                {
-                    lastTag = tag;
+                if(helper.TryGetFieldReader(tag, out field))
                     field(target, this);
-                }
                 else
                     OnMissingField(EventArgs.Empty);
             }

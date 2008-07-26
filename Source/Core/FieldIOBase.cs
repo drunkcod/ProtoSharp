@@ -15,7 +15,7 @@ namespace ProtoSharp.Core
         {
             var builder = Message.BeginWriteMethod(_property.DeclaringType, typeof(object));
             AppendWrite(builder.GetILGenerator(), field);
-            writer = Message.EndWriteMethod<FieldWriter>(builder);
+            writer = Message.EndMethod<FieldWriter>(builder);
             return true;
         }
 
@@ -23,7 +23,7 @@ namespace ProtoSharp.Core
         {
             var builder = Message.BeginWriteMethod(_property.DeclaringType, typeof(T));
             AppendWrite(builder.GetILGenerator(), field);
-            writer = Message.EndWriteMethod<FieldWriter<T>>(builder);
+            writer = Message.EndMethod<FieldWriter<T>>(builder);
             return true;
         }
 
@@ -31,7 +31,7 @@ namespace ProtoSharp.Core
         {
             var builder = Message.BeginReadMethod(_property.DeclaringType, typeof(object));
             AppendRead(builder.GetILGenerator(), field);
-            reader = Message.EndReadMethod<FieldReader>(builder);
+            reader = Message.EndMethod<FieldReader>(builder);
             return true;
         }
 
@@ -39,7 +39,7 @@ namespace ProtoSharp.Core
         {
             var builder = Message.BeginReadMethod(_property.DeclaringType, typeof(T));
             AppendRead(builder.GetILGenerator(), field);
-            reader = Message.EndReadMethod<FieldReader<T>>(builder);
+            reader = Message.EndMethod<FieldReader<T>>(builder);
             return true;
         }
 

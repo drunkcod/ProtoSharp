@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection.Emit;
+using System.IO;
 
 namespace ProtoSharp.Core
 {
@@ -60,19 +61,66 @@ namespace ProtoSharp.Core
 
             return null;
         }
+
     }
 
-    class Serializer<T>
+    class SerializerHelper<T>
     {
-        public static readonly Dictionary<int, FieldReader<T>> Fields = GetFields();
+        public bool TryGetFieldReader(int header, out FieldReader<T> reader)
+        {
+            if(header == _current.Key)
+            {
+                reader = _current.Value;
+                return true;
+            }
+            return FindReader(header, out reader);
+        }
+        
+        static readonly KeyValuePair<int, FieldReader<T>>[] s_fields =  GetFields();
+
         public static readonly FieldWriter<T> FieldWriter = GetWriter();
 
-        static Dictionary<int, FieldReader<T>> GetFields()
+        bool FindReader(int header, out FieldReader<T> reader)
         {
-            var fields = new Dictionary<int, FieldReader<T>>();
+            if(header > _current.Key)
+            {
+                for(int i = _position + 1; i != s_fields.Length; ++i)
+                {
+                    var current = s_fields[i];
+                    if(current.Key == header)
+                    {
+                        _position = i;
+                        _current = current;
+                        reader = current.Value;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                for(int i = _position; i > 0; -- i)
+                {
+                    var current = s_fields[i];
+                    if(current.Key == header)
+                    {
+                        _position = i;
+                        _current = current;
+                        reader = current.Value;
+                        return true;
+                    }
+                }
+            }
+            reader = null;
+            return false;
+        }
+
+        static KeyValuePair<int, FieldReader<T>>[] GetFields()
+        {
+            var fields = new List<KeyValuePair<int, FieldReader<T>>>();
             Message.ForEachField(typeof(T),
-                field => fields.Add(field.Tag, field.GetFieldReader<T>()));
-            return fields;
+                field => fields.Add(new KeyValuePair<int, FieldReader<T>>(field.Header, field.GetFieldReader<T>())));
+            fields.Sort((x, y) => x.Key - y.Key);
+            return fields.ToArray();
         }
 
         static FieldWriter<T> GetWriter()
@@ -86,8 +134,11 @@ namespace ProtoSharp.Core
                 else
                     throw new NotSupportedException();
             });
-            fieldWriter += Message.EndWriteMethod<FieldWriter<T>>(writer);
+            fieldWriter += Message.EndMethod<FieldWriter<T>>(writer);
             return fieldWriter;
         }
+
+        int _position = 0;
+        KeyValuePair<int, FieldReader<T>> _current = s_fields[0];
     }
 }

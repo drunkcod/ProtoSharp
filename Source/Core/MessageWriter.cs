@@ -95,7 +95,7 @@ namespace ProtoSharp.Core
 
         public void WriteMessage<T>(T message)
         {
-            Serializer<T>.FieldWriter(message, this);
+            SerializerHelper<T>.FieldWriter(message, this);
         }
 
         public void WriteFixed(int value) { _writer.Write(value); }

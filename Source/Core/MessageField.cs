@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Collections;
 using System.Reflection.Emit;
+using System.Collections.Generic;
 
 namespace ProtoSharp.Core
 {
