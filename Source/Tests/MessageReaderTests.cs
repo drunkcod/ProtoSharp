@@ -223,5 +223,15 @@ namespace ProtoSharp.Tests
             Assert.AreEqual(message.ZigZag, -1);
             Assert.AreEqual(message.Unsigned, 42);
         }
+        [Test]
+        public void Read_ShouldHandleGroups()
+        {
+            Assert.AreEqual(150, MessageReader.Read<Test3>(new byte[] 
+            {
+                3 << 3 | (int)WireType.StartGroup,
+                0x08, 0x96, 0x01, //Submessage
+                3 << 3 | (int)WireType.EndGroup
+            }).C.A);
+        }
     }
 }

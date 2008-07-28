@@ -25,6 +25,13 @@ namespace ProtoSharp.Core
             return value;
         }
 
+        public ArraySegment<byte> GetAllBytes()
+        {
+            var segment = new ArraySegment<byte>(_bytes, _offset, _end - _offset);
+            _offset = _end;
+            return segment;
+        }
+
         public ArraySegment<byte> GetBytes(int count)
         {
             var segment = new ArraySegment<byte>(_bytes, _offset, count);

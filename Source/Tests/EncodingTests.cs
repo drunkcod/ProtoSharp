@@ -61,6 +61,7 @@ namespace ProtoSharp.Tests
         {
             MessageReader reader = new MessageReader(Test2Testing);
             reader.ReadMessageTag();
+            reader.ReadVarint32();
             Assert.AreEqual("testing", reader.ReadString());
         }
         /*

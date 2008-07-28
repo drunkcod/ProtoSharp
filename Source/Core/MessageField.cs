@@ -38,9 +38,6 @@ namespace ProtoSharp.Core
 
         public virtual void AppendReadField(ILGenerator il)
         {
-            il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("ReadVarint32"));
-            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("CreateSubReader"));
             il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("Read", Type.EmptyTypes).MakeGenericMethod(FieldType));
         }
 

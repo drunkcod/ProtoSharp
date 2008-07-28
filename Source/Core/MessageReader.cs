@@ -121,7 +121,7 @@ namespace ProtoSharp.Core
 
         public string ReadString()
         {
-            var bytes = _bytes.GetBytes(ReadVarint32());
+            var bytes = _bytes.GetAllBytes();
             var value = Encoding.UTF8.GetString(bytes.Array, bytes.Offset, bytes.Count);
             return value;
         }
@@ -158,7 +158,19 @@ namespace ProtoSharp.Core
             {
                 var tag = ReadVarint32();
                 if(helper.TryGetFieldReader(tag, out field))
+                {
+                    if((tag & (int)WireType.String) != 0)
+                        field(target, CreateSubReader(ReadVarint32()));
+                    else
+                        field(target, this);
+                }
+                else if(MessageTag.GetWireType(tag) == WireType.StartGroup
+                    && helper.TryGetFieldReader(MessageTag.MakeTag(MessageTag.GetNumber(tag), WireType.String), out field))
+                {
                     field(target, this);
+                }
+                else if(MessageTag.GetWireType(tag) == WireType.EndGroup)
+                    break;
                 else
                     OnMissingField(EventArgs.Empty);
             }

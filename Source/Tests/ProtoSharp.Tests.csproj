@@ -67,7 +67,6 @@
     <Compile Include="Messages\WithVarint64.cs" />
     <Compile Include="MessageWriterTests.cs" />
     <Compile Include="NullableFieldIOTests.cs" />
-    <Compile Include="ProtocolBufferTests.cs" />
     <Compile Include="RepeatedFileIOTests.cs" />
     <Compile Include="SerializerTests.cs" />
     <Compile Include="UnixTimeTests.cs" />
