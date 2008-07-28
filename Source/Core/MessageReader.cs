@@ -176,8 +176,6 @@ namespace ProtoSharp.Core
             return type.GetConstructor(Type.EmptyTypes).Invoke(null);
         }
 
-        static Dictionary<Type, Dictionary<int, FieldReader>> s_readerCache = new Dictionary<Type, Dictionary<int, FieldReader>>();
-
         IByteReader _bytes;
     }
 }

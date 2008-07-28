@@ -1,7 +1,6 @@
-Solving the streaming problem.
-Performance benchmarks.
-	excluding Varint32
-Build file.
-Required fields.
-Descriptor generation.
-.proto generation.
+* Handle missing fields.
+* Group/End Group support.
+* Build file.
+* Required fields.
+* Descriptor generation.
+* .proto generation.

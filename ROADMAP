@@ -1,0 +1,12 @@
+Proto# Roadmap
+
+0.1
+  * Support all standard types and encodings.
+  * Speed comparable to other offerings, protobuf-net, dotnet-protobufs
+  * Handle missing fields.
+
+0.2
+  * Generate ProtoDesc. from any class.
+  * Create assembly from ProtoDesc.
+  * Generate code from ProtoDesc via CodeDom
+  * Generate .proto from ProtoDesc.

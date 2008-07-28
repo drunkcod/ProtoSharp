@@ -47,7 +47,6 @@ namespace ProtoSharp.Core
         public virtual void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
         { }
 
-
         public void AppendWriteBody(ILGenerator il)
         {
             _fieldIO.AppendWrite(il, this);            
