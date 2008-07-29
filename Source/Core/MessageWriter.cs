@@ -16,19 +16,19 @@ namespace ProtoSharp.Core
             new MessageWriter(output).WriteMessage(message);
             return output.ToArray();
         }
+
         public MessageWriter(Stream output)
         {
             _writer = new BinaryWriter(output);
         }
 
-        public void WriteVarint(int value)
+        public MessageWriter WriteVarint(int value)
         {
             if(value < 0)
-                WriteVarint((UInt64)value);
-            else
-                WriteVarint((uint)value);
+                return WriteVarint((UInt64)value);
+            return WriteVarint((uint)value);
         }
-        public void WriteVarint(uint value)
+        public MessageWriter WriteVarint(uint value)
             {//Special case for performance, single byte is *very* common.
             if(value < 0x80)
                 _writer.Write((byte)value);
@@ -47,10 +47,11 @@ namespace ProtoSharp.Core
                         bits |= 0x80;
                     _writer.Write(bits);
                 } while(value != 0);
+            return this;
         }
 
-        public void WriteVarint(Int64 value) { WriteVarint((UInt64)value); }
-        public void WriteVarint(UInt64 value)
+        public MessageWriter WriteVarint(Int64 value) { return WriteVarint((UInt64)value); }
+        public MessageWriter WriteVarint(UInt64 value)
         {
             do
             {
@@ -60,37 +61,40 @@ namespace ProtoSharp.Core
                     bits |= 0x80;
                 _writer.Write(bits);
             } while(value != 0);
+            return this;
         }
 
-        public void WriteVarint(bool value) { WriteVarint(Convert.ToInt32(value)); }
+        public MessageWriter WriteVarint(bool value) { return WriteVarint(Convert.ToInt32(value)); }
 
-        public void WriteZigZag(int value)
+        public MessageWriter WriteZigZag(int value)
         {
-            WriteVarint(value << 1 ^ value >> 31);
+            return WriteVarint(value << 1 ^ value >> 31);
         }
 
-        public void WriteZigZag(Int64 value)
+        public MessageWriter WriteZigZag(Int64 value)
         {
-            WriteVarint(value << 1 ^ value >> 63);
+            return WriteVarint(value << 1 ^ value >> 63);
         }
 
-        public void WriteString(string value)
+        public MessageWriter WriteString(string value)
         {
             if(value == null)
-                return;
+                return this;
             WriteVarint(value.Length);
             _writer.Write(Encoding.UTF8.GetBytes(value));
+            return this;
         }
 
-        public void WriteBytes(byte[] value)
+        public MessageWriter WriteBytes(byte[] value)
         {
-            WriteBytes(value, value.Length);
+            return WriteBytes(value, value.Length);
         }
 
-        public void WriteBytes(byte[] value, int length)
+        public MessageWriter WriteBytes(byte[] value, int length)
         {
             WriteVarint(length);
             _writer.Write(value, 0, length);
+            return this;
         }
 
         public void WriteMessage<T>(T message)
@@ -98,34 +102,34 @@ namespace ProtoSharp.Core
             SerializerHelper<T>.FieldWriter(message, this);
         }
 
-        public void WriteFixed(int value) { _writer.Write(value); }
+        public MessageWriter WriteFixed(int value) { _writer.Write(value); return this; }
 
-        public void WriteFixed(uint value) { _writer.Write(value); }
+        public MessageWriter WriteFixed(uint value) { _writer.Write(value); return this; }
 
-        public void WriteFixed(float value) { _writer.Write(value); }
+        public MessageWriter WriteFixed(float value) { _writer.Write(value); return this; }
 
-        public void WriteFixed(long value) { _writer.Write(value); }
+        public MessageWriter WriteFixed(long value) { _writer.Write(value); return this; }
 
-        public void WriteFixed(ulong value) { _writer.Write(value); }
+        public MessageWriter WriteFixed(ulong value) { _writer.Write(value); return this; }
 
-        public void WriteFixed(double value) { _writer.Write(value); }
+        public MessageWriter WriteFixed(double value) { _writer.Write(value); return this; }
 
-        public void WriteDateTime(DateTime date)
+        public MessageWriter WriteDateTime(DateTime date)
         {
-            WriteVarint(UnixTime.From(date));
+            return WriteVarint(UnixTime.From(date));
         }
 
-        public void WriteObject<T>(T obj)
+        public MessageWriter WriteObject<T>(T obj)
         {
             var embedded = new MemoryStream();
             var writer = new MessageWriter(embedded);
             writer.WriteMessage(obj);
-            WriteBytes(embedded.GetBuffer(), (int)embedded.Length);
+            return WriteBytes(embedded.GetBuffer(), (int)embedded.Length);
         }
 
-        public void WriteHeader(int tag, WireType wireType)
+        public MessageWriter WriteHeader(int tag, WireType wireType)
         {
-            WriteVarint(tag << 3 | (int)wireType);
+            return WriteVarint(new MessageTag(tag, wireType).Value);
         }
 
         BinaryWriter _writer;

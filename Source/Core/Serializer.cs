@@ -66,22 +66,25 @@ namespace ProtoSharp.Core
 
     class SerializerHelper<T>
     {
-        public bool TryGetFieldReader(int header, out FieldReader<T> reader)
+        public bool TryGetFieldReader(MessageTag tag, out FieldReader<T> reader)
         {
-            if(header == _current.Key)
-            {
-                reader = _current.Value;
+            if(FindReader(tag.Value, out reader))
                 return true;
-            }
-            return FindReader(header, out reader);
+            return tag.WireType == WireType.StartGroup && FindReader(tag.WithWireType(WireType.String), out reader);
         }
         
         static readonly KeyValuePair<int, FieldReader<T>>[] s_fields =  GetFields();
 
         public static readonly FieldWriter<T> FieldWriter = GetWriter();
 
+        //Optimized for the common case where fields are seen in incresing number order.
         bool FindReader(int header, out FieldReader<T> reader)
         {
+            if(header == _current.Key)
+            {
+                reader = _current.Value;
+                return true;
+            }
             if(header > _current.Key)
             {
                 for(int i = _position + 1; i != s_fields.Length; ++i)
@@ -96,18 +99,15 @@ namespace ProtoSharp.Core
                     }
                 }
             }
-            else
+            for(int i = _position; i > 0; -- i)
             {
-                for(int i = _position; i > 0; -- i)
+                var current = s_fields[i];
+                if(current.Key == header)
                 {
-                    var current = s_fields[i];
-                    if(current.Key == header)
-                    {
-                        _position = i;
-                        _current = current;
-                        reader = current.Value;
-                        return true;
-                    }
+                    _position = i;
+                    _current = current;
+                    reader = current.Value;
+                    return true;
                 }
             }
             reader = null;

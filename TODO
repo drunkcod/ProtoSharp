@@ -1,5 +1,4 @@
-* Handle missing fields.
-* Group/End Group support.
+* Handle unknown enum value as missing field.
 * Build file.
 * Required fields.
 * Descriptor generation.

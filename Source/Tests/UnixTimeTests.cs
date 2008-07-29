@@ -4,7 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using ProtoSharp.Core;
 
-namespace ProtoSharp.Tests
+namespace ProtoSharp.Core
 {
     [TestFixture]
     public class UnixTimeTests

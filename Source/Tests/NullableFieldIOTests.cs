@@ -5,7 +5,7 @@ using ProtoSharp.Core;
 using System;
 using ProtoSharp.Tests.Messages;
 
-namespace ProtoSharp.Tests
+namespace ProtoSharp.Core
 {
     [TestFixture]
     public class NullableFieldIOTests

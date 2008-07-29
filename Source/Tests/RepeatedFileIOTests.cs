@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using ProtoSharp.Core;
 
-namespace ProtoSharp.Tests
+namespace ProtoSharp.Core
 {
     public class MinimalCollection
     {

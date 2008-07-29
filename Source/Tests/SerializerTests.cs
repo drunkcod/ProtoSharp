@@ -5,7 +5,7 @@ using NUnit.Framework;
 using ProtoSharp.Tests.Messages;
 using ProtoSharp.Core;
 
-namespace ProtoSharp.Tests
+namespace ProtoSharp.Core
 {
     [TestFixture]
     public class SerializerTests

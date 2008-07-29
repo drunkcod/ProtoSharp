@@ -8,7 +8,7 @@
     <ProjectGuid>{AE3523C9-ED85-414F-BAF3-9A5DFEE9151E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProtoSharp.Tests</RootNamespace>
+    <RootNamespace>ProtoSharp.Core</RootNamespace>
     <AssemblyName>ProtoSharp.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -70,6 +70,8 @@
     <Compile Include="RepeatedFileIOTests.cs" />
     <Compile Include="SerializerTests.cs" />
     <Compile Include="UnixTimeTests.cs" />
+    <Compile Include="UnknownFieldCollectionTests.cs" />
+    <Compile Include="UnkownFieldTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">

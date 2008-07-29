@@ -42,12 +42,12 @@ namespace ProtoSharp.Core
 
             AppendWriteHeader(il, field);
 
-            il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldloc, enumerator.LocalIndex);
             il.Emit(OpCodes.Callvirt, enumeratorType.GetProperty("Current").GetGetMethod());
             if(enumeratorType == typeof(IEnumerator))
                 il.Emit(OpCodes.Unbox_Any, FieldType);
             field.AppendWriteField(il);
+            il.Emit(OpCodes.Pop);
 
             il.MarkLabel(next);
             il.Emit(OpCodes.Ldloc, enumerator.LocalIndex);

@@ -34,10 +34,10 @@ namespace ProtoSharp.Core
             field.AppendGuard(il, _property.GetGetMethod(), done);
             AppendWriteHeader(il, field);
 
-            il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Call, _property.GetGetMethod());
             field.AppendWriteField(il);
+            il.Emit(OpCodes.Pop);
             il.MarkLabel(done);
         }
 

@@ -4,10 +4,8 @@ using System.IO;
 using ProtoSharp.Core;
 using ProtoSharp.Tests.Messages;
 
-namespace ProtoSharp.Tests
+namespace ProtoSharp.Core
 {
-    using MessageWriter = ProtoSharp.Core.MessageWriter;
-
     [TestFixture]
     public class MessageWriterTests
     {

@@ -21,7 +21,7 @@ namespace ProtoSharp.Performance
         public override void Serialize(MessageWithFixed64 item) { _writer.WriteFixed(item.Signed); _writer.WriteFixed(item.Unsigned); _writer.WriteFixed(item.Double); }
         public override void Serialize(MessageWithString item) { _writer.WriteString(item.Value); }
         public override void Serialize(MessageWithBytes item) { _writer.WriteBytes(item.Value); }
-        public override void Serialize(MessageWithRepeatedItem item) { item.Value.ForEach(_writer.WriteVarint); }
+        public override void Serialize(MessageWithRepeatedItem item) { item.Value.ForEach(x => _writer.WriteVarint(x)); }
         public override void Serialize(Person item) { throw new NotSupportedException(); }
 
         public override void Deserialize(out MessageWithInt32 item) { item = new MessageWithInt32() { Value = _reader.ReadVarint32() }; }

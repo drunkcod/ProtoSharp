@@ -6,6 +6,18 @@ using System.IO;
 
 namespace ProtoSharp.Core
 {
+    public class MessageReaderMissingFieldsEventArgs : EventArgs 
+    {
+        public MessageReaderMissingFieldsEventArgs(UnknownFieldCollection fields)
+        {
+            _fields = fields;
+        }
+
+        public UnknownFieldCollection Fields { get { return _fields; } }
+
+        UnknownFieldCollection _fields;
+    }
+
     public class MessageReader
     {
         public static T Read<T>(byte[] message) where T: class, new()
@@ -18,19 +30,15 @@ namespace ProtoSharp.Core
             return new MessageReader(new ByteReader(stream)).Read<T>();
         }
 
+        public MessageReader(Stream stream) : this(new ByteReader(stream)) { }
         public MessageReader(IByteReader bytes)
         {
             _bytes = bytes;
         }
 
-        public MessageReader(byte[] message) : this(new ByteArrayReader(message, 0, message.Length)) { }
+        public MessageReader(params byte[] message) : this(new ByteArrayReader(message, 0, message.Length)) { }
 
-        public event EventHandler FieldMissing;
-
-        public MessageReader CreateSubReader(int length)
-        {
-            return new MessageReader(_bytes.GetByteReader(length));
-        }
+        public event EventHandler<MessageReaderMissingFieldsEventArgs> MissingFields;
 
         public bool ReadBool()
         {
@@ -67,7 +75,7 @@ namespace ProtoSharp.Core
                 bits = _bytes.GetByte();
                 value |= (bits & 0x7F) << shiftBits;
                 shiftBits += 7;
-            } while(bits > 0x7F);
+            } while(bits > 0x7F && shiftBits < 64);
             return value;
         }
 
@@ -154,38 +162,36 @@ namespace ProtoSharp.Core
         {
             FieldReader<T> field = null;
             var helper = new SerializerHelper<T>();
+            var unknown = new UnknownFieldCollection();
             while(!_bytes.EndOfStream)
             {
-                var tag = ReadVarint32();
+                var tag = ReadMessageTag();
                 if(helper.TryGetFieldReader(tag, out field))
                 {
-                    if((tag & (int)WireType.String) != 0)
+                    if(tag.WireType == WireType.String)
                         field(target, CreateSubReader(ReadVarint32()));
                     else
                         field(target, this);
                 }
-                else if(MessageTag.GetWireType(tag) == WireType.StartGroup
-                    && helper.TryGetFieldReader(MessageTag.MakeTag(MessageTag.GetNumber(tag), WireType.String), out field))
-                {
-                    field(target, this);
-                }
-                else if(MessageTag.GetWireType(tag) == WireType.EndGroup)
+                else if(tag.WireType == WireType.EndGroup)
                     break;
                 else
-                    OnMissingField(EventArgs.Empty);
+                    unknown.Add(tag, this);
             }
+            if(unknown.Count != 0)
+                OnMissingFields(new MessageReaderMissingFieldsEventArgs(unknown));
             return target;
         }
 
-        public void OnMissingField(EventArgs e)
+        void OnMissingFields(MessageReaderMissingFieldsEventArgs e)
         {
-            if(FieldMissing != null)
-                FieldMissing(this, EventArgs.Empty);
+            if(MissingFields != null)
+                MissingFields(this, e);
         }
 
-        static object CreateDefault(Type type)
+        internal MessageReader CreateSubReader(int length)
         {
-            return type.GetConstructor(Type.EmptyTypes).Invoke(null);
+            return new MessageReader(_bytes.GetByteReader(length));
         }
 
         IByteReader _bytes;

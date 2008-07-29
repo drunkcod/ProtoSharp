@@ -33,14 +33,13 @@ namespace ProtoSharp.Core
 
             var tmp = il.DeclareLocal(typeof(Nullable<>).MakeGenericType(FieldType));
 
-            il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Call, _property.GetGetMethod());
             il.Emit(OpCodes.Stloc, tmp.LocalIndex);
             il.Emit(OpCodes.Ldloca, tmp.LocalIndex);
             il.Emit(OpCodes.Call, typeof(Nullable<>).MakeGenericType(FieldType).GetProperty("Value").GetGetMethod());
             field.AppendWriteField(il);
-            
+            il.Emit(OpCodes.Pop);            
             il.MarkLabel(done);
         }
 

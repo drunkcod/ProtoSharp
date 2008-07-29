@@ -1,13 +1,11 @@
-﻿using ProtoSharp.Core;
+﻿using System;
+using System.IO;
+using ProtoSharp.Core;
 using ProtoSharp.Tests.Messages;
 using NUnit.Framework;
 
-namespace ProtoSharp.Tests
+namespace ProtoSharp.Core
 {
-    using System;
-    using MessageWriter = ProtoSharp.Core.MessageWriter;
-    using System.IO;
-
     [TestFixture]
     public class MessageReaderTests
     {
@@ -75,7 +73,7 @@ namespace ProtoSharp.Tests
         {
             var reader = new MessageReader(EncodingTests.Test2Testing);
             bool fieldMissingRaised = false;
-            reader.FieldMissing += (sender, e) => fieldMissingRaised = true;
+            reader.MissingFields += (sender, e) => fieldMissingRaised = true;
            
             reader.Read<Test1>();
 
@@ -232,6 +230,22 @@ namespace ProtoSharp.Tests
                 0x08, 0x96, 0x01, //Submessage
                 3 << 3 | (int)WireType.EndGroup
             }).C.A);
+        }
+        [Test]
+        public void Read_ShouldRaiseMissingFieldsContainingAllMissingFields()
+        {
+            var input = new MemoryStream();
+            new MessageWriter(input)
+                .WriteHeader(2, WireType.Varint).WriteVarint(42)
+                .WriteHeader(3, WireType.String).WriteString("Hello World!");
+            input.Position = 0;
+            var reader = new MessageReader(input);
+            UnknownFieldCollection unknown = null;
+            reader.MissingFields += (sender, e) => unknown = e.Fields;
+
+            reader.Read<Test1>();
+
+            Assert.AreEqual(2, unknown.Count);
         }
     }
 }

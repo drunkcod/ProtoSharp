@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using ProtoSharp.Core;
 
-namespace ProtoSharp.Tests
+namespace ProtoSharp.Core
 {
     /*
      * Theese are taken from the documentation page at:
