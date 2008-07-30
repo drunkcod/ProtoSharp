@@ -6,14 +6,14 @@ namespace ProtoSharp.Core
 {
     public static class UnixTime
     {
-        public static readonly DateTime Epoch = new DateTime(1971, 1, 1);
+        public static readonly DateTime Epoch = new DateTime(1970, 1, 1);
 
-        public static int From(DateTime date)
+        public static long From(DateTime date)
         {
-            return (int)((date - Epoch).Ticks / TimeSpan.TicksPerMillisecond);
+            return (date - Epoch).Ticks / TimeSpan.TicksPerMillisecond;
         }
 
-        public static DateTime ToDateTime(int unixTime)
+        public static DateTime ToDateTime(long unixTime)
         {
             return Epoch.AddMilliseconds(unixTime);
         }

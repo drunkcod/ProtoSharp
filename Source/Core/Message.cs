@@ -10,14 +10,17 @@ namespace ProtoSharp.Core
     {
         public static void ForEachField(Type messageType, Action<MessageField> action)
         {
+            var fields = new List<MessageField>();
             Array.ForEach(messageType.GetProperties(), field =>
             {
                 var attributes = field.GetCustomAttributes(typeof(TagAttribute), false);
                 if(attributes.Length == 0)
                     return;
                 var tag = attributes[0] as TagAttribute;
-                action(MessageField.Create(tag, field));
+                fields.Add(MessageField.Create(tag, field));
             });
+            fields.Sort((x, y) => x.Number - y.Number);
+            fields.ForEach(action);
         }
 
         public static int CountFields(object obj)

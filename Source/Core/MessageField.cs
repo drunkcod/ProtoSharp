@@ -26,7 +26,7 @@ namespace ProtoSharp.Core
             _fieldIO = fieldIO;
         }
 
-        public int Tag { get { return _header >> 3; } }
+        public int Number { get { return _header >> 3; } }
         public int Header { get { return _header; } }
         public bool CanAppendWrite { get { return _fieldIO.CanCreateWriter && CanAppendWriteCore; } }
         public bool CanAppendRead { get { return _fieldIO.CanCreateReader && CanAppendReadCore; } }

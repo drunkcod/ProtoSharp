@@ -7,50 +7,8 @@ using ProtoSharp.Tests.Messages;
 namespace ProtoSharp.Core
 {
     [TestFixture]
-    public class MessageWriterTests
+    public class MessageWriterClassTests
     {
-        [Test]
-        public void WriteVarint_ShouldStore32BitMinusOneInTenBytes()
-        {
-            var output = new MemoryStream();
-            new MessageWriter(output).WriteVarint(-1);
-            Assert.AreEqual(10, output.Length);
-        }
-        [Test]
-        public void WriteVarint_ShouldStore150InTwoBytes()
-        {
-            var output = new MemoryStream();
-            new MessageWriter(output).WriteVarint(150);
-            Assert.AreEqual(new byte[] { 0x96, 0x01 }, output.ToArray());
-        }
-        [Test]
-        public void WriteVarint_ShouldStoreSingleByte42()
-        {
-            var output = new MemoryStream();
-            new MessageWriter(output).WriteVarint(42);
-            Assert.AreEqual(new byte[] { 42 }, output.ToArray());
-        }
-        [Test]
-        public void WriteVarint_ShouldStoreSingleByteFor42L()
-        {
-            var output = new MemoryStream();
-            new MessageWriter(output).WriteVarint(42L);
-            Assert.AreEqual(new byte[] { 42 }, output.ToArray());
-        }
-        [Test]
-        public void WriteVarint_ShouldStore0x4000InThreeBytes()
-        {
-            var output = new MemoryStream();
-            new MessageWriter(output).WriteVarint(0x4000);
-            Assert.AreEqual(new byte[] { 0x80, 0x80, 1 }, output.ToArray());
-        }
-        [Test]
-        public void WriteVarint_ShouldStoreNineBytesForMaxInt64()
-        {
-            var output = new MemoryStream();
-            new MessageWriter(output).WriteVarint(Int64.MaxValue);
-            Assert.AreEqual(9, output.ToArray().Length);
-        }
         [Test]
         public void WriteString_ShouldStoreByteCountFirst()
         {
@@ -225,23 +183,16 @@ namespace ProtoSharp.Core
             Assert.AreEqual(10, output.Length);
         }
 
-        class MessageWithString
-        {
-            [Tag(1)]
-            public string Value { get; set; }
-        }
-        [Test]
-        public void WriteMessage_ShouldTreatNullStringAsEmpty()
-        {
-            var output = new MemoryStream();
-            new MessageWriter(output).WriteMessage(new MessageWithString());
-            Assert.AreEqual(new byte[0], output.ToArray());
-        }
         [Test]
         public void WriteMessage_ShouldHandleDateTime()
         {
+            var output = new MemoryStream();
             var timeStamp = new DateTime(2008, 07, 25);
-            Assert.AreEqual(MessageWriter.Write(new Test1(){ A = UnixTime.From(timeStamp)}),
+
+            new MessageWriter(output)
+                .WriteHeader(1, WireType.Varint)
+                .WriteZigZag(UnixTime.From(timeStamp));
+            Assert.AreEqual(output.ToArray(),
             MessageWriter.Write(new MessageWithDateTime() { TimeStamp = timeStamp }));
         }
         [Test]
@@ -274,6 +225,34 @@ namespace ProtoSharp.Core
                 2 << 3 | (int)WireType.Fixed64, 0, 0, 0 ,0 ,0 ,0 ,0 ,0,
                 3 << 3 | (int)WireType.Fixed64, 0, 0, 0 ,0 ,0 ,0 ,0 ,0
             }, MessageWriter.Write(new WithFixed64() { Int64 = 0, UInt64 = 0, Double = 0 }));
+        }
+        [Test]
+        public void WriteMessage_ShouldSkipNullableFieldsWithoutValue()
+        {
+            Assert.AreEqual(new byte[0], MessageWriter.Write(new Test1Nullable()));
+        }
+
+        class MessageWithEmbeddedNullable
+        {
+            [Tag(1)]
+            public Test1Nullable Value { get { return _value; } set { _value = value; } }
+
+            Test1Nullable _value = new Test1Nullable();
+        }
+        [Test]
+        public void WriteMessage_ShouldHandleEmbeddedEmptyMessages()
+        {
+            Assert.AreEqual(new byte[] { 1 << 3 | (byte)WireType.String, 0 }, MessageWriter.Write(new MessageWithEmbeddedNullable()));
+        }
+        [Test]
+        public void WriteDateTime_ShouldHandle_1996_07_04()
+        {
+            var output = new MemoryStream();
+            new MessageWriter(output).WriteDateTime(new DateTime(1996, 7, 4));
+            Assert.AreEqual(new byte[] 
+            {
+                0x80, 0xf0, 0xe8, 0xf9, 0xd7, 0x30
+            }, output.ToArray());              
         }
 
         unsafe static byte[] AsBytes(float value)

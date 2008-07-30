@@ -28,18 +28,23 @@ namespace ProtoSharp.Core
         public override void AppendWrite(ILGenerator il, MessageField field)
         {
             var done = il.DefineLabel();
-            field.AppendGuard(il, _property.GetGetMethod(), done);
-            AppendWriteHeader(il, field);
-
             var tmp = il.DeclareLocal(typeof(Nullable<>).MakeGenericType(FieldType));
 
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Call, _property.GetGetMethod());
             il.Emit(OpCodes.Stloc, tmp.LocalIndex);
+
+            il.Emit(OpCodes.Ldloca, tmp.LocalIndex);
+            il.Emit(OpCodes.Call, typeof(Nullable<>).MakeGenericType(FieldType).GetProperty("HasValue").GetGetMethod());
+            il.Emit(OpCodes.Brfalse_S, done);
+
+            field.AppendGuard(il, _property.GetGetMethod(), done);
+            AppendWriteHeader(il, field);
+
             il.Emit(OpCodes.Ldloca, tmp.LocalIndex);
             il.Emit(OpCodes.Call, typeof(Nullable<>).MakeGenericType(FieldType).GetProperty("Value").GetGetMethod());
             field.AppendWriteField(il);
-            il.Emit(OpCodes.Pop);            
+            il.Emit(OpCodes.Pop);
             il.MarkLabel(done);
         }
 

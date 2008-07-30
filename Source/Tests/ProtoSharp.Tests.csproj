@@ -66,6 +66,9 @@
     <Compile Include="Messages\WithVarint32.cs" />
     <Compile Include="Messages\WithVarint64.cs" />
     <Compile Include="MessageWriterTests.cs" />
+    <Compile Include="MessageWriterTests\WriteMessageTests.cs" />
+    <Compile Include="MessageWriterTests\WriteStringTests.cs" />
+    <Compile Include="MessageWriterTests\WriteVarintTests.cs" />
     <Compile Include="NullableFieldIOTests.cs" />
     <Compile Include="RepeatedFileIOTests.cs" />
     <Compile Include="SerializerTests.cs" />

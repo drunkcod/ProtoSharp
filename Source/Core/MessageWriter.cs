@@ -80,9 +80,7 @@ namespace ProtoSharp.Core
         {
             if(value == null)
                 return this;
-            WriteVarint(value.Length);
-            _writer.Write(Encoding.UTF8.GetBytes(value));
-            return this;
+            return WriteBytes(Encoding.UTF8.GetBytes(value));
         }
 
         public MessageWriter WriteBytes(byte[] value)
@@ -116,7 +114,7 @@ namespace ProtoSharp.Core
 
         public MessageWriter WriteDateTime(DateTime date)
         {
-            return WriteVarint(UnixTime.From(date));
+            return WriteZigZag(UnixTime.From(date));
         }
 
         public MessageWriter WriteObject<T>(T obj)

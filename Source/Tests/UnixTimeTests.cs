@@ -10,6 +10,11 @@ namespace ProtoSharp.Core
     public class UnixTimeTests
     {
         [Test]
+        public void ShouldBegin1970_01_01()
+        {
+            Assert.AreEqual(new DateTime(1970, 1, 1), UnixTime.Epoch);
+        }
+        [Test]
         public void From_ShouldBeZeroForStartOfEpoch()
         {
             Assert.AreEqual(0, UnixTime.From(UnixTime.Epoch));
