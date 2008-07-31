@@ -247,5 +247,10 @@ namespace ProtoSharp.Core
 
             Assert.AreEqual(2, unknown.Count);
         }
+        [Test,ExpectedException(typeof(NotSupportedException))]
+        public void Read_ShouldThrowNotSupportedForInvalidWireType()
+        {
+            new MessageReader(0xF).Read<Test1>();
+        }
     }
 }

@@ -175,8 +175,10 @@ namespace ProtoSharp.Core
                 }
                 else if(tag.WireType == WireType.EndGroup)
                     break;
-                else
+                else if(tag.WireType < WireType.MaxValid)
                     unknown.Add(tag, this);
+                else
+                    throw new NotSupportedException();
             }
             if(unknown.Count != 0)
                 OnMissingFields(new MessageReaderMissingFieldsEventArgs(unknown));
