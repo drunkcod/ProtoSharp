@@ -66,10 +66,6 @@ namespace ProtoSharp.Core
             il.Emit(OpCodes.Callvirt, _add);
 
         }
-        public override void Read(object target, object value)
-        {
-            _add.Invoke(_property.GetValue(target, null), new object[]{ value});
-        }
 
         RepeatedFieldIO(PropertyInfo property, MethodInfo add, MethodInfo getEnumerator) : base(property)
         {

@@ -25,5 +25,24 @@ namespace ProtoSharp.Core.MessageWriterTests
                 24, 0
             }, MessageWriter.Write(new MessageWithMultipleFieldsInWonkyOrder()));
         }
+
+        class MessageWithOddCollection
+        {
+            [Tag(1)]
+            public MinimalCollection<int> Values { get; set; } 
+
+        }
+        [Test]
+        public void ShouldHandleRepeatedItemWithNonGenericEnumeratorButTypedAdd()
+        {
+            Assert.AreEqual(new byte[]
+            {
+                8, 1, 
+                8, 2
+            }, MessageWriter.Write(new MessageWithOddCollection()
+            {
+                Values = new MinimalCollection<int>(1, 2)
+            }));
+        }
     }
 }

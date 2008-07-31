@@ -99,7 +99,7 @@ namespace ProtoSharp.Core
                     }
                 }
             }
-            for(int i = _position; i > 0; -- i)
+            for(int i = _position; i-- > 0;)
             {
                 var current = s_fields[i];
                 if(current.Key == header)
@@ -138,7 +138,7 @@ namespace ProtoSharp.Core
             return fieldWriter;
         }
 
-        int _position = 0;
-        KeyValuePair<int, FieldReader<T>> _current = s_fields[0];
+        int _position = -1;
+        KeyValuePair<int, FieldReader<T>> _current;
     }
 }

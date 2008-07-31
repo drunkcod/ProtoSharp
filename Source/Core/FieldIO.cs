@@ -4,10 +4,7 @@ using System.Reflection.Emit;
 
 namespace ProtoSharp.Core
 {
-    public delegate void FieldWriter(object obj, MessageWriter writer);
     public delegate void FieldWriter<T>(T source, MessageWriter writer);
-
-    public delegate void FieldReader(object obj, MessageReader reader);
     public delegate void FieldReader<T>(T target, MessageReader reader);
 
     public interface  IFieldIO
@@ -15,13 +12,9 @@ namespace ProtoSharp.Core
         Type FieldType { get; }
         bool CanCreateWriter { get; }
         bool CanCreateReader { get; }
-        bool CreateWriter(MessageField field, out FieldWriter writer);
-        bool CreateWriter<T>(MessageField field, out FieldWriter<T> writer);
-        bool CreateReader(MessageField field, out FieldReader reader);
         bool CreateReader<T>(MessageField field, out FieldReader<T> reader);
         void AppendWrite(ILGenerator il, MessageField field);
         void AppendRead(ILGenerator il, MessageField fiel);
-        void Read(object target, object value);
     }
 
     class FieldIO : FieldIOBase
@@ -47,11 +40,6 @@ namespace ProtoSharp.Core
             il.Emit(OpCodes.Ldarg_1);
             field.AppendReadField(il);
             il.Emit(OpCodes.Call, _property.GetSetMethod());
-        }
-
-        public override void Read(object target, object value)
-        {
-            _property.SetValue(target, value, null);
         }
     }
 }

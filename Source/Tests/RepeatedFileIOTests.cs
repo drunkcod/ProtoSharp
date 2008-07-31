@@ -4,17 +4,23 @@ using NUnit.Framework;
 
 namespace ProtoSharp.Core
 {
-    public class MinimalCollection
+    public class MinimalCollection<T>
     {
-        public IEnumerator GetEnumerator() { yield break; }
-        public void Add(object obj) { }
+        public MinimalCollection(params object[] items) 
+        {
+            _items = items;
+        }
 
+        public IEnumerator GetEnumerator() { return _items.GetEnumerator(); }
+        public void Add(T obj) { }
+
+        object[] _items;
     }
 
     [TestFixture]
     public class RepeatedFileIOTests
     {
-        public MinimalCollection MinimalCollection { get { return new MinimalCollection(); } }
+        public MinimalCollection<object> MinimalCollection { get { return new MinimalCollection<object>(); } }
         public List<int> ListOfInt { get { return new List<int>(); } }
 
         [Test]
@@ -43,17 +49,5 @@ namespace ProtoSharp.Core
 
             List<T> _list;
         }
-        [Test]
-        public void Read_ShouldCallAdd()
-        {
-            var target = new ClassWithList<int>(new List<int>());
-            IFieldIO io;
-            RepeatedFieldIO.TryCreate(target.GetType().GetProperty("List"), out io);
-
-            io.Read(target, 42);
-
-            Assert.AreEqual(42, target.List[0]);
-        }
-
     }
 }

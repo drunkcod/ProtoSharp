@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using ProtoSharp.Core.UnknownFields;
 
 namespace ProtoSharp.Core
 {
@@ -205,7 +206,7 @@ namespace ProtoSharp.Core
                         }
                         catch(UnknownEnumException e)
                         {
-                            missing.Add(new UnknownField(tag, e.Value));
+                            missing.Add(new UnknownFieldVarint(tag, e.Value));
                         }
                 }
                 else if(tag.WireType == WireType.EndGroup)

@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using NUnit.Framework;
-using ProtoSharp.Core;
 
 namespace ProtoSharp.Core
 {
@@ -58,6 +58,25 @@ namespace ProtoSharp.Core
             reader.GetByteReader((int)input.Length);
 
             Assert.IsTrue(reader.EndOfStream);
+        }
+        [Test]
+        public void GetFloat_ShouldBeCompatibleWithWriteFloat()
+        {
+            var input = new MemoryStream();
+            new MessageWriter(input).WriteFixed((float)Math.PI);
+            input.Position = 0;
+
+            Assert.AreEqual((float)Math.PI, new ByteReader(input).GetFloat());
+        }
+        [Test]
+        public void GetAllBytes_ShouldConsumeWholeStream()
+        {
+            var input = new MemoryStream();
+            input.Write(new byte[]{ 1, 2, 3}, 0, 3);
+            input.Position = 0;
+            var bytes = new ByteReader(input).GetAllBytes();
+
+            Assert.AreEqual(new byte[] { 1, 2, 3 }, bytes.Array);
         }
     }
 }

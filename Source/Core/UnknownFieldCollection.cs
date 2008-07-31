@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace ProtoSharp.Core
 {
@@ -16,6 +15,16 @@ namespace ProtoSharp.Core
         public void Add(MessageTag tag, MessageReader reader) 
         {
             Add(UnknownField.Create(tag, reader));
+        }
+
+        public void Serialize(Stream stream)
+        {
+            Serialize(new MessageWriter(stream));
+        }
+
+        public void Serialize(MessageWriter writer)
+        {
+            _fields.ForEach(x => x.Serialize(writer));
         }
 
         internal void Add(UnknownField unknown)

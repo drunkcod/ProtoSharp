@@ -82,6 +82,7 @@
     <Compile Include="UnknownFields\UnknownFieldFixed64.cs" />
     <Compile Include="UnknownFields\UnknownFieldGroup.cs" />
     <Compile Include="UnknownFields\UnknownFieldString.cs" />
+    <Compile Include="UnknownFields\UnknownFieldVarint.cs" />
     <Compile Include="WireType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

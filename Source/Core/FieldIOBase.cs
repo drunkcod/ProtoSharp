@@ -11,30 +11,6 @@ namespace ProtoSharp.Core
         public bool CanCreateWriter { get { return true; } }
         public bool CanCreateReader { get { return true; } }
 
-        public bool CreateWriter(MessageField field, out FieldWriter writer)
-        {
-            var builder = Message.BeginWriteMethod(_property.DeclaringType, typeof(object));
-            AppendWrite(builder.GetILGenerator(), field);
-            writer = Message.EndMethod<FieldWriter>(builder);
-            return true;
-        }
-
-        public bool CreateWriter<T>(MessageField field, out FieldWriter<T> writer)
-        {
-            var builder = Message.BeginWriteMethod(_property.DeclaringType, typeof(T));
-            AppendWrite(builder.GetILGenerator(), field);
-            writer = Message.EndMethod<FieldWriter<T>>(builder);
-            return true;
-        }
-
-        public bool CreateReader(MessageField field, out FieldReader reader)
-        {
-            var builder = Message.BeginReadMethod(_property.DeclaringType, typeof(object));
-            AppendRead(builder.GetILGenerator(), field);
-            reader = Message.EndMethod<FieldReader>(builder);
-            return true;
-        }
-
         public bool CreateReader<T>(MessageField field, out FieldReader<T> reader)
         {
             var builder = Message.BeginReadMethod(_property.DeclaringType, typeof(T));
@@ -43,7 +19,6 @@ namespace ProtoSharp.Core
             return true;
         }
 
-        public abstract void Read(object target, object value);
         public abstract void AppendWrite(ILGenerator il, MessageField field);
         public abstract void AppendRead(ILGenerator il, MessageField field);
 

@@ -1,5 +1,6 @@
 * UnknownFieldCollection.Serialize(Stream)
 * UnknownFieldCollection.GetEnumerator()
+* Submessage optimization, start assuming 1byte length move on overflow.
 * Build file.
 * Required fields.
 * Descriptor generation.

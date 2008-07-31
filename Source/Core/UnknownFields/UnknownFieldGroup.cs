@@ -15,5 +15,10 @@ namespace ProtoSharp.Core.UnknownFields
                 group.Add(new MessageTag(tag), reader);
             return group;
         }
+
+        protected override void SerializeCore(MessageWriter writer)
+        {
+            (Value as UnknownFieldCollection).Serialize(writer);
+        }
     }
 }

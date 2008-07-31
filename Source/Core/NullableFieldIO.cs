@@ -20,11 +20,6 @@ namespace ProtoSharp.Core
 
         public override Type FieldType { get { return _property.PropertyType.GetGenericArguments()[0]; } }
 
-        public override void Read(object target, object value)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void AppendWrite(ILGenerator il, MessageField field)
         {
             var done = il.DefineLabel();
