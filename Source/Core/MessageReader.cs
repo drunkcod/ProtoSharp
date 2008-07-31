@@ -6,6 +6,18 @@ using System.IO;
 
 namespace ProtoSharp.Core
 {
+    class UnknownEnumException : ArgumentOutOfRangeException 
+    {
+        public UnknownEnumException(int value)
+        {
+            _value = value;
+        }
+
+        public int Value { get { return _value; } }
+
+        int _value;
+    }
+
     public class MessageReaderMissingFieldsEventArgs : EventArgs 
     {
         public MessageReaderMissingFieldsEventArgs(UnknownFieldCollection fields)
@@ -152,17 +164,33 @@ namespace ProtoSharp.Core
             return new MessageTag(ReadVarint32());
         }
 
+        public int ReadEnum(Type enumType)
+        {
+            var value = ReadVarint32();
+            if(!Enum.IsDefined(enumType, value))
+                throw new UnknownEnumException(value);
+            return value;
+        }
+
         public T Read<T>() where T : class, new()
         {
-            var target = new T();
-            return Read<T>(target);
+            return Read<T>(new T(), new UnknownFieldCollection());
+        }
+
+        public T Read<T>(UnknownFieldCollection missing) where T : class, new()
+        {
+            return Read<T>(new T(), missing);
         }
 
         public T Read<T>(T target) where T : class
         {
+            return Read<T>(target, new UnknownFieldCollection());
+        }
+        
+        public T Read<T>(T target, UnknownFieldCollection missing) where T : class
+        {
             FieldReader<T> field = null;
             var helper = new SerializerHelper<T>();
-            var unknown = new UnknownFieldCollection();
             while(!_bytes.EndOfStream)
             {
                 var tag = ReadMessageTag();
@@ -171,17 +199,24 @@ namespace ProtoSharp.Core
                     if(tag.WireType == WireType.String)
                         field(target, CreateSubReader(ReadVarint32()));
                     else
-                        field(target, this);
+                        try
+                        {
+                            field(target, this);
+                        }
+                        catch(UnknownEnumException e)
+                        {
+                            missing.Add(new UnknownField(tag, e.Value));
+                        }
                 }
                 else if(tag.WireType == WireType.EndGroup)
                     break;
                 else if(tag.WireType < WireType.MaxValid)
-                    unknown.Add(tag, this);
+                    missing.Add(tag, this);
                 else
                     throw new NotSupportedException();
             }
-            if(unknown.Count != 0)
-                OnMissingFields(new MessageReaderMissingFieldsEventArgs(unknown));
+            if(missing.Count != 0)
+                OnMissingFields(new MessageReaderMissingFieldsEventArgs(missing));
             return target;
         }
 

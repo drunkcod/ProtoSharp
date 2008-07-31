@@ -51,6 +51,7 @@
     <Compile Include="MessageFields\MessageFieldDateTime.cs" />
     <Compile Include="MessageFields\MessageFieldDecimal.cs" />
     <Compile Include="MessageFields\MessageFieldDouble.cs" />
+    <Compile Include="MessageFields\MessageFieldEnum.cs" />
     <Compile Include="MessageFields\MessageFieldFixed.cs" />
     <Compile Include="MessageFields\MessageFieldFixedInt32.cs" />
     <Compile Include="MessageFields\MessageFieldFixedInt64.cs" />

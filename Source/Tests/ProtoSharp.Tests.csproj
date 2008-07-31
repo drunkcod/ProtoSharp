@@ -46,7 +46,8 @@
     <Compile Include="ByteReaderTests.cs" />
     <Compile Include="EncodingTests.cs" />
     <Compile Include="Interop\ProtoBufNetTests.cs" />
-    <Compile Include="MessageReaderTests.cs" />
+    <Compile Include="MessageReaderTests\General.cs" />
+    <Compile Include="MessageReaderTests\UnknownFieldTests.cs" />
     <Compile Include="Messages\MessageWithDateTime.cs" />
     <Compile Include="Messages\MessageWithDecimal.cs" />
     <Compile Include="Messages\MessageWithInt16.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="Messages\WithRepeatedTest1.cs" />
     <Compile Include="Messages\WithVarint32.cs" />
     <Compile Include="Messages\WithVarint64.cs" />
-    <Compile Include="MessageWriterTests.cs" />
+    <Compile Include="MessageWriterTests\General.cs" />
     <Compile Include="MessageWriterTests\WriteMessageTests.cs" />
     <Compile Include="MessageWriterTests\WriteStringTests.cs" />
     <Compile Include="MessageWriterTests\WriteVarintTests.cs" />

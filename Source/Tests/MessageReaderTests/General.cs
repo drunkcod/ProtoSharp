@@ -4,10 +4,10 @@ using ProtoSharp.Core;
 using ProtoSharp.Tests.Messages;
 using NUnit.Framework;
 
-namespace ProtoSharp.Core
+namespace ProtoSharp.Core.MessageReaderTests
 {
     [TestFixture]
-    public class MessageReaderTests
+    public class MessageReaderClassTests
     {
         [Test]
         public void Read_Test1SimpleMessage()
@@ -67,17 +67,6 @@ namespace ProtoSharp.Core
         {
             var message = MessageReader.Read<Test1Extended>(EncodingTests.SimpleMessage);
             Assert.AreEqual(150, message.A);
-        }
-        [Test]
-        public void Read_ShouldRaiseFieldMissingForUnknownTag()
-        {
-            var reader = new MessageReader(EncodingTests.Test2Testing);
-            bool fieldMissingRaised = false;
-            reader.MissingFields += (sender, e) => fieldMissingRaised = true;
-           
-            reader.Read<Test1>();
-
-            Assert.IsTrue(fieldMissingRaised);
         }
         [Test]
         public void Read_ShouldHandleInt64()

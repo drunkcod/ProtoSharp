@@ -60,7 +60,7 @@ namespace ProtoSharp.Core
         protected virtual bool CanAppendWriteCore { get { return true; } }
         protected virtual bool CanAppendReadCore { get { return true; } }
 
-        Type FieldType { get { return _fieldIO.FieldType; } }
+        protected Type FieldType { get { return _fieldIO.FieldType; } }
 
         static MessageField Create(TagAttribute attr, IFieldIO io)
         {
@@ -114,7 +114,7 @@ namespace ProtoSharp.Core
                 return new MessageFieldBool(tag, io);
 
             if(type.IsEnum)
-                return new MessageFieldInt32(tag, io);
+                return new MessageFieldEnum(tag, io);
 
             if(type == typeof(DateTime))
                 return new MessageFieldDateTime(tag, io);

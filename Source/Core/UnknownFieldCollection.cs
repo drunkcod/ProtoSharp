@@ -15,7 +15,12 @@ namespace ProtoSharp.Core
 
         public void Add(MessageTag tag, MessageReader reader) 
         {
-            _fields.Add(UnknownField.Create(tag, reader));
+            Add(UnknownField.Create(tag, reader));
+        }
+
+        internal void Add(UnknownField unknown)
+        {
+            _fields.Add(unknown);
         }
 
         List<UnknownField> _fields = new List<UnknownField>();

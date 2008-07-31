@@ -1,4 +1,5 @@
-* Handle unknown enum value as missing field.
+* UnknownFieldCollection.Serialize(Stream)
+* UnknownFieldCollection.GetEnumerator()
 * Build file.
 * Required fields.
 * Descriptor generation.
