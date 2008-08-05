@@ -12,25 +12,25 @@ namespace ProtoSharp.Performance
             _reader = new MessageReader(new ByteReader(Memory));
         }
 
-        public override void Serialize(MessageWithInt32 item){ _writer.WriteMessage(item); }
-        public override void Serialize(MessageWithUInt32 item) { _writer.WriteMessage(item); }
-        public override void Serialize(MessageWithSInt32 item) { _writer.WriteMessage(item); }
-        public override void Serialize(MessageWithFixed32 item) { _writer.WriteMessage(item); }
-        public override void Serialize(MessageWithFixed64 item) { _writer.WriteMessage(item); }
-        public override void Serialize(MessageWithString item) { _writer.WriteMessage(item); }
-        public override void Serialize(MessageWithBytes item) { _writer.WriteMessage(item); }
-        public override void Serialize(MessageWithRepeatedItem item) { _writer.WriteMessage(item); }
-        public override void Serialize(Person item) { _writer.WriteMessage(item); }
+        public override void Serialize(MessageWithInt32 item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(MessageWithUInt32 item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(MessageWithSInt32 item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(MessageWithFixed32 item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(MessageWithFixed64 item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(MessageWithString item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(MessageWithBytes item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(MessageWithRepeatedItem item) { Serializer.Serialize(_writer, item); }
+        public override void Serialize(Person item) { Serializer.Serialize(_writer, item); }
 
-        public override void Deserialize(out MessageWithInt32 item) { item = _reader.Read<MessageWithInt32>(); }
-        public override void Deserialize(out MessageWithUInt32 item) { item = _reader.Read<MessageWithUInt32>(); }
-        public override void Deserialize(out MessageWithSInt32 item) { item = _reader.Read<MessageWithSInt32>(); }
-        public override void Deserialize(out MessageWithFixed32 item) { item = _reader.Read<MessageWithFixed32>(); }
-        public override void Deserialize(out MessageWithFixed64 item) { item = _reader.Read<MessageWithFixed64>(); }
-        public override void Deserialize(out MessageWithString item) { item = _reader.Read<MessageWithString>(); }
-        public override void Deserialize(out MessageWithBytes item) { item = _reader.Read<MessageWithBytes>(); }
-        public override void Deserialize(out MessageWithRepeatedItem item) { item = _reader.Read<MessageWithRepeatedItem>(); }
-        public override void Deserialize(out Person item) { item = _reader.Read<Person>(); }
+        public override void Deserialize(out MessageWithInt32 item) { item = Serializer.Deserialize<MessageWithInt32>(_reader); }
+        public override void Deserialize(out MessageWithUInt32 item) { item = Serializer.Deserialize<MessageWithUInt32>(_reader); }
+        public override void Deserialize(out MessageWithSInt32 item) { item = Serializer.Deserialize<MessageWithSInt32>(_reader); }
+        public override void Deserialize(out MessageWithFixed32 item) { item = Serializer.Deserialize<MessageWithFixed32>(_reader); }
+        public override void Deserialize(out MessageWithFixed64 item) { item = Serializer.Deserialize<MessageWithFixed64>(_reader); }
+        public override void Deserialize(out MessageWithString item) { item = Serializer.Deserialize<MessageWithString>(_reader); }
+        public override void Deserialize(out MessageWithBytes item) { item = Serializer.Deserialize<MessageWithBytes>(_reader); }
+        public override void Deserialize(out MessageWithRepeatedItem item) { item = Serializer.Deserialize<MessageWithRepeatedItem>(_reader); }
+        public override void Deserialize(out Person item) { item = Serializer.Deserialize<Person>(_reader); }
 
         MessageWriter _writer;
         MessageReader _reader;

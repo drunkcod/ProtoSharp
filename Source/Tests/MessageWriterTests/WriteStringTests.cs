@@ -26,14 +26,14 @@ namespace ProtoSharp.Core.MessageWriterTests
         public void ShouldTreatNullStringAsEmpty()
         {
             var output = new MemoryStream();
-            new MessageWriter(output).WriteMessage(new MessageWithString());
+            Serializer.Serialize(output, new MessageWithString());
             Assert.AreEqual(new byte[0], output.ToArray());
         }
         [Test]
         public void ShouldHanldeEmptyString()
         {
             var output = new MemoryStream();
-            new MessageWriter(output).WriteMessage(new MessageWithString() { Value = string.Empty });
+            Serializer.Serialize(output, new MessageWithString() { Value = string.Empty });
             Assert.AreEqual(new byte[] { 1 << 3 | (byte)WireType.String, 0 }, output.ToArray());
         }
     }

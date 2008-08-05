@@ -13,8 +13,7 @@ namespace ProtoSharp.Core
         {
             target.WriteHeader(number, WireType.String);
             var embedded = new MemoryStream();
-            var writer = new MessageWriter(embedded);
-            writer.WriteMessage(value);
+            Serializer.Serialize(new MessageWriter(embedded), value);
             target.WriteBytes(embedded.GetBuffer(), (int)embedded.Length);
         }
     }

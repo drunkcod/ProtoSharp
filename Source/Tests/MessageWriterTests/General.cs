@@ -31,7 +31,7 @@ namespace ProtoSharp.Core
             var output = new MemoryStream();
             Test1 data = new Test1();
             data.A = 150;
-            new MessageWriter(output).WriteMessage(data);
+            Serializer.Serialize(output, data);
             Assert.AreEqual(EncodingTests.SimpleMessage, output.ToArray());
         }
         [Test]
@@ -40,7 +40,7 @@ namespace ProtoSharp.Core
             var output = new MemoryStream();
             var data = new Test1Nullable();
             data.A = 150;
-            new MessageWriter(output).WriteMessage(data);
+            Serializer.Serialize(output, data);
             Assert.AreEqual(EncodingTests.SimpleMessage, output.ToArray());
         }
         [Test]
@@ -49,7 +49,7 @@ namespace ProtoSharp.Core
             var output = new MemoryStream();
             var message = new Test1Ex64();
             message.A = 150;
-            new MessageWriter(output).WriteMessage(message);
+            Serializer.Serialize(output, message);
             Assert.AreEqual(EncodingTests.SimpleMessage, output.ToArray());
         }
         [Test]
@@ -58,7 +58,7 @@ namespace ProtoSharp.Core
             var output = new MemoryStream();
             Test2 data = new Test2();
             data.B = "testing";
-            new MessageWriter(output).WriteMessage(data);
+            Serializer.Serialize(output, data);
             Assert.AreEqual(EncodingTests.Test2Testing, output.ToArray());
         }
         [Test]
@@ -68,7 +68,7 @@ namespace ProtoSharp.Core
             Test3 data = new Test3();
             data.C = new Test1();
             data.C.A = 150;
-            new MessageWriter(output).WriteMessage(data);
+            Serializer.Serialize(output, data);
             Assert.AreEqual(EncodingTests.Test3EmbeddedMessage, output.ToArray());
         }
         [Test]
@@ -83,12 +83,12 @@ namespace ProtoSharp.Core
             var embedded = new MemoryStream();
             var embeddedWriter = new MessageWriter(embedded);
 
-            embeddedWriter.WriteMessage(message.Data[0]);
+            Serializer.Serialize(embeddedWriter, message.Data[0]);
             writer.WriteHeader(2, WireType.String);
             writer.WriteBytes(embedded.ToArray());
 
             embedded.SetLength(0);
-            embeddedWriter.WriteMessage(message.Data[1]);
+            Serializer.Serialize(embeddedWriter, message.Data[1]);
             writer.WriteHeader(2, WireType.String);
             writer.WriteBytes(embedded.ToArray());
             Assert.AreEqual(expected.ToArray(), MessageWriter.Write(message));

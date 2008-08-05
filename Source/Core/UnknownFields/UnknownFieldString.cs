@@ -6,7 +6,7 @@ namespace ProtoSharp.Core.UnknownFields
 {
     class UnknownFieldString : UnknownField
     {
-        public UnknownFieldString(MessageTag tag, MessageReader reader) : base(tag, reader.CreateSubReader(reader.ReadVarint32()).ReadString()) { }
+        public UnknownFieldString(MessageTag tag, MessageReader reader) : base(tag, reader.CreateSubReader().ReadString()) { }
 
         protected override void SerializeCore(MessageWriter writer)
         {

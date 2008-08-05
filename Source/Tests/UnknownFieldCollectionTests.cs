@@ -53,7 +53,7 @@ namespace ProtoSharp.Core
                 .WriteString("Hello World!");
             var fields = new UnknownFieldCollection();
             bytes.Position = 0;
-            new MessageReader(bytes).Read<EmptyMessage>(fields);
+            Serializer.Deserialize<EmptyMessage>(bytes, fields);
 
             var output = new MemoryStream();
             fields.Serialize(output);
@@ -70,7 +70,7 @@ namespace ProtoSharp.Core
                 .WriteString("Hello World!");
             var fields = new UnknownFieldCollection();
             bytes.Position = 0;
-            new MessageReader(bytes).Read<EmptyMessage>(fields);
+            Serializer.Deserialize<EmptyMessage>(bytes, fields);
 
             var list = new List<UnknownField>();
             list.AddRange(fields);

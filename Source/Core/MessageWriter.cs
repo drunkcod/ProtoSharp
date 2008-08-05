@@ -12,8 +12,8 @@ namespace ProtoSharp.Core
     {
         public static byte[] Write<T>(T message)
         {
-            MemoryStream output = new MemoryStream();
-            new MessageWriter(output).WriteMessage(message);
+            var output = new MemoryStream();
+            Serializer.Serialize(new MessageWriter(output), message);
             return output.ToArray();
         }
 
@@ -96,11 +96,6 @@ namespace ProtoSharp.Core
             WriteVarint(length);
             _writer.Write(value, 0, length);
             return this;
-        }
-
-        public void WriteMessage<T>(T message)
-        {
-            SerializerHelper<T>.FieldWriter(message, this);
         }
 
         public MessageWriter WriteFixed(int value) { _writer.Write(value); return this; }

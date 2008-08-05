@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection.Emit;
 using System.IO;
+using ProtoSharp.Core.UnknownFields;
 
 namespace ProtoSharp.Core
 {
-    interface ISerializer<T>
-    {
-        T CreateDefault();
-    }
-
     public static class Serializer
     {
         public static T CreateDefault<T>() where T : class, new()
@@ -21,6 +17,36 @@ namespace ProtoSharp.Core
         public static T CreateDefaultItem<T>(string s)
         {
             return (T)CreateDefaultItem(typeof(T), s);
+        }
+
+        public static void Serialize<T>(MessageWriter writer, T value)
+        {
+            Serializer<T>.FieldWriter(value, writer);
+        }
+
+        public static void Serialize<T>(Stream stream, T value)
+        {
+            Serialize(new MessageWriter(stream), value);
+        }
+
+        public static T Deserialize<T>(Stream stream, UnknownFieldCollection missing) where T : new()
+        {
+            return Deserialize<T>(new MessageReader(stream), missing);
+        }
+
+        public static T Deserialize<T>(Stream stream) where T : new()
+        {
+            return Deserialize<T>(new MessageReader(stream), new UnknownFieldCollection());
+        }
+
+        public static T Deserialize<T>(MessageReader reader, UnknownFieldCollection missing) where T : new()
+        {
+            return new Serializer<T>().Deserialize(reader, new T(), missing);
+        }
+
+        public static T Deserialize<T>(MessageReader reader) where T : new()
+        {
+            return new Serializer<T>().Deserialize(reader, new T(), new UnknownFieldCollection());
         }
 
         static object CreateDefault(object obj)
@@ -61,30 +87,56 @@ namespace ProtoSharp.Core
 
             return null;
         }
-
     }
 
-    class SerializerHelper<T>
+    class Serializer<T>
     {
-        public bool TryGetFieldReader(MessageTag tag, out FieldReader<T> reader)
+
+        public bool TryGetFieldReader(MessageTag tag)
         {
-            if(FindReader(tag.Value, out reader))
+            if(FindReader(tag.Value))
                 return true;
-            return tag.WireType == WireType.StartGroup && FindReader(tag.WithWireType(WireType.String), out reader);
+            return tag.WireType == WireType.StartGroup && FindReader(tag.WithWireType(WireType.String));
         }
         
         static readonly KeyValuePair<int, FieldReader<T>>[] s_fields =  GetFields();
 
         public static readonly FieldWriter<T> FieldWriter = GetWriter();
 
-        //Optimized for the common case where fields are seen in incresing number order.
-        bool FindReader(int header, out FieldReader<T> reader)
+        public T Deserialize(MessageReader reader, T target, UnknownFieldCollection missing)
+        {
+            MessageTag tag = new MessageTag();
+            while(reader.TryReadMessageTag(ref tag))
+            {
+                if(TryGetFieldReader(tag))
+                {
+                    if(tag.WireType == WireType.String)
+                        _current.Value(target, reader.CreateSubReader());
+                    else
+                        try
+                        {
+                            _current.Value(target, reader);
+                        }
+                        catch(UnknownEnumException e)
+                        {
+                            missing.Add(new UnknownFieldVarint(tag, e.Value));
+                        }
+                }
+                else if(tag.WireType == WireType.EndGroup)
+                    break;
+                else if(tag.WireType < WireType.MaxValid)
+                    missing.Add(tag, reader);
+                else
+                    throw new NotSupportedException();
+            }
+            return target;
+        }
+
+        //Optimized for the common case where fields are seen in increasing number order.
+        bool FindReader(int header)
         {
             if(header == _current.Key)
-            {
-                reader = _current.Value;
                 return true;
-            }
             if(header > _current.Key)
             {
                 for(int i = _position + 1; i != s_fields.Length; ++i)
@@ -94,7 +146,6 @@ namespace ProtoSharp.Core
                     {
                         _position = i;
                         _current = current;
-                        reader = current.Value;
                         return true;
                     }
                 }
@@ -106,11 +157,9 @@ namespace ProtoSharp.Core
                 {
                     _position = i;
                     _current = current;
-                    reader = current.Value;
                     return true;
                 }
             }
-            reader = null;
             return false;
         }
 

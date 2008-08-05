@@ -220,26 +220,10 @@ namespace ProtoSharp.Core.MessageReaderTests
                 3 << 3 | (int)WireType.EndGroup
             }).C.A);
         }
-        [Test]
-        public void Read_ShouldRaiseMissingFieldsContainingAllMissingFields()
-        {
-            var input = new MemoryStream();
-            new MessageWriter(input)
-                .WriteHeader(2, WireType.Varint).WriteVarint(42)
-                .WriteHeader(3, WireType.String).WriteString("Hello World!");
-            input.Position = 0;
-            var reader = new MessageReader(input);
-            UnknownFieldCollection unknown = null;
-            reader.MissingFields += (sender, e) => unknown = e.Fields;
-
-            reader.Read<Test1>();
-
-            Assert.AreEqual(2, unknown.Count);
-        }
         [Test,ExpectedException(typeof(NotSupportedException))]
         public void Read_ShouldThrowNotSupportedForInvalidWireType()
         {
-            new MessageReader(0xF).Read<Test1>();
+            Serializer.Deserialize<Test1>(new MessageReader(0xF));
         }
     }
 }

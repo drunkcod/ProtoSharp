@@ -36,7 +36,7 @@ namespace ProtoSharp.Performance
         {
             target.WriteHeader(number, WireType.String);
             _buffer.Position = 0;
-            _writer.WriteMessage(value);
+            ProtoSharp.Core.Serializer.Serialize(_writer, value);
             target.WriteBytes(_buffer.GetBuffer(), (int)_buffer.Length);
         }
 
@@ -153,7 +153,7 @@ namespace ProtoSharp.Performance
                 var db = MessageReader.Read<Database>(northwindBytes);
 
                 var counter = new CountingWriteObjectStrategy();
-                new MessageWriter(Stream.Null, counter).WriteMessage(db);
+                ProtoSharp.Core.Serializer.Serialize(new MessageWriter(Stream.Null, counter), db);
                 Console.WriteLine("Writing {0} sub messages with max depth of {1}.", counter.Count, counter.MaxDepth);
 
                 var pbn = TimeSpan.MaxValue.Ticks;
@@ -170,7 +170,7 @@ namespace ProtoSharp.Performance
                 for(int i = 0; i != 100; ++i)
                 {
                     var time = Stopwatch.StartNew();
-                    new MessageWriter(Stream.Null).WriteMessage(db);
+                    ProtoSharp.Core.Serializer.Serialize(Stream.Null, db);
                     time.Stop();
                     ps = Math.Min(ps, time.ElapsedTicks);
                 }
@@ -180,7 +180,7 @@ namespace ProtoSharp.Performance
                 for(int i = 0; i != 100; ++i)
                 {
                     var time = Stopwatch.StartNew();
-                    new MessageWriter(Stream.Null, new WriteObjectStrategy()).WriteMessage(db);
+                    ProtoSharp.Core.Serializer.Serialize(new MessageWriter(Stream.Null, new WriteObjectStrategy()), db);
                     time.Stop();
                     protoSharpBufferReuse = Math.Min(protoSharpBufferReuse, time.ElapsedTicks);
                 }
@@ -190,14 +190,14 @@ namespace ProtoSharp.Performance
                 for(int i = 0; i != 100; ++i)
                 {
                     var time = Stopwatch.StartNew();
-                    new MessageWriter(Stream.Null, new GroupEncodingObjectWriterStrategy()).WriteMessage(db);
+                    ProtoSharp.Core.Serializer.Serialize(new MessageWriter(Stream.Null, new GroupEncodingObjectWriterStrategy()), db);
                     time.Stop();
                     protoSharpGroups = Math.Min(protoSharpGroups, time.ElapsedTicks);
                 }
                 var tmp = new MemoryStream();
-                new MessageWriter(tmp, new GroupEncodingObjectWriterStrategy()).WriteMessage(db);
+                ProtoSharp.Core.Serializer.Serialize(new MessageWriter(tmp, new GroupEncodingObjectWriterStrategy()), db);
                 tmp.Position = 0;
-                var groupDb = new MessageReader(tmp).Read<Database>();
+                var groupDb = ProtoSharp.Core.Serializer.Deserialize<Database>(new MessageReader(tmp));
 
                 var objectCount = 0;
                 db.Orders.ForEach(x => objectCount += 1 + x.Lines.Count);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection.Emit;
+using System.Reflection;
 
 namespace ProtoSharp.Core.MessageFields
 {
@@ -15,7 +16,7 @@ namespace ProtoSharp.Core.MessageFields
 
         public override void AppendReadField(ILGenerator il)
         {
-            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("Read", Type.EmptyTypes).MakeGenericMethod(FieldType));
+            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("Read", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(FieldType));
         }
 
         public override void AppendHeader(ILGenerator il)

@@ -19,28 +19,11 @@ namespace ProtoSharp.Core
         int _value;
     }
 
-    public class MessageReaderMissingFieldsEventArgs : EventArgs 
-    {
-        public MessageReaderMissingFieldsEventArgs(UnknownFieldCollection fields)
-        {
-            _fields = fields;
-        }
-
-        public UnknownFieldCollection Fields { get { return _fields; } }
-
-        UnknownFieldCollection _fields;
-    }
-
     public class MessageReader
     {
         public static T Read<T>(byte[] message) where T: class, new()
-        { 
-            return new MessageReader(message).Read<T>(); 
-        }
-
-        public static T Read<T>(Stream stream) where T : class, new()
         {
-            return new MessageReader(new ByteReader(stream)).Read<T>();
+            return new Serializer<T>().Deserialize(new MessageReader(message), new T(), new UnknownFieldCollection());
         }
 
         public MessageReader(Stream stream) : this(new ByteReader(stream)) { }
@@ -50,8 +33,6 @@ namespace ProtoSharp.Core
         }
 
         public MessageReader(params byte[] message) : this(new ByteArrayReader(message, 0, message.Length)) { }
-
-        public event EventHandler<MessageReaderMissingFieldsEventArgs> MissingFields;
 
         public bool ReadBool()
         {
@@ -165,6 +146,14 @@ namespace ProtoSharp.Core
             return new MessageTag(ReadVarint32());
         }
 
+        public bool TryReadMessageTag(ref MessageTag target)
+        {
+            if(_bytes.EndOfStream)
+                return false;
+            target = ReadMessageTag();
+            return true;
+        }
+
         public int ReadEnum(Type enumType)
         {
             var value = ReadVarint32();
@@ -173,63 +162,14 @@ namespace ProtoSharp.Core
             return value;
         }
 
-        public T Read<T>() where T : class, new()
+        internal MessageReader CreateSubReader()
         {
-            return Read<T>(new T(), new UnknownFieldCollection());
+            return new MessageReader(_bytes.GetByteReader(ReadVarint32()));
         }
 
-        public T Read<T>(UnknownFieldCollection missing) where T : class, new()
+        internal T Read<T>() where T : class, new()
         {
-            return Read<T>(new T(), missing);
-        }
-
-        public T Read<T>(T target) where T : class
-        {
-            return Read<T>(target, new UnknownFieldCollection());
-        }
-        
-        public T Read<T>(T target, UnknownFieldCollection missing) where T : class
-        {
-            FieldReader<T> field = null;
-            var helper = new SerializerHelper<T>();
-            while(!_bytes.EndOfStream)
-            {
-                var tag = ReadMessageTag();
-                if(helper.TryGetFieldReader(tag, out field))
-                {
-                    if(tag.WireType == WireType.String)
-                        field(target, CreateSubReader(ReadVarint32()));
-                    else
-                        try
-                        {
-                            field(target, this);
-                        }
-                        catch(UnknownEnumException e)
-                        {
-                            missing.Add(new UnknownFieldVarint(tag, e.Value));
-                        }
-                }
-                else if(tag.WireType == WireType.EndGroup)
-                    break;
-                else if(tag.WireType < WireType.MaxValid)
-                    missing.Add(tag, this);
-                else
-                    throw new NotSupportedException();
-            }
-            if(missing.Count != 0)
-                OnMissingFields(new MessageReaderMissingFieldsEventArgs(missing));
-            return target;
-        }
-
-        void OnMissingFields(MessageReaderMissingFieldsEventArgs e)
-        {
-            if(MissingFields != null)
-                MissingFields(this, e);
-        }
-
-        internal MessageReader CreateSubReader(int length)
-        {
-            return new MessageReader(_bytes.GetByteReader(length));
+            return new Serializer<T>().Deserialize(this, new T(), new UnknownFieldCollection());
         }
 
         IByteReader _bytes;

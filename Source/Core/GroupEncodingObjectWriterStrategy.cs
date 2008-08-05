@@ -9,7 +9,7 @@ namespace ProtoSharp.Core
         public void Write<T>(MessageWriter target, int number, T value) where T : class
         {
             target.WriteHeader(number, WireType.StartGroup);
-            target.WriteMessage(value);
+            Serializer.Serialize(target, value);
             target.WriteHeader(number, WireType.EndGroup);
         }
     }

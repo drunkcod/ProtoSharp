@@ -28,7 +28,7 @@ namespace ProtoSharp.Core.MessageReaderTests
                 .WriteHeader(2, WireType.Varint).WriteVarint(2);
             input.Position = 0;
 
-            var message = MessageReader.Read<SimpleMessage>(input);
+            var message = Serializer.Deserialize<SimpleMessage>(input);
             Assert.AreEqual(new int[]
             {
                 1, 2, 3
