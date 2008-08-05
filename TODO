@@ -1,4 +1,5 @@
-* UnknownFieldCollection.GetEnumerator()
+* Submessage length computation.
+* Message merging "MergeFrom".
 * Submessage optimization, start assuming 1byte length move on overflow.
 * Build file.
 * Required fields.

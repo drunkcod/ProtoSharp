@@ -131,6 +131,22 @@ namespace ProtoSharp.Core
             return WriteVarint(new MessageTag(tag, wireType).Value);
         }
 
+        public int LengthVarint(long value)
+        {
+            return LengthVarint((ulong)value);
+        }
+
+        public int LengthVarint(ulong value)
+        {
+            int length = 0;
+            do
+            {
+                ++length;
+                value >>= 7;
+            } while(value != 0);
+            return length;
+        }
+
         BinaryWriter _writer;
         IObjectWriterStrategy _writeObject;
     }

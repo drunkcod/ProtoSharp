@@ -73,6 +73,5 @@ namespace ProtoSharp.Core.MessageWriterTests
             new MessageWriter(output).WriteVarint(Int64.MaxValue);
             Assert.AreEqual(9, output.ToArray().Length);
         }
-
     }
 }
