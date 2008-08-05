@@ -74,6 +74,7 @@
     <Compile Include="Messages\Person.cs" />
     <Compile Include="MessageWriterAdapter.cs" />
     <Compile Include="MessageWriterRawAdapter.cs" />
+    <Compile Include="NWind.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="BenchmarkAdapter.cs" />
     <Compile Include="BenchmarkResult.cs" />
@@ -89,10 +90,19 @@
       <HintPath>..\Build\ProtoSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nwind.proto.bin" />
   </ItemGroup>
 </Project>

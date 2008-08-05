@@ -5,9 +5,45 @@ using ProtoSharp.Performance.Benchmarks;
 using ProtoSharp.Performance.Messages;
 using ProtoSharp.Core;
 using ProtoBuf;
+using System.Runtime.Serialization;
+using DAL;
+using System.Diagnostics;
 
 namespace ProtoSharp.Performance
 {
+    //Borrowed from protobuf-net
+    [ProtoContract, DataContract]
+    public class Database
+    {
+        [ProtoMember(1), Tag(1), DataMember(Order = 1)]
+        public List<Order> Orders { get; private set; }
+
+        public Database()
+        {
+            Orders = new List<Order>();
+        }
+    }
+
+    class WriteObjectStrategy : IObjectWriterStrategy
+    {
+        public WriteObjectStrategy()
+        {
+            _buffer = new MemoryStream();
+            _writer = new MessageWriter(_buffer);
+        }
+
+        public void Write<T>(MessageWriter target, int number, T value) where T : class
+        {
+            target.WriteHeader(number, WireType.String);
+            _buffer.Position = 0;
+            _writer.WriteMessage(value);
+            target.WriteBytes(_buffer.GetBuffer(), (int)_buffer.Length);
+        }
+
+        MemoryStream _buffer;
+        MessageWriter _writer;
+    }
+
     class BenchmarkTarget
     {
         public BenchmarkTarget(string name, IBenchmarkAdapter target)
@@ -44,6 +80,34 @@ namespace ProtoSharp.Performance
         const int Iterations = 2000;
 
         static readonly byte[] block = new byte[1 << 20];
+
+        class CountingWriteObjectStrategy : IObjectWriterStrategy
+        {
+            public void Write<T>(MessageWriter target, int number, T value) where T : class
+            {
+                Begin(target, number);
+                ++_count;
+                End(target, number);
+            }
+
+            public int Count { get { return _count; } }
+            public int MaxDepth { get { return _maxDepth; } }
+
+            void Begin(MessageWriter target, int number)
+            {
+                ++_depth;
+                _maxDepth = Math.Max(_depth, _maxDepth);
+            }
+
+            void End(MessageWriter target, int number)
+            {
+                --_depth;
+            }
+
+            int _count = 0;
+            int _depth = 0;
+            int _maxDepth = 0;
+        }
 
         public static void Main(string[] args)
         {
@@ -83,6 +147,70 @@ namespace ProtoSharp.Performance
             {
                 Console.WriteLine("Took {0} ticks.", new RepeatedItemDeserializationBenchmark(Iterations).Run(new MessageWriterAdapter(block)).Elapsed.Ticks);
             }
+            else if(args.Length != 0 && args[0] == "northwind")
+            {
+                var northwindBytes = File.ReadAllBytes("nwind.proto.bin");
+                var db = MessageReader.Read<Database>(northwindBytes);
+
+                var counter = new CountingWriteObjectStrategy();
+                new MessageWriter(Stream.Null, counter).WriteMessage(db);
+                Console.WriteLine("Writing {0} sub messages with max depth of {1}.", counter.Count, counter.MaxDepth);
+
+                var pbn = TimeSpan.MaxValue.Ticks;
+                for(int i = 0; i != 100; ++i)
+                {
+                    var time = Stopwatch.StartNew();
+                    ProtoBuf.Serializer.Serialize(Stream.Null, db);
+                    time.Stop();
+                    pbn = Math.Min(pbn, time.ElapsedTicks);
+                }
+                Console.WriteLine("protobuf-net:{0} ticks.", pbn);
+
+                var ps = TimeSpan.MaxValue.Ticks;
+                for(int i = 0; i != 100; ++i)
+                {
+                    var time = Stopwatch.StartNew();
+                    new MessageWriter(Stream.Null).WriteMessage(db);
+                    time.Stop();
+                    ps = Math.Min(ps, time.ElapsedTicks);
+                }
+                Console.WriteLine("proto#      :{0} ticks.", ps);
+
+                var protoSharpBufferReuse = TimeSpan.MaxValue.Ticks;
+                for(int i = 0; i != 100; ++i)
+                {
+                    var time = Stopwatch.StartNew();
+                    new MessageWriter(Stream.Null, new WriteObjectStrategy()).WriteMessage(db);
+                    time.Stop();
+                    protoSharpBufferReuse = Math.Min(protoSharpBufferReuse, time.ElapsedTicks);
+                }
+                Console.WriteLine("proto#      :{0} ticks.", protoSharpBufferReuse);
+
+                var protoSharpGroups = TimeSpan.MaxValue.Ticks;
+                for(int i = 0; i != 100; ++i)
+                {
+                    var time = Stopwatch.StartNew();
+                    new MessageWriter(Stream.Null, new GroupEncodingObjectWriterStrategy()).WriteMessage(db);
+                    time.Stop();
+                    protoSharpGroups = Math.Min(protoSharpGroups, time.ElapsedTicks);
+                }
+                var tmp = new MemoryStream();
+                new MessageWriter(tmp, new GroupEncodingObjectWriterStrategy()).WriteMessage(db);
+                tmp.Position = 0;
+                var groupDb = new MessageReader(tmp).Read<Database>();
+
+                var objectCount = 0;
+                db.Orders.ForEach(x => objectCount += 1 + x.Lines.Count);
+                DbMetrics("plain", db);
+                DbMetrics("group", groupDb);
+                var groupDbCount = 0;
+                groupDb.Orders.ForEach(x => groupDbCount += 1 + x.Lines.Count);
+
+                var roundtripBytes = MessageWriter.Write(groupDb);
+                Console.WriteLine("{0}({1}) {2}({3})", MessageWriter.Write(db).Length, objectCount, roundtripBytes.Length, groupDbCount);
+                Console.WriteLine("proto#      :{0} ticks. {1} bytes", protoSharpGroups, tmp.Position);
+
+            }
             else
             {
                 Array.ForEach(new BenchmarkTarget[]
@@ -93,6 +221,38 @@ namespace ProtoSharp.Performance
                     new BenchmarkTarget("protobuf-net", new ProtoBufNetAdapter(block))
                 }, x => x.RunAll(benchmarks));
             }
+        }
+
+        static void DbMetrics(string caption, Database database)
+        {
+            int orders = database.Orders.Count;
+            int lines = TotalLines(database);
+            int totalQty = TotalQuantity(database);
+            decimal totalValue = TotalValue(database);
+            Console.WriteLine("{0}\torders {1}; lines {2}; units {3}; value {4:C}",
+                caption, orders, lines, totalQty, totalValue);
+        }
+
+        static int TotalLines(Database db)
+        {
+            return Sum(db.Orders, (x, sum) => sum + x.Lines.Count, 0);
+        }
+
+        static int TotalQuantity(Database db)
+        {
+            return Sum(db.Orders, (x, sum) => sum + Sum(x.Lines, (line, s2) => s2 + line.Quantity, 0), 0);
+        }
+
+        static decimal TotalValue(Database db)
+        {
+            return Sum(db.Orders, (x, sum) => sum + Sum(x.Lines, (line, s2) => s2 + line.Quantity * line.UnitPrice, Decimal.Zero), Decimal.Zero);
+        }
+
+        static T Sum<T, U>(IEnumerable<U> items, Func<U, T, T> op, T start)
+        {
+            foreach(var x in items)
+                start = op(x, start);
+            return start;
         }
     }
 }

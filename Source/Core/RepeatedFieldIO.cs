@@ -40,7 +40,7 @@ namespace ProtoSharp.Core
             var top = il.DefineLabel();
             il.MarkLabel(top);
 
-            AppendWriteHeader(il, field);
+            field.AppendHeader(il);
 
             il.Emit(OpCodes.Ldloc, enumerator.LocalIndex);
             il.Emit(OpCodes.Callvirt, enumeratorType.GetProperty("Current").GetGetMethod());

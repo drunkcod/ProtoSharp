@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.IO;
+using ProtoSharp.Core.UnknownFields;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace ProtoSharp.Core
 {
@@ -38,6 +40,7 @@ namespace ProtoSharp.Core
             Assert.AreEqual(WireType.Varint, fields[0].WireType);
             Assert.AreEqual(1, fields[0].Number);
         }
+
         class EmptyMessage { }
         [Test]
         public void ShouldBeAbleToSerializeConsumedBytes()
@@ -55,6 +58,24 @@ namespace ProtoSharp.Core
             var output = new MemoryStream();
             fields.Serialize(output);
             Assert.AreEqual(bytes.ToArray(), output.ToArray());
+        }
+        [Test]
+        public void ShouldBeEnumerable()
+        {
+            var bytes = new MemoryStream();
+            new MessageWriter(bytes)
+                .WriteHeader(1, WireType.Varint)
+                .WriteVarint(0xbeef)
+                .WriteHeader(2, WireType.String)
+                .WriteString("Hello World!");
+            var fields = new UnknownFieldCollection();
+            bytes.Position = 0;
+            new MessageReader(bytes).Read<EmptyMessage>(fields);
+
+            var list = new List<UnknownField>();
+            list.AddRange(fields);
+
+            Assert.AreEqual(2, list.Count);
         }
     }
 }

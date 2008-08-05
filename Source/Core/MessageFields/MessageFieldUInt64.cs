@@ -2,7 +2,7 @@
 using System;
 using System.Reflection.Emit;
 
-namespace ProtoSharp.Core
+namespace ProtoSharp.Core.MessageFields
 {
     class MessageFieldUInt64 : MessageFieldVarint<UInt64>
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection.Emit;
 
-namespace ProtoSharp.Core
+namespace ProtoSharp.Core.MessageFields
 {
     abstract class MessageFieldFixed<TNativeType> : MessageField
     {

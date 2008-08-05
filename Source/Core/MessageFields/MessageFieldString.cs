@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace ProtoSharp.Core
+namespace ProtoSharp.Core.MessageFields
 {
     class MessageFieldString : MessageField
     {

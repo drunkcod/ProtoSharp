@@ -17,10 +17,13 @@ namespace ProtoSharp.Core
             return output.ToArray();
         }
 
-        public MessageWriter(Stream output)
+        public MessageWriter(Stream output, IObjectWriterStrategy objectWriter)
         {
+            _writeObject = objectWriter;
             _writer = new BinaryWriter(output);
         }
+
+        public MessageWriter(Stream output): this(output, new ObjectWriterStrategy()) {}
 
         public MessageWriter WriteVarint(int value)
         {
@@ -117,12 +120,10 @@ namespace ProtoSharp.Core
             return WriteZigZag(UnixTime.From(date));
         }
 
-        public MessageWriter WriteObject<T>(T obj)
+        public MessageWriter WriteObject<T>(T obj, int number) where T : class
         {
-            var embedded = new MemoryStream();
-            var writer = new MessageWriter(embedded);
-            writer.WriteMessage(obj);
-            return WriteBytes(embedded.GetBuffer(), (int)embedded.Length);
+            _writeObject.Write<T>(this, number, obj);
+            return this;
         }
 
         public MessageWriter WriteHeader(int tag, WireType wireType)
@@ -131,5 +132,6 @@ namespace ProtoSharp.Core
         }
 
         BinaryWriter _writer;
+        IObjectWriterStrategy _writeObject;
     }
 }

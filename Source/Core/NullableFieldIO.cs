@@ -34,7 +34,7 @@ namespace ProtoSharp.Core
             il.Emit(OpCodes.Brfalse_S, done);
 
             field.AppendGuard(il, _property.GetGetMethod(), done);
-            AppendWriteHeader(il, field);
+            field.AppendHeader(il);
 
             il.Emit(OpCodes.Ldloca, tmp.LocalIndex);
             il.Emit(OpCodes.Call, typeof(Nullable<>).MakeGenericType(FieldType).GetProperty("Value").GetGetMethod());

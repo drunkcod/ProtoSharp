@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ByteReaderTests.cs" />
     <Compile Include="EncodingTests.cs" />
+    <Compile Include="GroupEncodingObjectWriterStrategyTests.cs" />
     <Compile Include="Interop\ProtoBufNetTests.cs" />
     <Compile Include="MessageReaderTests\General.cs" />
     <Compile Include="MessageReaderTests\ReadMessageTests.cs" />

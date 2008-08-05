@@ -27,13 +27,6 @@ namespace ProtoSharp.Core
             _property = property;
         }
 
-        static protected void AppendWriteHeader(ILGenerator il, MessageField field)
-        {
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Ldc_I4, field.Header);
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[] { typeof(uint) }));
-        }
-
         protected PropertyInfo _property;
     }
 }

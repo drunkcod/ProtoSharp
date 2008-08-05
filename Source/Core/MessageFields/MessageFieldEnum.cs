@@ -2,7 +2,7 @@
 using System.Reflection.Emit;
 using System.Reflection;
 
-namespace ProtoSharp.Core
+namespace ProtoSharp.Core.MessageFields
 {
     class MessageFieldEnum : MessageFieldVarint<int>
     {

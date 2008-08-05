@@ -25,7 +25,8 @@ namespace ProtoSharp.Core
         {
             var done = il.DefineLabel();
             field.AppendGuard(il, _property.GetGetMethod(), done);
-            AppendWriteHeader(il, field);
+
+            field.AppendHeader(il);
 
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Call, _property.GetGetMethod());

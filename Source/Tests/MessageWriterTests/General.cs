@@ -1,7 +1,7 @@
 ﻿using System;
-using NUnit.Framework;
 using System.IO;
-using ProtoSharp.Core;
+using NUnit.Framework;
+using ProtoSharp.Core.MessageFields;
 using ProtoSharp.Tests.Messages;
 
 namespace ProtoSharp.Core

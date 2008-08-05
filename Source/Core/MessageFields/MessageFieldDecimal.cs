@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection.Emit;
 
-namespace ProtoSharp.Core
+namespace ProtoSharp.Core.MessageFields
 {
     public class MessageFieldDecimal : MessageField
     {

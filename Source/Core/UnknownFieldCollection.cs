@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ProtoSharp.Core
 {
-    public class UnknownFieldCollection
+    public class UnknownFieldCollection : IEnumerable<UnknownField>
     {
         public int Count { get { return _fields.Count; } }
 
@@ -30,6 +31,16 @@ namespace ProtoSharp.Core
         internal void Add(UnknownField unknown)
         {
             _fields.Add(unknown);
+        }
+
+        public IEnumerator<UnknownField> GetEnumerator()
+        {
+            return _fields.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return (this as IEnumerable<UnknownField>).GetEnumerator();
         }
 
         List<UnknownField> _fields = new List<UnknownField>();

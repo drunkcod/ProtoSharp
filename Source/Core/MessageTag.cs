@@ -5,6 +5,7 @@ namespace ProtoSharp.Core
     {
         public static int GetNumber(int tag) { return tag >> 3; }        
         public static WireType GetWireType(int tag) { return (WireType)tag & WireType.Mask; }
+        public static int AsInt(int number, WireType wireType){ return new MessageTag(number, wireType).Value; }
 
         public MessageTag(int tag) 
         {

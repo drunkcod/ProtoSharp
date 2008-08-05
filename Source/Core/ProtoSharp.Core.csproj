@@ -44,6 +44,7 @@
     <Compile Include="DefaultAttribute.cs" />
     <Compile Include="FieldIO.cs" />
     <Compile Include="FieldIOBase.cs" />
+    <Compile Include="GroupEncodingObjectWriterStrategy.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageField.cs" />
     <Compile Include="MessageFields\MessageFieldBool.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="MessageFields\MessageFieldInt16.cs" />
     <Compile Include="MessageFields\MessageFieldInt32.cs" />
     <Compile Include="MessageFields\MessageFieldInt64.cs" />
+    <Compile Include="MessageFields\MessageFieldObject.cs" />
     <Compile Include="MessageFields\MessageFieldSInt16.cs" />
     <Compile Include="MessageFields\MessageFieldSInt32.cs" />
     <Compile Include="MessageFields\MessageFieldSInt64.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="UnknownFields\UnknownFieldVarint.cs" />
     <Compile Include="WireType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ObjectWriterStrategy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

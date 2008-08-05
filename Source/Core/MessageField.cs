@@ -3,10 +3,11 @@ using System.Reflection;
 using System.Collections;
 using System.Reflection.Emit;
 using System.Collections.Generic;
+using ProtoSharp.Core.MessageFields;
 
 namespace ProtoSharp.Core
 {
-    public class MessageField
+    public abstract class MessageField
     {
         public static MessageField Create(TagAttribute attr, PropertyInfo property)
         {
@@ -31,18 +32,19 @@ namespace ProtoSharp.Core
         public bool CanAppendWrite { get { return _fieldIO.CanCreateWriter && CanAppendWriteCore; } }
         public bool CanAppendRead { get { return _fieldIO.CanCreateReader && CanAppendReadCore; } }
 
-        public virtual void AppendWriteField(ILGenerator il)
-        {
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteObject").MakeGenericMethod(_fieldIO.FieldType));
-        }
+        public abstract void AppendWriteField(ILGenerator il);
 
-        public virtual void AppendReadField(ILGenerator il)
-        {
-            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("Read", Type.EmptyTypes).MakeGenericMethod(FieldType));
-        }
+        public abstract void AppendReadField(ILGenerator il);
 
         public virtual void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
         { }
+
+        public virtual void AppendHeader(ILGenerator il)
+        {
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldc_I4, _header);
+            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteVarint", new Type[] { typeof(uint) }));
+        }
 
         public void AppendWriteBody(ILGenerator il)
         {
@@ -130,7 +132,7 @@ namespace ProtoSharp.Core
             if(type == typeof(UInt16))
                 return new MessageFieldInt16(tag, io);
 
-            return new MessageField(tag, io, WireType.String);
+            return new MessageFieldObject(tag, io);
         }
 
         int _header;
