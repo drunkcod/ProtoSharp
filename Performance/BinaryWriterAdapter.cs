@@ -9,7 +9,7 @@ namespace ProtoSharp.Performance
         public BinaryWriterAdapter(byte[] memory)
             : base(memory)
         {
-            _writer = new BinaryWriter(Memory);
+            _writer = new BinaryWriter(Stream.Null);
             _reader = new BinaryReader(Memory);
         }
 

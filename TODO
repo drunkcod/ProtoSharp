@@ -1,4 +1,4 @@
-* Submessage length computation.
+* Submessage length computation. Should be within 10% of total time.
 * Message merging "MergeFrom".
 * Submessage optimization, start assuming 1byte length move on overflow.
 * Build file.

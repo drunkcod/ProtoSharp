@@ -1,5 +1,6 @@
 ﻿using ProtoSharp.Core;
 using ProtoSharp.Performance.Messages;
+using System.IO;
 
 namespace ProtoSharp.Performance
 {
@@ -8,7 +9,7 @@ namespace ProtoSharp.Performance
         public MessageWriterAdapter(byte[] memory)
             : base(memory)
         {
-            _writer = new MessageWriter(Memory);
+            _writer = new MessageWriter(Stream.Null);
             _reader = new MessageReader(new ByteReader(Memory));
         }
 

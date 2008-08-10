@@ -20,7 +20,7 @@ namespace ProtoSharp.Core
         public MessageWriter(Stream output, IObjectWriterStrategy objectWriter)
         {
             _writeObject = objectWriter;
-            _writer = new BinaryWriter(output);
+            _writer = output;
         }
 
         public MessageWriter(Stream output): this(output, new ObjectWriterStrategy()) {}
@@ -34,22 +34,24 @@ namespace ProtoSharp.Core
         public MessageWriter WriteVarint(uint value)
             {//Special case for performance, single byte is *very* common.
             if(value < 0x80)
-                _writer.Write((byte)value);
+                Write((byte)value);
             else if(value < (1 << 14))
             {
                 uint low = value & 0x7f;
                 uint hi = value & 0x3F80;
-                _writer.Write((UInt16)(hi << 1 | low | 0x80));
+                Write((UInt16)(hi << 1 | low | 0x80));
             }
             else
+            {
                 do
                 {
                     byte bits = (byte)(value & 0x7f);
                     value >>= 7;
                     if(value > 0)
                         bits |= 0x80;
-                    _writer.Write(bits);
+                    Write(bits);
                 } while(value != 0);
+            }
             return this;
         }
 
@@ -62,7 +64,7 @@ namespace ProtoSharp.Core
                 value >>= 7;
                 if(value > 0)
                     bits |= 0x80;
-                _writer.Write(bits);
+                Write(bits);
             } while(value != 0);
             return this;
         }
@@ -98,17 +100,17 @@ namespace ProtoSharp.Core
             return this;
         }
 
-        public MessageWriter WriteFixed(int value) { _writer.Write(value); return this; }
+        public MessageWriter WriteFixed(int value) {  return WriteRaw(BitConverter.GetBytes( value)); }
 
-        public MessageWriter WriteFixed(uint value) { _writer.Write(value); return this; }
+        public MessageWriter WriteFixed(uint value) { return WriteRaw(BitConverter.GetBytes(value)); }
 
-        public MessageWriter WriteFixed(float value) { _writer.Write(value); return this; }
+        public MessageWriter WriteFixed(float value) { return WriteRaw(BitConverter.GetBytes(value)); }
 
-        public MessageWriter WriteFixed(long value) { _writer.Write(value); return this; }
+        public MessageWriter WriteFixed(long value) { return WriteRaw(BitConverter.GetBytes(value)); }
 
-        public MessageWriter WriteFixed(ulong value) { _writer.Write(value); return this; }
+        public MessageWriter WriteFixed(ulong value) { return WriteRaw(BitConverter.GetBytes(value)); }
 
-        public MessageWriter WriteFixed(double value) { _writer.Write(value); return this; }
+        public MessageWriter WriteFixed(double value) { return WriteRaw(BitConverter.GetBytes(value)); }
 
         public MessageWriter WriteDateTime(DateTime date)
         {
@@ -142,7 +144,24 @@ namespace ProtoSharp.Core
             return length;
         }
 
-        BinaryWriter _writer;
+        void Write(byte value)
+        {
+            _writer.WriteByte(value);
+        }
+
+        void Write(UInt16 value)
+        {
+            _writer.WriteByte((byte)(value & 0xff));
+            _writer.WriteByte((byte)(value >> 8));
+        }
+
+        MessageWriter WriteRaw(byte[] bytes)
+        {
+            _writer.Write(bytes, 0, bytes.Length);
+            return this;
+        }
+
+        Stream _writer;
         IObjectWriterStrategy _writeObject;
     }
 }
