@@ -16,7 +16,8 @@ namespace Test1EncodingSample
         static void Main(string[] args)
         {
             var encoded = new MemoryStream();
-            new MessageWriter(encoded).WriteMessage(new Test1() { A = 150 });
+            
+            Serializer.Serialize(encoded, new Test1(){ A = 150});
             Console.Write("Encoded = {");//Expected 08 96 01
             var sep = string.Empty;
             Array.ForEach(encoded.ToArray(), b =>

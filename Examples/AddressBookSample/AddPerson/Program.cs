@@ -18,10 +18,10 @@ namespace ProtoSharp.Examples.AddressBookSample.AddPerson
             }
             AddressBook addressBook = new AddressBook();
             if(File.Exists(args[0]))
-                addressBook = new MessageReader(File.ReadAllBytes(args[0])).Read<AddressBook>();
+                addressBook = Serializer.Deserialize<AddressBook>(File.OpenRead(args[0]));
 
             addressBook.Persons.Add(PromptForAddress(Console.In, Console.Out));
-            new MessageWriter(File.Create(args[0])).WriteMessage(addressBook);
+            Serializer.Serialize(File.Create(args[0]), addressBook);
             return 0;
         }
 
@@ -47,7 +47,7 @@ namespace ProtoSharp.Examples.AddressBookSample.AddPerson
                 if(string.IsNullOrEmpty(number))
                     break;
 
-                Person.PhoneNumber phoneNumber = Message.CreateDefault<Person.PhoneNumber>();
+                Person.PhoneNumber phoneNumber = Serializer.CreateDefault<Person.PhoneNumber>();
                 phoneNumber.Number = number;
                 output.Write("Is this a mobile, home, or work phone? ");
                 string type = input.ReadLine();

@@ -34,33 +34,40 @@ namespace ProtoSharp.Core
 
         public float GetFloat()
         {
-            var bytes = new byte[sizeof(float)];
-            _stream.Read(bytes, 0, sizeof(float));
-            return BitConverter.ToSingle(bytes, 0);
+            _stream.Read(_bytes, 0, sizeof(float));
+            return BitConverter.ToSingle(_bytes, 0);
         }
 
         public ArraySegment<byte> GetAllBytes()
         {
-            var bytesLeft = _stream.Length - _stream.Position;
-            var bytes = new byte[bytesLeft];
-            _stream.Read(bytes, 0, (int)bytesLeft);
-            return new ArraySegment<byte>(bytes);
+            var bytesLeft = (int)(_stream.Length - _stream.Position);
+            var bytes = AllocBytes(bytesLeft);
+            _stream.Read(bytes, 0, bytesLeft);
+            return new ArraySegment<byte>(bytes, 0, bytesLeft);
         }
 
         public ArraySegment<byte> GetBytes(int count)
         {
-            var bytes = new byte[count];
+            var bytes = AllocBytes(count);
             _stream.Read(bytes, 0, count);
-            return new ArraySegment<byte>(bytes);
+            return new ArraySegment<byte>(bytes, 0, count);
         }
 
         public IByteReader GetByteReader(int length)
         {
-            var bytes = new byte[length];
+            var bytes = AllocBytes(length);
             _stream.Read(bytes, 0, length);
             return new ByteArrayReader(bytes, 0, length);
         }
 
+        byte[] AllocBytes(int length)
+        {
+            if(length < _bytes.Length)
+                return _bytes;
+            return new byte[length];
+        }
+
         Stream _stream;
+        byte[] _bytes = new byte[128];
     }
 }
