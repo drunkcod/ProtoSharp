@@ -131,7 +131,7 @@
 
         public DateTime ReadDateTime()
         {
-            return UnixTime.ToDateTime(ReadInt32());
+            return UnixTime.ToDateTime(ReadZigZag64());
         }
 
         public Decimal ReadDecimal()

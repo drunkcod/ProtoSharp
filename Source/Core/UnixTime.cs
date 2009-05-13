@@ -13,6 +13,8 @@ namespace ProtoSharp.Core
             return (date - Epoch).Ticks / TimeSpan.TicksPerMillisecond;
         }
 
+        public static DateTime Convert(DateTime date) { return ToDateTime(From(date)); }
+
         public static DateTime ToDateTime(long unixTime)
         {
             return Epoch.AddMilliseconds(unixTime);
