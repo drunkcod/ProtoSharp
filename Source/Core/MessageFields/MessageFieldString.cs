@@ -1,17 +1,17 @@
-﻿using System;
-using System.Reflection;
-using System.Reflection.Emit;
-
-namespace ProtoSharp.Core.MessageFields
+﻿namespace ProtoSharp.Core.MessageFields
 {
+    using System;
+    using System.Reflection;
+    using System.Reflection.Emit;
+
     class MessageFieldString : MessageField
     {
-        public MessageFieldString(int tag, IFieldIO fieldIO): base(tag, fieldIO, WireType.String)
+        public MessageFieldString(int tag, IFieldIO fieldIO): base(tag, fieldIO)
         { }
 
         public override void AppendReadField(ILGenerator il)
         {
-            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("ReadString", Type.EmptyTypes));
+            il.Call<MessageReader>("ReadString");
         }
 
         public override void AppendGuard(ILGenerator il, MethodInfo getMethod, Label done)
@@ -23,7 +23,12 @@ namespace ProtoSharp.Core.MessageFields
 
         public override void AppendWriteField(ILGenerator il)
         {
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteString", new Type[] { typeof(string) }));
+            il.Call<MessageWriter>("WriteString", typeof(string));
+        }
+
+        protected override WireType WireType
+        {
+            get { return WireType.String; }
         }
     }
 }

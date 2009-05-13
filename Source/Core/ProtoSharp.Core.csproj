@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{52C2BF05-9DA3-4214-BCF6-2E13822CD39E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -12,6 +12,7 @@
     <AssemblyName>ProtoSharp.Core</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IntermediateOutputPath>..\..\Build\Obj\$(Configuration)\$(MSBuildProjectName)</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,33 +43,24 @@
     <Compile Include="ByteArrayReader.cs" />
     <Compile Include="ByteReader.cs" />
     <Compile Include="DefaultAttribute.cs" />
+    <Compile Include="ExtensionAttribute.cs" />
+    <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="FieldIO.cs" />
     <Compile Include="FieldIOBase.cs" />
     <Compile Include="GroupEncodingObjectWriterStrategy.cs" />
+    <Compile Include="Extensions\ILGeneratorExtensions.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageField.cs" />
-    <Compile Include="MessageFields\MessageFieldBool.cs" />
     <Compile Include="MessageFields\MessageFieldBytes.cs" />
-    <Compile Include="MessageFields\MessageFieldDateTime.cs" />
-    <Compile Include="MessageFields\MessageFieldDecimal.cs" />
-    <Compile Include="MessageFields\MessageFieldDouble.cs" />
+    <Compile Include="MessageFields\DecimalField.cs" />
     <Compile Include="MessageFields\MessageFieldEnum.cs" />
     <Compile Include="MessageFields\MessageFieldFixed.cs" />
-    <Compile Include="MessageFields\MessageFieldFixedInt32.cs" />
-    <Compile Include="MessageFields\MessageFieldFixedInt64.cs" />
-    <Compile Include="MessageFields\MessageFieldFixedUInt32.cs" />
-    <Compile Include="MessageFields\MessageFieldFixedUInt64.cs" />
-    <Compile Include="MessageFields\MessageFieldFloat.cs" />
     <Compile Include="MessageFields\MessageFieldInt16.cs" />
-    <Compile Include="MessageFields\MessageFieldInt32.cs" />
-    <Compile Include="MessageFields\MessageFieldInt64.cs" />
     <Compile Include="MessageFields\MessageFieldObject.cs" />
-    <Compile Include="MessageFields\MessageFieldSInt16.cs" />
-    <Compile Include="MessageFields\MessageFieldSInt32.cs" />
-    <Compile Include="MessageFields\MessageFieldSInt64.cs" />
+    <Compile Include="MessageFields\MessageFieldZigZagInt16.cs" />
+    <Compile Include="MessageFields\MessageFieldZigZagInt32.cs" />
+    <Compile Include="MessageFields\MessageFieldZigZagInt64.cs" />
     <Compile Include="MessageFields\MessageFieldString.cs" />
-    <Compile Include="MessageFields\MessageFieldUInt32.cs" />
-    <Compile Include="MessageFields\MessageFieldUInt64.cs" />
     <Compile Include="MessageFields\MessageFieldVarint.cs" />
     <Compile Include="MessageReader.cs" />
     <Compile Include="MessageTag.cs" />
@@ -78,6 +70,7 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="TagAttribute.cs" />
     <Compile Include="UnixTime.cs" />
+    <Compile Include="UnknownEnumException.cs" />
     <Compile Include="UnknownField.cs" />
     <Compile Include="UnknownFieldCollection.cs" />
     <Compile Include="UnknownFields\UnknownFieldFixed32.cs" />

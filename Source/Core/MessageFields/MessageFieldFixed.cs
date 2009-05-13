@@ -3,13 +3,28 @@ using System.Reflection.Emit;
 
 namespace ProtoSharp.Core.MessageFields
 {
-    abstract class MessageFieldFixed<TNativeType> : MessageField
+    class MessageFieldFixed : MessageField
     {
-        public MessageFieldFixed(int tag, IFieldIO fieldIO, WireType wireType) : base(tag, fieldIO, wireType) { }
+        readonly WireType wireType;
+
+        public MessageFieldFixed(int tag, IFieldIO fieldIO, WireType wireType) : base(tag, fieldIO)
+        {
+            this.wireType = wireType;
+        }
 
         public override void AppendWriteField(ILGenerator il)
         {
-            il.Emit(OpCodes.Call, typeof(MessageWriter).GetMethod("WriteFixed", new Type[] { typeof(TNativeType) }));
+            il.Call<MessageWriter>("WriteFixed", FieldType);
+        }
+
+        public override void AppendReadField(ILGenerator il)
+        {
+            il.Call<MessageReader>("ReadFixed" + FieldType.Name);
+        }
+
+        protected override WireType WireType
+        {
+            get { return wireType; }
         }
     }
 }

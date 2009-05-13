@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-using System.Reflection.Emit;
-
-namespace ProtoSharp.Core
+﻿namespace ProtoSharp.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Reflection.Emit;
+
     public static class Message
     {
         public static void ForEachField(Type messageType, Action<MessageField> action)
         {
-            var fields = new List<MessageField>();
-            Array.ForEach(messageType.GetProperties(), field =>
+            var properties = messageType.GetProperties();
+            var fields = new List<MessageField>(properties.Length);
+            Array.ForEach(properties, field =>
             {
                 var attributes = field.GetCustomAttributes(typeof(TagAttribute), false);
                 if(attributes.Length == 0)
@@ -28,12 +28,6 @@ namespace ProtoSharp.Core
             int count = 0;
             ForEachField(obj.GetType(), x => ++count);
             return count;
-        }
-
-        public static DynamicMethod BeginWriteMethod(Type type, Type arg0)
-        {
-            var writer = new DynamicMethod(string.Format("DynamicWrite{0}", type.Name), null, new Type[] { arg0, typeof(MessageWriter) }, true);
-            return StoreTypeSafeArg0(writer, type, arg0);
         }
 
         public static DynamicMethod BeginReadMethod(Type type, Type arg0)
@@ -58,6 +52,31 @@ namespace ProtoSharp.Core
                 il.Emit(OpCodes.Castclass, type);
             il.Emit(OpCodes.Stloc_0);
             return method;
+        }
+
+        public static FieldWriter<T> CreateFieldWriter<T>()
+        {
+            return EndMethod<FieldWriter<T>>(BeginWriteMethod(typeof(T)));
+        }
+
+        static DynamicMethod BeginWriteMethod(Type type)
+        {
+            var writer = BeginWriteMethod(type, type);
+            var il = writer.GetILGenerator();
+            ForEachField(type, x =>
+            {
+                if (x.CanAppendWrite)
+                    x.AppendWriteBody(il);
+                else
+                    throw new NotSupportedException();
+            });
+            return writer;
+        }
+
+        static DynamicMethod BeginWriteMethod(Type type, Type arg0)
+        {
+            var writer = new DynamicMethod(string.Format("DynamicWrite{0}", type.Name), null, new Type[] { arg0, typeof(MessageWriter) }, true);
+            return StoreTypeSafeArg0(writer, type, arg0);
         }
     }
 }

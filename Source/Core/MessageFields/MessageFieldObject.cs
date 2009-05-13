@@ -1,12 +1,12 @@
-﻿using System;
-using System.Reflection.Emit;
-using System.Reflection;
-
-namespace ProtoSharp.Core.MessageFields
+﻿namespace ProtoSharp.Core.MessageFields
 {
-    class MessageFieldObject: MessageField
+    using System;
+    using System.Reflection;
+    using System.Reflection.Emit;
+
+    class MessageFieldObject : MessageField
     {
-        public MessageFieldObject(int tag, IFieldIO fieldIO) : base(tag, fieldIO, WireType.String) { }
+        public MessageFieldObject(int tag, IFieldIO fieldIO) : base(tag, fieldIO) { }
 
         public override void AppendWriteField(ILGenerator il)
         {
@@ -22,6 +22,11 @@ namespace ProtoSharp.Core.MessageFields
         public override void AppendHeader(ILGenerator il)
         {
             il.Emit(OpCodes.Ldarg_1);
+        }
+
+        protected override WireType WireType
+        {
+            get { return WireType.String; }
         }
     }
 }

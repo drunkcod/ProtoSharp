@@ -1,10 +1,9 @@
-﻿using System;
-using System.Reflection.Emit;
-using System.Reflection;
-
-namespace ProtoSharp.Core.MessageFields
+﻿namespace ProtoSharp.Core.MessageFields
 {
-    class MessageFieldEnum : MessageFieldVarint<int>
+    using System;
+    using System.Reflection.Emit;
+
+    class MessageFieldEnum : MessageField
     {
         public MessageFieldEnum(int tag, IFieldIO fieldIO) : base(tag, fieldIO) { }
 
@@ -12,7 +11,12 @@ namespace ProtoSharp.Core.MessageFields
         {
             il.Emit(OpCodes.Ldtoken, FieldType);
             il.Emit(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle"));
-            il.Emit(OpCodes.Call, typeof(MessageReader).GetMethod("ReadEnum", new Type[]{ typeof(Type) }));
+            il.Call<MessageReader>("ReadEnum", typeof(Type));
+        }
+
+        public override void AppendWriteField(ILGenerator il)
+        {
+            il.Call<MessageWriter>("WriteVarint", typeof(int));
         }
     }
 }

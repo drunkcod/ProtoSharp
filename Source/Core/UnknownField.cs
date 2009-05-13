@@ -13,7 +13,7 @@ namespace ProtoSharp.Core
                 case WireType.StartGroup: return new UnknownFieldGroup(tag, reader);
                 case WireType.Fixed32: return new UnknownFieldFixed32(tag, reader);
             }
-            return new UnknownFieldVarint(tag, reader.ReadVarint64());
+            return new UnknownFieldVarint(tag, reader.ReadInt64());
         }
 
         public void Serialize(MessageWriter writer)

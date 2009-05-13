@@ -1,23 +1,12 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using ProtoSharp.Core.UnknownFields;
-
-namespace ProtoSharp.Core
+﻿namespace ProtoSharp.Core
 {
-    class UnknownEnumException : ArgumentOutOfRangeException 
-    {
-        public UnknownEnumException(int value)
-        {
-            _value = value;
-        }
-
-        public int Value { get { return _value; } }
-
-        int _value;
-    }
+    using System;
+    using System.Text;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.IO;
+    using ProtoSharp.Core.MessageFields;
+    using ProtoSharp.Core.UnknownFields;
 
     public class MessageReader
     {
@@ -34,12 +23,12 @@ namespace ProtoSharp.Core
 
         public MessageReader(params byte[] message) : this(new ByteArrayReader(message, 0, message.Length)) { }
 
-        public bool ReadBool()
+        public bool ReadBoolean()
         {
-            return ReadVarint32() != 0;
+            return ReadInt32() != 0;
         }
 
-        public int ReadVarint32()
+        public int ReadInt32()
         {
             int bits,value = _bytes.GetByte();
             if(value < 0x80)
@@ -59,7 +48,9 @@ namespace ProtoSharp.Core
             return value;
         }
 
-        public Int64 ReadVarint64()
+        public UInt32 ReadUInt32() { return (UInt32)ReadInt32(); }
+
+        public Int64 ReadInt64()
         {
             Int64 value = 0;
             int shiftBits = 0;
@@ -73,16 +64,18 @@ namespace ProtoSharp.Core
             return value;
         }
 
+        public UInt64 ReadUInt64(){ return (UInt64)ReadInt64(); }
+
         public int ReadZigZag32()
         {
-            var value = (uint)ReadVarint32();
+            var value = (uint)ReadInt32();
             var mask = 0 - (value & 1);
             return (int)(value >> 1 ^ mask);
         }
 
         public Int64 ReadZigZag64()
         {
-            UInt64 value = (UInt64)ReadVarint64();
+            UInt64 value = (UInt64)ReadInt64();
             UInt64 mask = 0L - (value & 1);
             return (Int64)(value >> 1 ^ mask);
         }
@@ -111,12 +104,12 @@ namespace ProtoSharp.Core
             return (UInt64)ReadFixedInt64();
         }
 
-        public float ReadFloat()
+        public float ReadFixedSingle()
         {
             return _bytes.GetFloat();
         }
 
-        public double ReadDouble()
+        public double ReadFixedDouble()
         {
             return BitConverter.Int64BitsToDouble(ReadFixedInt64());
         }
@@ -130,7 +123,7 @@ namespace ProtoSharp.Core
 
         public byte[] ReadBytes()
         {
-            var bytes = _bytes.GetBytes(ReadVarint32());
+            var bytes = _bytes.GetBytes(ReadInt32());
             var value = new byte[bytes.Count];
             Array.Copy(bytes.Array, bytes.Offset, value, 0, bytes.Count);
             return value;
@@ -138,12 +131,17 @@ namespace ProtoSharp.Core
 
         public DateTime ReadDateTime()
         {
-            return UnixTime.ToDateTime(ReadVarint32());
+            return UnixTime.ToDateTime(ReadInt32());
+        }
+
+        public Decimal ReadDecimal()
+        {
+            return new Decimal(ReadInt64()) / DecimalField.Factor;
         }
 
         public MessageTag ReadMessageTag()
         {
-            return new MessageTag(ReadVarint32());
+            return new MessageTag(ReadInt32());
         }
 
         public bool TryReadMessageTag(ref MessageTag target)
@@ -156,7 +154,7 @@ namespace ProtoSharp.Core
 
         public int ReadEnum(Type enumType)
         {
-            var value = ReadVarint32();
+            var value = ReadInt32();
             if(!Enum.IsDefined(enumType, value))
                 throw new UnknownEnumException(value);
             return value;
@@ -164,7 +162,7 @@ namespace ProtoSharp.Core
 
         internal MessageReader CreateSubReader()
         {
-            return new MessageReader(_bytes.GetByteReader(ReadVarint32()));
+            return new MessageReader(_bytes.GetByteReader(ReadInt32()));
         }
 
         internal T Read<T>() where T : class, new()

@@ -6,16 +6,31 @@ namespace ProtoSharp.Core
 {
     public class NullableFieldIO : FieldIOBase
     {
-        public static bool IsNullable(PropertyInfo property)
+        public static bool TryCreate(PropertyInfo property, out IFieldIO io)
+        {
+            if (IsNullable(property))
+            {
+                io = new NullableFieldIO(property, true);
+                return true;
+            }
+            io = null;
+            return false;
+        }
+        
+        static bool IsNullable(PropertyInfo property)
         {
             var type = property.PropertyType;
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
-        public NullableFieldIO(PropertyInfo property) : base(property)
+        public NullableFieldIO(PropertyInfo property) : this(property, false){}
+
+        private NullableFieldIO(PropertyInfo property, bool skipNullabilityCheck)
+            : base(property)
         {
-            if(!IsNullable(property))
-                throw new NotSupportedException();
+            if (skipNullabilityCheck || IsNullable(property))
+                return;
+            throw new NotSupportedException();
         }
 
         public override Type FieldType { get { return _property.PropertyType.GetGenericArguments()[0]; } }

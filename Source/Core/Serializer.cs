@@ -101,7 +101,7 @@ namespace ProtoSharp.Core
         
         static readonly KeyValuePair<int, FieldReader<T>>[] s_fields =  GetFields();
 
-        public static readonly FieldWriter<T> FieldWriter = GetWriter();
+        public static readonly FieldWriter<T> FieldWriter = Message.CreateFieldWriter<T>();
 
         public T Deserialize(MessageReader reader, T target, UnknownFieldCollection missing)
         {
@@ -170,21 +170,6 @@ namespace ProtoSharp.Core
                 field => fields.Add(new KeyValuePair<int, FieldReader<T>>(field.Header, field.GetFieldReader<T>())));
             fields.Sort((x, y) => x.Key - y.Key);
             return fields.ToArray();
-        }
-
-        static FieldWriter<T> GetWriter()
-        {
-            FieldWriter<T> fieldWriter = null;
-            var writer = Message.BeginWriteMethod(typeof(T), typeof(T));
-            Message.ForEachField(typeof(T), x =>
-            {
-                if(x.CanAppendWrite)
-                    x.AppendWriteBody(writer.GetILGenerator());
-                else
-                    throw new NotSupportedException();
-            });
-            fieldWriter += Message.EndMethod<FieldWriter<T>>(writer);
-            return fieldWriter;
         }
 
         int _position = -1;

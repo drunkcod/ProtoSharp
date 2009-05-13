@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using ProtoSharp.Core.MessageFields;
 
 
 namespace ProtoSharp.Core
@@ -115,6 +116,11 @@ namespace ProtoSharp.Core
         public MessageWriter WriteDateTime(DateTime date)
         {
             return WriteZigZag(UnixTime.From(date));
+        }
+
+        public MessageWriter WriteDecimal(Decimal value) 
+        {
+            return WriteVarint(Decimal.ToInt64(value * DecimalField.Factor));
         }
 
         public MessageWriter WriteObject<T>(T obj, int number) where T : class
