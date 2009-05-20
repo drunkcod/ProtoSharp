@@ -134,12 +134,11 @@ namespace ProtoSharp.Core
             return WriteVarint(new MessageTag(tag, wireType).Value);
         }
 
-        public int LengthVarint(long value)
-        {
-            return LengthVarint((ulong)value);
-        }
+        public int Length(int value) { return Length((long)value); }
 
-        public int LengthVarint(ulong value)
+        public int Length(long value) { return Length((ulong)value); }
+
+        public int Length(ulong value)
         {
             int length = 0;
             do

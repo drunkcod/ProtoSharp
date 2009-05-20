@@ -22,7 +22,13 @@ namespace ProtoSharp.Core.MessageFields
             il.Call<MessageReader>("ReadFixed" + FieldType.Name);
         }
 
-        protected override WireType WireType
+        public override void AppendFieldLength(ILGenerator il)
+        {
+            il.Pop().Pop()
+                .Emit(OpCodes.Ldc_I4, WireType == WireType.Fixed32 ? 4 : 8);
+        }
+
+        public override WireType WireType
         {
             get { return wireType; }
         }

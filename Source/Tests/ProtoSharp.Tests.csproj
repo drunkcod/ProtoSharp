@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{AE3523C9-ED85-414F-BAF3-9A5DFEE9151E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -12,14 +12,13 @@
     <AssemblyName>ProtoSharp.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>
-    </StartupObject>
+    <IntermediateOutputPath>..\..\Build\Obj\$(Configuration)\$(MSBuildProjectName)</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Build\Tests\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Build\Tests\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -44,6 +43,7 @@
   -->
   <ItemGroup>
     <Compile Include="ByteReaderTests.cs" />
+    <Compile Include="DateTimeTests.cs" />
     <Compile Include="EncodingTests.cs" />
     <Compile Include="GroupEncodingObjectWriterStrategyTests.cs" />
     <Compile Include="MessageReaderTests\General.cs" />
@@ -74,6 +74,7 @@
     <Compile Include="MessageWriterTests\WriteStringTests.cs" />
     <Compile Include="MessageWriterTests\WriteVarintTests.cs" />
     <Compile Include="NullableFieldIOTests.cs" />
+    <Compile Include="PackedEncodingTests.cs" />
     <Compile Include="RepeatedFileIOTests.cs" />
     <Compile Include="SerializerTests.cs" />
     <Compile Include="UnixTimeTests.cs" />

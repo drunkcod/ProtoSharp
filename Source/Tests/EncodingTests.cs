@@ -28,14 +28,14 @@ namespace ProtoSharp.Core
         public void SimpleMessageTagIsOne()        
         {
             MessageReader reader = new MessageReader(SimpleMessage);
-            Assert.AreEqual(1, new MessageTag(reader.ReadVarint32()).Number);
+            Assert.AreEqual(1, new MessageTag(reader.ReadInt32()).Number);
         }
         [Test]
         public void SimpleMessageValueIs150()
         {
             MessageReader reader = new MessageReader(SimpleMessage);
             reader.ReadMessageTag();
-            Assert.AreEqual(150, reader.ReadVarint32());
+            Assert.AreEqual(150, reader.ReadInt32());
         }
 
         /*
@@ -61,7 +61,7 @@ namespace ProtoSharp.Core
         {
             MessageReader reader = new MessageReader(Test2Testing);
             reader.ReadMessageTag();
-            reader.ReadVarint32();
+            reader.ReadInt32();
             Assert.AreEqual("testing", reader.ReadString());
         }
         /*

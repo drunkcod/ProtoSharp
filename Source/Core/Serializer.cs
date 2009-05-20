@@ -106,11 +106,11 @@ namespace ProtoSharp.Core
         public T Deserialize(MessageReader reader, T target, UnknownFieldCollection missing)
         {
             MessageTag tag = new MessageTag();
-            while(reader.TryReadMessageTag(ref tag))
+            while (reader.TryReadMessageTag(ref tag))
             {
-                if(TryGetFieldReader(tag))
+                if (TryGetFieldReader(tag))
                 {
-                    if(tag.WireType == WireType.String)
+                    if (tag.WireType == WireType.String)
                         _current.Value(target, reader.CreateSubReader());
                     else
                         try
@@ -135,9 +135,9 @@ namespace ProtoSharp.Core
         //Optimized for the common case where fields are seen in increasing number order.
         bool FindReader(int header)
         {
-            if(header == _current.Key)
+            if (header == CurrentHeader)
                 return true;
-            if(header > _current.Key)
+            if (header > CurrentHeader)
             {
                 for(int i = _position + 1; i != s_fields.Length; ++i)
                 {
@@ -173,6 +173,7 @@ namespace ProtoSharp.Core
         }
 
         int _position = -1;
+        int CurrentHeader { get { return _current.Key; } }
         KeyValuePair<int, FieldReader<T>> _current;
     }
 }

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action.cs" />
     <Compile Include="ByteArrayReader.cs" />
     <Compile Include="ByteReader.cs" />
     <Compile Include="DefaultAttribute.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="FieldIO.cs" />
     <Compile Include="FieldIOBase.cs" />
+    <Compile Include="Func.cs" />
     <Compile Include="GroupEncodingObjectWriterStrategy.cs" />
     <Compile Include="Extensions\ILGeneratorExtensions.cs" />
     <Compile Include="Message.cs" />
@@ -57,6 +59,7 @@
     <Compile Include="MessageFields\MessageFieldFixed.cs" />
     <Compile Include="MessageFields\MessageFieldInt16.cs" />
     <Compile Include="MessageFields\MessageFieldObject.cs" />
+    <Compile Include="MessageFields\MessageFieldPacked.cs" />
     <Compile Include="MessageFields\MessageFieldZigZagInt16.cs" />
     <Compile Include="MessageFields\MessageFieldZigZagInt32.cs" />
     <Compile Include="MessageFields\MessageFieldZigZagInt64.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="MessageTag.cs" />
     <Compile Include="MessageWriter.cs" />
     <Compile Include="NullableFieldIO.cs" />
+    <Compile Include="PackedFieldIO.cs" />
     <Compile Include="RepeatedFieldIO.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="TagAttribute.cs" />

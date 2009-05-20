@@ -1,20 +1,19 @@
-﻿using System;
+﻿namespace ProtoSharp.Core
+{  
+    using System;
 
-namespace ProtoSharp.Core
-{
-    public class TagAttribute : Attribute
+    public sealed class TagAttribute : Attribute
     {
+        int number;
+
         public TagAttribute(int number)
         {
-            _number = number;
+            this.number = number;
         }
 
-        public int Number { get { return _number; } }
-        public bool UseFixed { get { return _useFixed; } set { _useFixed = value; } }
-        public bool UseZigZag { get { return _useZigZag; } set { _useZigZag = value; } }
-
-        int _number;
-        bool _useFixed;
-        bool _useZigZag;
+        public int Number { get { return number; } }
+        public bool UseFixed { get;  set; }
+        public bool UseZigZag { get; set; }
+        public bool Packed { get; set; }
     }
 }

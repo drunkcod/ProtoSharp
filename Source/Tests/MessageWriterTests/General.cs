@@ -15,7 +15,7 @@ namespace ProtoSharp.Core
             string s = "testing";
             var output = new MemoryStream();
             new MessageWriter(output).WriteString(s);
-            Assert.AreEqual(s.Length, new MessageReader(output.ToArray()).ReadVarint32());
+            Assert.AreEqual(s.Length, new MessageReader(output.ToArray()).ReadInt32());
         }
         [Test]
         public void WriteString_ShouldHandleStringsLongerThan127Characters()
@@ -23,7 +23,7 @@ namespace ProtoSharp.Core
             string s = new string('*', 129);
             var output = new MemoryStream();
             new MessageWriter(output).WriteString(s);
-            Assert.AreEqual(s.Length, new MessageReader(output.ToArray()).ReadVarint32());
+            Assert.AreEqual(s.Length, new MessageReader(output.ToArray()).ReadInt32());
         }
         [Test]
         public void WriteMessage_Test1SimpleMessage()
@@ -198,7 +198,7 @@ namespace ProtoSharp.Core
         [Test]
         public void WriteMessage_ShouldHandleDecimal()
         {
-            Assert.AreEqual(MessageWriter.Write(new Test1Ex64(){ A = (long)(Math.PI * MessageFieldDecimal.Factor) }),
+            Assert.AreEqual(MessageWriter.Write(new Test1Ex64(){ A = (long)(Math.PI * DecimalField.Factor) }),
                 MessageWriter.Write(new MessageWithDecimal(){ Value = (Decimal)Math.PI })); 
         }
         [Test]

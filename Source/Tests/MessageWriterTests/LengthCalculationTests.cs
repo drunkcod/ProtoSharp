@@ -9,12 +9,12 @@ namespace ProtoSharp.Core.MessageWriterTests
         [Test]
         public void ShouldReturnOneAsLengthOf0x7f()
         {
-            Assert.AreEqual(1, new MessageWriter(Stream.Null).LengthVarint(0x7f));
+            Assert.AreEqual(1, new MessageWriter(Stream.Null).Length(0x7f));
         }
         [Test]
         public void ShouldReturnTenAsLengthOfMinusOne()
         {
-            Assert.AreEqual(10, new MessageWriter(Stream.Null).LengthVarint(-1));
+            Assert.AreEqual(10, new MessageWriter(Stream.Null).Length(-1));
         }
     }
 }

@@ -26,7 +26,7 @@
             il.Call<MessageWriter>("WriteString", typeof(string));
         }
 
-        protected override WireType WireType
+        public override WireType WireType
         {
             get { return WireType.String; }
         }

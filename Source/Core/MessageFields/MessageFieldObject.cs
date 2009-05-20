@@ -24,7 +24,7 @@
             il.Emit(OpCodes.Ldarg_1);
         }
 
-        protected override WireType WireType
+        public override WireType WireType
         {
             get { return WireType.String; }
         }

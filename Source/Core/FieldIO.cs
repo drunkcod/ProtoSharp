@@ -24,12 +24,12 @@ namespace ProtoSharp.Core
         public override void AppendWrite(ILGenerator il, MessageField field)
         {
             var done = il.DefineLabel();
-            field.AppendGuard(il, _property.GetGetMethod(), done);
+            field.AppendGuard(il, property.GetGetMethod(), done);
 
             field.AppendHeader(il);
 
             il.Emit(OpCodes.Ldloc_0);
-            il.Emit(OpCodes.Call, _property.GetGetMethod());
+            il.Emit(OpCodes.Call, property.GetGetMethod());
             field.AppendWriteField(il);
             il.Emit(OpCodes.Pop);
             il.MarkLabel(done);
@@ -40,7 +40,7 @@ namespace ProtoSharp.Core
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Ldarg_1);
             field.AppendReadField(il);
-            il.Emit(OpCodes.Call, _property.GetSetMethod());
+            il.Emit(OpCodes.Call, property.GetSetMethod());
         }
     }
 }

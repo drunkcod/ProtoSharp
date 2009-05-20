@@ -23,6 +23,8 @@
 
         public MessageReader(params byte[] message) : this(new ByteArrayReader(message, 0, message.Length)) { }
 
+        public bool EndOfStream { get { return _bytes.EndOfStream; } }
+
         public bool ReadBoolean()
         {
             return ReadInt32() != 0;
@@ -162,7 +164,8 @@
 
         internal MessageReader CreateSubReader()
         {
-            return new MessageReader(_bytes.GetByteReader(ReadInt32()));
+            var length = ReadInt32();
+            return new MessageReader(_bytes.GetByteReader(length));
         }
 
         internal T Read<T>() where T : class, new()

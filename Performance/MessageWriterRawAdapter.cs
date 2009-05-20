@@ -24,18 +24,18 @@ namespace ProtoSharp.Performance
         public override void Serialize(MessageWithRepeatedItem item) { item.Value.ForEach(x => _writer.WriteVarint(x)); }
         public override void Serialize(Person item) { throw new NotSupportedException(); }
 
-        public override void Deserialize(out MessageWithInt32 item) { item = new MessageWithInt32() { Value = _reader.ReadVarint32() }; }
-        public override void Deserialize(out MessageWithUInt32 item) { item = new MessageWithUInt32() { Value = (uint)_reader.ReadVarint32() }; }
+        public override void Deserialize(out MessageWithInt32 item) { item = new MessageWithInt32() { Value = _reader.ReadInt32() }; }
+        public override void Deserialize(out MessageWithUInt32 item) { item = new MessageWithUInt32() { Value = (uint)_reader.ReadInt32() }; }
         public override void Deserialize(out MessageWithSInt32 item) { item = new MessageWithSInt32() { Value = _reader.ReadZigZag32() }; }
-        public override void Deserialize(out MessageWithFixed32 item) { item = new MessageWithFixed32() { Signed = _reader.ReadFixedInt32(), Unsigned = _reader.ReadFixedUInt32(), Float = _reader.ReadFloat() }; }
-        public override void Deserialize(out MessageWithFixed64 item) { item = new MessageWithFixed64() { Signed = _reader.ReadFixedInt32(), Unsigned = _reader.ReadFixedUInt32(), Double = _reader.ReadDouble() }; }
+        public override void Deserialize(out MessageWithFixed32 item) { item = new MessageWithFixed32() { Signed = _reader.ReadFixedInt32(), Unsigned = _reader.ReadFixedUInt32(), Float = _reader.ReadFixedSingle() }; }
+        public override void Deserialize(out MessageWithFixed64 item) { item = new MessageWithFixed64() { Signed = _reader.ReadFixedInt32(), Unsigned = _reader.ReadFixedUInt32(), Double = _reader.ReadFixedDouble() }; }
         public override void Deserialize(out MessageWithString item) { item = new MessageWithString() { Value = _reader.ReadString() }; }
         public override void Deserialize(out MessageWithBytes item) { throw new NotSupportedException(); }
         public override void Deserialize(out MessageWithRepeatedItem item) 
         {
             item = new MessageWithRepeatedItem();
             for(int i = 0; i != RepeatedItemDeserializationBenchmark.Items; ++i)
-                item.Value.Add(_reader.ReadVarint32());
+                item.Value.Add(_reader.ReadInt32());
         }
         public override void Deserialize(out Person item) { throw new NotSupportedException(); }
 

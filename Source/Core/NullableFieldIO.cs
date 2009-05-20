@@ -33,7 +33,7 @@ namespace ProtoSharp.Core
             throw new NotSupportedException();
         }
 
-        public override Type FieldType { get { return _property.PropertyType.GetGenericArguments()[0]; } }
+        public override Type FieldType { get { return property.PropertyType.GetGenericArguments()[0]; } }
 
         public override void AppendWrite(ILGenerator il, MessageField field)
         {
@@ -41,14 +41,14 @@ namespace ProtoSharp.Core
             var tmp = il.DeclareLocal(typeof(Nullable<>).MakeGenericType(FieldType));
 
             il.Emit(OpCodes.Ldloc_0);
-            il.Emit(OpCodes.Call, _property.GetGetMethod());
+            il.Emit(OpCodes.Call, property.GetGetMethod());
             il.Emit(OpCodes.Stloc, tmp.LocalIndex);
 
             il.Emit(OpCodes.Ldloca, tmp.LocalIndex);
             il.Emit(OpCodes.Call, typeof(Nullable<>).MakeGenericType(FieldType).GetProperty("HasValue").GetGetMethod());
             il.Emit(OpCodes.Brfalse_S, done);
 
-            field.AppendGuard(il, _property.GetGetMethod(), done);
+            field.AppendGuard(il, property.GetGetMethod(), done);
             field.AppendHeader(il);
 
             il.Emit(OpCodes.Ldloca, tmp.LocalIndex);
@@ -64,7 +64,7 @@ namespace ProtoSharp.Core
             il.Emit(OpCodes.Ldarg_1);
             field.AppendReadField(il);
             il.Emit(OpCodes.Newobj, typeof(Nullable<>).MakeGenericType(FieldType).GetConstructor(new Type[] { FieldType }));            
-            il.Emit(OpCodes.Call, _property.GetSetMethod());
+            il.Emit(OpCodes.Call, property.GetSetMethod());
         }
     }
 }

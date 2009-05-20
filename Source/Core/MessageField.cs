@@ -9,8 +9,14 @@
 
     public class MessageField
     {
+        int tag;
+        IFieldIO fieldIO;
+
         public static MessageField Create(TagAttribute attr, PropertyInfo property)
         {
+            IFieldIO fieldIO;
+            if (attr.Packed && PackedFieldIO.TryCreate(property, out fieldIO))
+                    return new MessageFieldPacked(Create(attr, fieldIO));
             return Create(attr, CreateFieldIO(property));
         }
 
@@ -25,20 +31,27 @@
 
         protected MessageField(int tag, IFieldIO fieldIO)
         {
-            _tag = tag;
-            _fieldIO = fieldIO;
+            this.tag = tag;
+            this.fieldIO = fieldIO;
         }
 
-        public int Number { get { return _tag; } }
-        public int Header { get { return _tag << 3 | (int)WireType; } }
-        public bool CanAppendWrite { get { return _fieldIO.CanCreateWriter && CanAppendWriteCore; } }
-        public bool CanAppendRead { get { return _fieldIO.CanCreateReader && CanAppendReadCore; } }
+        protected MessageField(MessageField other):this(other.tag, other.fieldIO){}
 
-        protected virtual WireType WireType { get { return WireType.Varint; } }
+        public int Number { get { return tag; } }
+        public int Header { get { return tag << 3 | (int)WireType; } }
+        public bool CanAppendWrite { get { return fieldIO.CanCreateWriter; } }
+        public bool CanAppendRead { get { return fieldIO.CanCreateReader; } }
+
+        public virtual WireType WireType { get { return WireType.Varint; } }
 
         public virtual void AppendWriteField(ILGenerator il)
         {
             il.Call<MessageWriter>("Write" + FieldType.Name, FieldType);
+        }
+
+        public virtual void AppendFieldLength(ILGenerator il) 
+        {
+            il.Call<MessageWriter>("Length", FieldType);
         }
 
         public virtual void AppendReadField(ILGenerator il)
@@ -58,21 +71,18 @@
 
         public void AppendWriteBody(ILGenerator il)
         {
-            _fieldIO.AppendWrite(il, this);            
+            fieldIO.AppendWrite(il, this);            
         }
 
         public FieldReader<T> GetFieldReader<T>()
         {
             FieldReader<T> reader;
-            if(CanAppendRead && _fieldIO.CreateReader<T>(this, out reader))
+            if(CanAppendRead && fieldIO.CreateReader<T>(this, out reader))
                 return reader;
             throw new NotSupportedException();
         }
 
-        protected virtual bool CanAppendWriteCore { get { return true; } }
-        protected virtual bool CanAppendReadCore { get { return true; } }
-
-        protected Type FieldType { get { return _fieldIO.FieldType; } }
+        protected Type FieldType { get { return fieldIO.FieldType; } }
 
         static MessageField Create(TagAttribute attr, IFieldIO io)
         {
@@ -138,8 +148,5 @@
 
             throw new NotSupportedException(string.Format("Unsupported field type \"{0}\"", type));
         }
-
-        int _tag;
-        IFieldIO _fieldIO;
     }
 }
